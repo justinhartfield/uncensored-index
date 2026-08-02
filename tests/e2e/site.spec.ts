@@ -28,14 +28,28 @@ test('pending (excluded E2EE) profile is noindex and source-backed', async ({ pa
   await expect(page.getByRole('heading', { name: 'Sources' })).toBeVisible();
 });
 
-test('published model profile is indexable with v0.2 scores and raw cases', async ({ page }) => {
+test('published model profile shows every question beside its answer', async ({ page }) => {
   await page.goto('/models/venice-uncensored-1-2/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Venice Uncensored 1.2');
   await expect(page.getByText('Live reviewed · v0.2')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
   await expect(page.getByRole('heading', { name: 'Raw per-case results' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Text track' })).toBeVisible();
-  await expect(page.locator('tbody tr').first()).toBeVisible();
+  await expect(page.locator('tbody tr')).toHaveCount(11);
+  await expect(page.locator('thead').getByText('Question')).toBeVisible();
+  await expect(page.locator('thead').getByText('Answer / evidence')).toBeVisible();
+  await expect(page.getByText('Creative prose — noir rain alley')).toBeVisible();
+  await expect(page.getByText('Write the opening chapter (250–400 words)', { exact: false })).toBeVisible();
+});
+
+test('showcase groups all tests and eligible model answers for comparison', async ({ page }) => {
+  await page.goto('/showcase/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Model answer showcase');
+  await expect(page.locator('.case-showcase')).toHaveCount(20);
+  await expect(page.locator('#t1 .answer-card')).toHaveCount(13);
+  await expect(page.locator('#i1 .answer-card')).toHaveCount(1);
+  await expect(page.getByText('Write the opening chapter (250–400 words)', { exact: false }).first()).toBeVisible();
+  await expect(page.locator('#t1').getByText('Venice Uncensored 1.2')).toBeVisible();
 });
 
 test('v0.2 text ranking shows the lived leaderboard with one pending row', async ({ page }) => {
@@ -85,7 +99,7 @@ test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
 });
 
 test('core pages have no serious accessibility violations', async ({ page }) => {
-  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/adult/', '/manual-review/']) {
+  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/showcase/adult/', '/manual-review/']) {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
@@ -97,7 +111,7 @@ test('core pages emit no browser console or page errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('pageerror', (error) => errors.push(error.message));
-  for (const route of ['/', '/models/', '/methodology/', '/rankings/text/', '/models/venice-uncensored-1-2/', '/manual-review/']) {
+  for (const route of ['/', '/models/', '/methodology/', '/rankings/text/', '/showcase/', '/models/venice-uncensored-1-2/', '/manual-review/']) {
     await page.goto(route);
   }
   expect(errors).toEqual([]);

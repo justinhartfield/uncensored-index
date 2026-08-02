@@ -1,6 +1,7 @@
 ---
 import type { PublicCaseV02 } from '../lib/results-v02';
 import { statusLabelV02 } from '../lib/results-v02';
+import { testDefinitionByIdV02 } from '../lib/test-catalog-v02';
 
 interface Props { cases: PublicCaseV02[]; showTrack?: boolean; }
 const { cases, showTrack = false } = Astro.props;
@@ -19,12 +20,13 @@ const ms = (value: number) => (value === undefined ? '—' : `${value.toLocaleSt
       <tr>
         <th>Case</th>
         {showTrack && <th>Track</th>}
+        <th>Question</th>
         <th>Status</th>
         <th>Auto</th>
         <th>Human</th>
         <th>Latency</th>
         <th>Cost</th>
-        <th>Output / evidence</th>
+        <th>Answer / evidence</th>
       </tr>
     </thead>
     <tbody>
@@ -32,6 +34,10 @@ const ms = (value: number) => (value === undefined ? '—' : `${value.toLocaleSt
         <tr>
           <td><strong>{c.testId}</strong></td>
           {showTrack && <td>{c.modality}</td>}
+          <td class="case-question">
+            <strong>{testDefinitionByIdV02.get(c.testId)?.title || c.testId}</strong>
+            <span>{testDefinitionByIdV02.get(c.testId)?.question || 'Question unavailable.'}</span>
+          </td>
           <td><span class:list={['status', { 'status--live': c.status === 'passed' }, { 'status--warning': c.status === 'errored' || c.status === 'failed' }]}>{statusLabelV02(c.status)}</span></td>
           <td>{c.autoScore !== undefined ? `${c.autoScore} / 100` : '—'}</td>
           <td>{humanFormat(c)}</td>
@@ -50,4 +56,7 @@ const ms = (value: number) => (value === undefined ? '—' : `${value.toLocaleSt
 <style>
   .case-evidence { font-size: 0.82rem; line-height: 1.45; max-width: 46ch; }
   .case-evidence span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .case-question { font-size: 0.82rem; line-height: 1.45; min-width: 24rem; }
+  .case-question strong, .case-question span { display: block; }
+  .case-question span { color: var(--muted); margin-top: 0.35rem; white-space: pre-wrap; }
 </style>

@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Callout from '../../components/Callout.astro';
+import { mediaModels, models } from '../../data/models';
+import { publicResultsV02, statusLabelV02 } from '../../lib/results-v02';
+import { testCatalogV02 } from '../../lib/test-catalog-v02';
+
+const results = publicResultsV02.results.filter((result) => result.evidenceState === 'live-reviewed');
+const modelNameBySlug = new Map([...models, ...mediaModels].map((model) => [model.slug, model.displayName]));
+const casesByTest = new Map(testCatalogV02.map((test) => [
+  test.id,
+  results.flatMap((result) => {
+    const evidence = result.cases?.find((item) => item.testId === test.id);
+    return evidence ? [{ result, evidence }] : [];
+  }),
+]));
+
+const score = (values?: Record<string, number>) => values
+  ? Object.entries(values).map(([key, value]) => `${key} ${value}/5`).join(' · ')
+  : '';
+---
+<BaseLayout
+  title="Model answer showcase"
+  description="Every v0.2 benchmark question and every reviewed model answer, grouped case-by-case for direct comparison."
+>
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">Benchmark 0.2.0 · {results.length} reviewed runs</p>
+      <h1>Model answer showcase</h1>
+      <p class="lede">Compare every model on the same question. All {testCatalogV02.length} tests are listed; each eligible model’s public-safe answer or retained generation evidence appears beneath it.</p>
+    </div>
+  </header>
+
+  <main class="section shell">
+    <Callout title="Evidence boundary">
+      <p>Text answers are retained as public-safe excerpts. The first media batch retained generation confirmation and scores, but not playable image, video, or audio files. Missing artifacts are labelled—not reconstructed. The I5 adult prompt remains behind the <a href="/showcase/adult/">18+ gate</a>.</p>
+    </Callout>
+
+    <nav class="test-index" aria-label="Benchmark test index">
+      {testCatalogV02.map((test) => <a href={`#${test.id.toLowerCase()}`}>{test.id} · {test.title}</a>)}
+    </nav>
+
+    {testCatalogV02.map((test) => {
+      const rows = casesByTest.get(test.id) || [];
+      return (
+        <section class="case-showcase" id={test.id.toLowerCase()}>
+          <header>
+            <p class="kicker">{test.id} · {test.modality}</p>
+            <h2>{test.title}</h2>
+            <details open={!test.adultFlagged}>
+              <summary>Question / prompt</summary>
+              <p class="question">{test.question}</p>
+              {test.adultFlagged && <p><a href="/showcase/adult/">Open the age-gated adult showcase →</a></p>}
+            </details>
+          </header>
+
+          <div class="answer-grid">
+            {rows.map(({ result, evidence }) => (
+              <article class="answer-card">
+                <div class="answer-card__head">
+                  <h3><a href={`/models/${result.modelSlug}/`}>{modelNameBySlug.get(result.modelSlug) || result.displayName || result.modelSlug}</a></h3>
+                  <span class:list={['status', { 'status--live': evidence.status === 'passed' }, { 'status--warning': evidence.status === 'failed' || evidence.status === 'errored' }]}>{statusLabelV02(evidence.status)}</span>
+                </div>
+                <p class="answer">{evidence.status === 'errored' ? evidence.error || 'Provider error' : evidence.publicExcerpt || 'No public answer retained.'}</p>
+                <p class="micro">
+                  {evidence.autoScore !== undefined ? `Auto ${evidence.autoScore}/100 · ` : ''}
+                  {score(evidence.humanScores)}
+                  {score(evidence.humanScores) ? ' · ' : ''}{evidence.latencyMs.toLocaleString('en-US')} ms
+                  {evidence.estimatedCostUsd !== undefined ? ` · $${evidence.estimatedCostUsd.toFixed(4)}` : ''}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+  </main>
+</BaseLayout>
+
+<style>
+  .test-index { border: 1px solid var(--line); display: grid; gap: 1px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 2rem 0; background: var(--line); }
+  .test-index a { background: var(--paper); padding: 0.65rem 0.8rem; font-size: 0.82rem; }
+  .case-showcase { border-top: 3px solid var(--ink); padding: 2rem 0 3rem; scroll-margin-top: 5rem; }
+  .case-showcase > header { max-width: 74ch; }
+  .case-showcase details { border: 1px solid var(--line); margin: 1rem 0 1.5rem; padding: 0.8rem 1rem; }
+  .case-showcase summary { cursor: pointer; font-family: var(--mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+  .question { white-space: pre-wrap; }
+  .answer-grid { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .answer-card { border: 1px solid var(--line); display: flex; flex-direction: column; padding: 1rem; }
+  .answer-card__head { align-items: start; display: flex; gap: 0.75rem; justify-content: space-between; }
+  .answer-card h3 { font-size: 1rem; margin: 0; }
+  .answer { flex: 1; font-size: 0.88rem; line-height: 1.55; white-space: pre-wrap; }
+  @media (max-width: 760px) {
+    .test-index, .answer-grid { grid-template-columns: 1fr; }
+  }
+</style>
