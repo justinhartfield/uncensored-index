@@ -94,7 +94,7 @@ const records = [
   },
   {
     slug: 'glm-5-2', displayName: 'GLM 5.2', canonicalId: 'zai-org-glm-5-2', creator: 'Z.ai',
-    providerId: 'venice', routeType: 'venice', family: 'GLM 5.2', contextTokens: 202752,
+    providerId: 'venice', routeType: 'venice', family: 'GLM 5.2', contextTokens: 1000000,
     modalities: ['text'], weights: 'unknown', privacy: 'private', inputUsdPerMillion: 1.4, outputUsdPerMillion: 4.4,
     status: 'active', tags: ['generalist', 'private'], sourceUrls: ['https://docs.venice.ai/models/text'],
   },
