@@ -1,6 +1,7 @@
 ---
 import type { ModelRecord } from '../lib/schemas';
 import EvidenceBadge from './EvidenceBadge.astro';
+import { isPublishedV02, resultBySlugV02 } from '../lib/results-v02';
 interface Props { models: ModelRecord[]; enableFilters?: boolean; }
 const { models, enableFilters = false } = Astro.props;
 const providers = [...new Set(models.map((model) => model.providerId))];
@@ -22,7 +23,7 @@ const privacyValues = [...new Set(models.map((model) => model.privacy))];
 <div class="model-grid" id="model-grid">
   {models.map((model) => (
     <a class="model-card" href={`/models/${model.slug}/`} data-provider={model.providerId} data-privacy={model.privacy} data-tags={model.tags.join(' ')}>
-      <EvidenceBadge label="Awaiting live test" />
+      {isPublishedV02(resultBySlugV02(model.slug)) ? <EvidenceBadge state="live" label="Live reviewed · v0.2" /> : <EvidenceBadge label="Awaiting live test" />}
       <h3>{model.displayName}</h3>
       <p>{model.creator} · {model.contextTokens.toLocaleString('en-US')} token context</p>
       <div class="model-meta">

@@ -29,7 +29,8 @@
     "benchmark:v02:smoke": "tsx scripts/benchmark/v02/run.ts --mode smoke",
     "benchmark:v02:live": "tsx scripts/benchmark/v02/run.ts --mode live",
     "benchmark:v02:recompute": "tsx scripts/benchmark/v02/recompute.ts",
-    "test:v02": "vitest run tests/unit/v02-graders.test.ts tests/unit/v02-scoring.test.ts tests/integration/v02-fixture.test.ts"
+    "test:v02": "vitest run tests/unit/v02-graders.test.ts tests/unit/v02-scoring.test.ts tests/integration/v02-fixture.test.ts",
+    "benchmark:v02:promote": "tsx scripts/benchmark/v02/promote.ts"
   },
   "dependencies": {
     "astro": "7.1.6",

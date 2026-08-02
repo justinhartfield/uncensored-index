@@ -1,4 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
+import { mediaModels, models } from '../../src/data/models';
+import { isPublishedV02, resultBySlugV02 } from '../../src/lib/results-v02';
 import path from 'node:path';
 
 const dist = path.resolve('dist');
@@ -39,10 +41,19 @@ for (const file of htmlFiles) {
 }
 const modelProfiles = htmlFiles.filter((file) => file.includes(`${path.sep}models${path.sep}`) && !file.endsWith(`${path.sep}models${path.sep}index.html`));
 if (modelProfiles.length !== 17) errors.push(`Expected 17 model profiles, found ${modelProfiles.length}`);
+const roster = [...models, ...mediaModels];
+const publishedSlugs = new Set(roster.filter((m) => isPublishedV02(resultBySlugV02(m.slug))).map((m) => m.slug));
 for (const file of modelProfiles) {
   const html = await readFile(file, 'utf8');
-  if (!html.includes('noindex,follow')) errors.push(`${routeFor(file)}: pending model profile must be noindex`);
-  if (!html.includes('Awaiting live test')) errors.push(`${routeFor(file)}: missing evidence label`);
+  const rel = routeFor(file); // e.g. /models/aion-3-0/
+  const slug = rel.replace(/^\/models\//, '').replace(/\/$/, '');
+  if (publishedSlugs.has(slug)) {
+    if (html.includes('noindex,follow')) errors.push(`${routeFor(file)}: published profile must be indexable`);
+    if (!html.includes('Live reviewed')) errors.push(`${routeFor(file)}: published profile missing 'Live reviewed' label`);
+  } else {
+    if (!html.includes('noindex,follow')) errors.push(`${routeFor(file)}: pending model profile must be noindex`);
+    if (!html.includes('Awaiting live test')) errors.push(`${routeFor(file)}: missing evidence label`);
+  }
 }
 const jsBytes = (await Promise.all(files.filter((file) => file.endsWith('.js')).map(async (file) => (await stat(file)).size))).reduce((a, b) => a + b, 0);
 if (jsBytes > 100_000) errors.push(`JavaScript budget exceeded: ${jsBytes} bytes`);

@@ -2,31 +2,58 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import Callout from '../../components/Callout.astro';
+import V02CaseTable from '../../components/V02CaseTable.astro';
 import { mediaModels, models } from '../../data/models';
-import { resultByModel, evidenceLabel, isIndexableResult } from '../../lib/results';
-import type { ModelRecord } from '../../lib/schemas';
+import { isPublishedV02, MEDIA_PROVISIONAL_NOTE, resultBySlugV02, type Modality, type TrackScorePublic } from '../../lib/results-v02';
 
 export function getStaticPaths() {
   return [...models, ...mediaModels].map((model) => ({ params: { slug: model.slug }, props: { model } }));
 }
-interface Props { model: ModelRecord; }
 const { model } = Astro.props;
-const result = resultByModel.get(model.slug);
-const indexable = isIndexableResult(result);
+const result = resultBySlugV02(model.slug);
+const published = isPublishedV02(result);
+const modalitiesWithScore = (result?.trackScores ? Object.keys(result.trackScores) : []) as Modality[];
+const totalCases = result?.cases?.length ?? 0;
+const runCost = result?.cases?.reduce((a, c) => a + (c.estimatedCostUsd || 0), 0) ?? undefined;
+type ScoreRow = [string, number | undefined];
+function trackRows(modality: Modality, s: TrackScorePublic): ScoreRow[] {
+  const rows: ScoreRow[] = [
+    ['Overall', s.overall],
+    ['Speed', s.speed],
+    ['Cost efficiency', s.costEfficiency],
+    ['Reliability', s.reliability],
+  ];
+  if (modality === 'text') rows.push(['Output quality', s.outputQuality], ['Capability', s.capability]);
+  if (modality === 'image') rows.push(['Adherence', s.adherence], ['Aesthetic', s.aesthetic]);
+  if (modality === 'video') rows.push(['Quality', s.quality]);
+  if (modality === 'audio') rows.push(['TTS naturalness', s.ttsNatural], ['STT accuracy', s.sttAccuracy]);
+  return rows;
+}
 const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.toFixed(value < 1 ? 2 : 0)} / 1M`;
----
-<BaseLayout title={`${model.displayName} test results`} description={`Independent test profile for ${model.displayName}, including model route, privacy, context, cost, and benchmark state.`} noindex={!indexable} type="article">
+--- 
+<BaseLayout
+  title={`${model.displayName} test results`}
+  description={`Independent test profile for ${model.displayName} — route, privacy, context, cost, v0.2 scores and per-case benchmark evidence.`}
+  noindex={!published}
+  type="article"
+>
   <header class="page-head">
     <div class="shell">
       <p class="kicker">Model profile / {model.providerId}</p>
       <h1>{model.displayName}</h1>
-      <EvidenceBadge state={result?.evidenceState} label={evidenceLabel(result)} />
+      <EvidenceBadge state={published ? 'live' : 'pending'} label={published ? 'Live reviewed · v0.2' : 'Awaiting live test'} />
     </div>
   </header>
+
   <article class="section shell prose">
-    <Callout title="Evidence status" warning={!indexable}>
-      <p>{indexable ? `This profile contains a live, human-reviewed result from ${result?.testedAt}.` : 'This profile is generated to validate the site and test pipeline. It has no public score and remains noindex until a live run and human review pass.'}</p>
+    <Callout title={published ? 'Evidence status' : 'Evidence status'} warning={!published}>
+      {published ? (
+        <p>This profile contains a <strong>live, human-reviewed v0.2 result</strong> from {result!.testedAt}. {totalCases} cases below carry the full audit trail — automated and human scores, latency, cost, and public-safe output excerpts.</p>
+      ) : (
+        <p>This model is not in the published v0.2 ranked roster. The E2EE Qwen route was excluded as <em>route-unbenchmarkable</em> (encrypted reasoning returned no usable output on 11/11 attempts); this profile stays indexed-pending until a benchmarkable result exists.</p>
+      )}
     </Callout>
+
     <div class="facts">
       <div class="fact"><span>Canonical model ID</span><strong><code>{model.canonicalId}</code></strong></div>
       <div class="fact"><span>Creator</span><strong>{model.creator}</strong></div>
@@ -38,21 +65,47 @@ const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.to
       <div class="fact"><span>Status</span><strong>{model.status}</strong></div>
     </div>
 
-    <h2>Test result</h2>
-    {result ? (
+    {published && result ? (
       <>
-        <p><strong>Run:</strong> {result.runId} · <strong>Benchmark:</strong> {result.benchmarkVersion} · <strong>Cases:</strong> {result.testCount}</p>
-        {result.overallScore !== undefined ? <p><strong>Overall score:</strong> {result.overallScore.toFixed(1)} / 100</p> : <p class="score-pending">No publishable score.</p>}
-      </>
-    ) : <div class="empty-state"><strong>Live benchmark pending.</strong><p>The adapter and fixture tests cover this model, but no provider output is presented as evidence.</p></div>}
+        <h2>Benchmark score</h2>
+        <p>
+          <strong>Run:</strong> <code>{result.runId}</code> · <strong>Benchmark:</strong> 0.2.0 ·
+          <strong> Cases:</strong> {totalCases} · <strong>Tested:</strong> {result.testedAt}
+          {runCost !== undefined ? <> · <strong>Paid spend:</strong> ${runCost.toFixed(4)}</> : null}
+        </p>
+        {modalitiesWithScore.map((modality) => {
+          const s = result.trackScores![modality]!;
+          const rows = trackRows(modality, s);
+          return (
+            <div>
+              <h3>{modality.charAt(0).toUpperCase() + modality.slice(1)} track</h3>
+              <div class="score-row">
+                {rows.map(([label, value]) => (
+                  <div class="score-pill"><span>{label}</span><strong>{value !== undefined ? value.toFixed(1) : '—'}</strong></div>
+                ))}
+              </div>
+              {model.modalities.includes('image') || model.modalities.includes('video') || model.modalities.includes('audio') ? (
+                <p class="micro">{MEDIA_PROVISIONAL_NOTE}</p>
+              ) : null}
+            </div>
+          );
+        })}
 
-    <h2>What will be measured</h2>
+        <h2>Raw per-case results</h2>
+        <V02CaseTable cases={result.cases || []} showTrack />
+        <p class="micro">Evidence is stored public-safe (text excerpts ≈360 chars; media shown as generation-confirmed flags). Full provider internals are never published.</p>
+      </>
+    ) : (
+      <div class="empty-state"><strong>Live benchmark pending.</strong><p>No provider output is presented as evidence for this model in v0.2.</p></div>
+    )}
+
+    <h2>What v0.2 measures</h2>
     <ul>
-      <li>Instruction following and roleplay quality.</li>
-      <li>Lawful consensual adult-content reliability.</li>
-      <li>Memory, context retention, and false-memory resistance.</li>
-      <li>Correct refusal of minor, nonconsensual, and real-person deepfake requests.</li>
-      <li>Privacy route, token cost, latency, and provider reliability.</li>
+      <li>Text: prose voice &amp; coherence, character depth &amp; consistency, constrained writing, executable code, reasoning, knowledge, structured JSON.</li>
+      <li>Image: prompt adherence, aesthetics, text-in-image, style/negative-prompt control.</li>
+      <li>Video: text→video and image→video generation quality and motion.</li>
+      <li>Audio: TTS naturalness and STT word-error-rate.</li>
+      <li>Speed and cost are normalized relative to best-in-track; reliability counts real failures only.</li>
     </ul>
 
     <h2>Sources</h2>
@@ -60,3 +113,10 @@ const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.to
     <p class="micro">Prices and catalog facts are snapshots and must be revalidated during each live run.</p>
   </article>
 </BaseLayout>
+<style>
+  .score-row { display: grid; gap: 1px; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--line); border: 1px solid var(--line); margin-bottom: 1.25rem; }
+  .score-row:last-child { margin-bottom: 0; }
+  .score-pill { background: var(--paper); padding: 0.75rem 1rem; }
+  .score-pill span { color: var(--muted); display: block; font-family: var(--mono); font-size: 0.66rem; margin-bottom: 0.25rem; text-transform: uppercase; }
+  .score-pill strong { font-size: 1.25rem; }
+</style>

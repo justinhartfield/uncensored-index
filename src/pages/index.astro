@@ -42,11 +42,11 @@ const dataset = {
 
   <section class="section shell">
     <div class="section-head">
-      <div><p class="kicker">Launch roster</p><h2>Thirteen models, four modality tracks</h2></div>
+      <div><p class="kicker">Launch roster</p><h2>Seventeen models, four modality tracks</h2></div>
       <a href="/models/">View all models</a>
     </div>
     <Callout title="No fake leaderboard">
-      <p>Scores remain blank until live API runs and human review are complete. Fixture output tests the pipeline, not the models. <a href="/rankings/v01-legacy/">v0.1 archive</a> is retained for history only.</p>
+      <p>Every live score on this site came from a real paid API run with human-reviewed evidence — see the <a href="/manual-review/">manual review page</a> for the raw per-case results. The <a href="/rankings/v01-legacy/">v0.1 archive</a> is retained for history only.</p>
     </Callout>
     <ModelGrid models={models.slice(0, 6)} />
   </section>

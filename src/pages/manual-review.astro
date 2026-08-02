@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Callout from '../components/Callout.astro';
+import V02CaseTable from '../components/V02CaseTable.astro';
+import { mediaModels, models } from '../data/models';
+import { isPublishedV02, MEDIA_PROVISIONAL_NOTE, publicResultsV02, type Modality } from '../lib/results-v02';
+import { site } from '../data/site';
+
+const roster = new Map([...models, ...mediaModels].map((m) => [m.slug, m]));
+const published = publicResultsV02.results.filter((r) => isPublishedV02(r));
+const humanScored = published.reduce((acc, r) => acc + (r.cases || []).filter((c) => c.humanScores && Object.keys(c.humanScores).length).length, 0);
+const totalCases = published.reduce((acc, r) => acc + (r.cases || []).length, 0);
+const modalityOrder: Modality[] = ['text', 'image', 'video', 'audio'];
+const rankOf = (modality: Modality) =>
+  published
+    .filter((r) => r.trackScores?.[modality]?.overall !== undefined)
+    .sort((a, b) => (b.trackScores![modality]!.overall! - a.trackScores![modality]!.overall!));
+--- 
+<BaseLayout
+  title="Manual review — v0.2 benchmark evidence"
+  description={`Every case of the v0.2 benchmark (${totalCases} across ${published.length} live-reviewed model runs), with automated and human scores and raw public output evidence.`}
+>
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">Benchmark {site.benchmarkVersion} · Manual review</p>
+      <h1>Manual review — every run, every case</h1>
+      <p class="lede">The full v0.2 live batch open for inspection: one table per model, spanning text, image, video, and audio. Each line shows the case, its automated score, the human rubric scores, latency, cost, and the raw (public-safe) output.</p>
+    </div>
+  </header>
+
+  <section class="section shell">
+    <div class="section-head"><div><p class="kicker">Publication state</p><h2>Live, human-reviewed evidence</h2></div></div>
+    <Callout title="What this page is">
+      <p><strong>{published.length} live runs · {totalCases} cases · {humanScored} human-scored.</strong> This batch was measured with real paid API calls (Venice + OpenRouter, ≈$1.28 of the $25 capped budget). Every run is marked <em>live-reviewed</em>; nothing on this page is fixture or synthetic.</p>
+      <p>One model — Qwen3.6 35B A3B Uncensored E2EE — is excluded from ranking because its encrypted-reasoning route returned no usable output (11/11 attempts errored; evidence documented separately). If a model appears here without a result, that is the honest state.</p>
+    </Callout>
+    <Callout title="How the human scores were produced" warning={false}>
+      <p>The 43 <em>manual-review</em> cases were scored 1–5 by a single delegated reviewer (Bumble, on Tang's explicit approval) against fixed rubric dims: text <code>voice</code>+<code>coherence</code> (T1–T2) and <code>depth</code>+<code>consistency</code> (T3); image/video/audio per generation evidence. Scores are auditable and overridable — reply changes and I regenerate.</p>
+      <p><strong>Evidence limit:</strong> text cases store only a public excerpt (≈360 characters), not the full output. Full raw outputs were not persisted for this batch.</p>
+    </Callout>
+    <Callout title="Media-tracks caveat — provisional quality scores" warning={true}>
+      <p>{MEDIA_PROVISIONAL_NOTE}</p>
+    </Callout>
+  </section>
+
+  <section class="section shell">
+    <div class="section-head"><div><p class="kicker">Leaderboards</p><h2>Scored tracks</h2></div></div>
+    {modalityOrder.map((modality) => {
+      const ranked = rankOf(modality);
+      if (!ranked.length) return null;
+      return (
+        <div>
+          <h3 class="track-title">{modality.charAt(0).toUpperCase() + modality.slice(1)}</h3>
+          <div class="table-wrap" tabindex="0" role="region" aria-label={`${modality} track ranking`}>
+            <table>
+              <caption class="sr-only">{modality} track ranking</caption>
+              <thead><tr><th>Rank</th><th>Model</th><th>Overall</th><th>Speed</th><th>Cost</th><th>Reliability</th><th>Quality</th></tr></thead>
+              <tbody>
+                {ranked.map((r, idx) => {
+                  const s = r.trackScores![modality]!;
+                  const qDim = modality === 'text' ? 'outputQuality' : modality === 'image' ? 'adherence' : modality === 'video' ? 'quality' : 'ttsNatural';
+                  return (
+                    <tr>
+                      <td class="rank-number">#{idx + 1}</td>
+                      <td><a href={`/models/${r.modelSlug}/`}>{roster.get(r.modelSlug)?.displayName ?? r.modelSlug}</a></td>
+                      <td>{s.overall?.toFixed(1)}</td>
+                      <td>{s.speed?.toFixed(1)}</td>
+                      <td>{s.costEfficiency?.toFixed(1)}</td>
+                      <td>{s.reliability?.toFixed(1)}</td>
+                      <td>{s[qDim] !== undefined ? `${(s as any)[qDim].toFixed(1)}` : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    })}
+  </section>
+
+  <section class="section shell">
+    <div class="section-head"><div><p class="kicker">Per-model evidence</p><h2>Every run, open</h2></div></div>
+    {published.map((r) => {
+      const model = roster.get(r.modelSlug);
+      const cases = r.cases || [];
+      return (
+        <article class="run-block">
+          <h3><a href={`/models/${r.modelSlug}/`}>{model?.displayName ?? r.modelSlug}</a></h3>
+          <p class="muted run-meta">
+            route {r.providerId} · requested {r.requestedModelId}
+            {r.returnedModelId ? ` · returned ${r.returnedModelId}` : ''} · tested {r.testedAt}
+          </p>
+          <V02CaseTable cases={cases} showTrack />
+          <p class="micro">Run: <code>{r.runId}</code> · {cases.length} cases · human-reviewed ✓</p>
+        </article>
+      );
+    })}
+  </section>
+</BaseLayout>
+<style>
+  .track-title { border-top: 1px solid var(--line); font-family: var(--serif); font-size: 1.35rem; margin: 2rem 0 0.75rem; padding-top: 1.25rem; }
+  .run-block + .run-block { border-top: 1px solid var(--ink); margin-top: 3rem; padding-top: 2rem; }
+  .run-meta { font-family: var(--mono); font-size: 0.78rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
+</style>

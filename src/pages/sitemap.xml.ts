@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { models } from '../data/models';
+import { mediaModels, models } from '../data/models';
 import { resultByModel, isIndexableResult } from '../lib/results';
 import { isPublishedV02, publicResultsV02 } from '../lib/results-v02';
 export const prerender = true;
@@ -8,6 +8,7 @@ const core = [
   '/methodology/',
   '/about/',
   '/editorial-policy/',
+  '/manual-review/',
   '/affiliate-disclosure/',
   '/corrections/',
   '/rankings/text/',
@@ -19,7 +20,7 @@ const core = [
 ];
 export const GET: APIRoute = ({ site }) => {
   const root = site || new URL('https://example.invalid');
-  const liveProfiles = models
+  const liveProfiles = [...models, ...mediaModels]
     .filter((model) => {
       const v1 = isIndexableResult(resultByModel.get(model.slug));
       const v2 = publicResultsV02.results.find((r) => r.modelSlug === model.slug);
