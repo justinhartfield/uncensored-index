@@ -1,0 +1,192 @@
+import type { AudioAdapter, ImageAdapter, VideoAdapter } from '../types';
+
+function key(): string | undefined {
+  return process.env.VENICE_API_KEY?.trim();
+}
+
+function redact(value: string): string {
+  return value
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, 'Bearer [REDACTED]')
+    .replace(/sk-[A-Za-z0-9_-]{16,}/g, '[REDACTED]')
+    .slice(0, 500);
+}
+
+async function veniceFetch(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<Response> {
+  const apiKey = key();
+  if (!apiKey) throw new Error('VENICE_API_KEY is not configured');
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), init.timeoutMs ?? 120_000);
+  try {
+    return await fetch(`https://api.venice.ai/api/v1${path}`, {
+      ...init,
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: 'application/json',
+        ...(init.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(init.headers || {}),
+      },
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export const veniceImageAdapter: ImageAdapter = {
+  id: 'venice-image',
+  isConfigured: () => Boolean(key()),
+  async generate(input) {
+    const started = performance.now();
+    const response = await veniceFetch('/image/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        model: input.model,
+        prompt: input.prompt,
+        ...(input.negativePrompt ? { negative_prompt: input.negativePrompt } : {}),
+        ...(input.width ? { width: input.width } : {}),
+        ...(input.height ? { height: input.height } : {}),
+        return_binary: false,
+      }),
+    });
+    const text = await response.text();
+    if (!response.ok) throw new Error(`venice-image HTTP ${response.status}: ${redact(text)}`);
+    const raw = JSON.parse(text) as any;
+    const image = raw.images?.[0] || raw.data?.[0]?.b64_json;
+    const timingTotal = raw.timing?.total;
+    return {
+      imageBase64: typeof image === 'string' ? image : undefined,
+      latencyMs: Math.round(performance.now() - started),
+      timingTotalMs: typeof timingTotal === 'number' ? timingTotal : undefined,
+      costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+      raw,
+    };
+  },
+};
+
+export const veniceVideoAdapter: VideoAdapter = {
+  id: 'venice-video',
+  isConfigured: () => Boolean(key()),
+  async queueAndRetrieve(input) {
+    const started = performance.now();
+    const queueRes = await veniceFetch('/video/queue', {
+      method: 'POST',
+      body: JSON.stringify({
+        model: input.model,
+        prompt: input.prompt,
+        duration: input.duration || '5s',
+        resolution: input.resolution || '720p',
+        aspect_ratio: input.aspectRatio || '16:9',
+        ...(input.imageBase64 ? { image: input.imageBase64 } : {}),
+        delete_media_on_completion: false,
+      }),
+      timeoutMs: 60_000,
+    });
+    const queueText = await queueRes.text();
+    if (!queueRes.ok) throw new Error(`venice-video queue HTTP ${queueRes.status}: ${redact(queueText)}`);
+    const queued = JSON.parse(queueText) as any;
+    const id = queued.id || queued.queue_id || queued.request_id;
+    if (!id) throw new Error('venice-video queue missing id');
+
+    const deadline = Date.now() + 10 * 60_000;
+    while (Date.now() < deadline) {
+      const ret = await veniceFetch('/video/retrieve', {
+        method: 'POST',
+        body: JSON.stringify({ id }),
+        timeoutMs: 60_000,
+      });
+      const contentType = ret.headers.get('content-type') || '';
+      if (contentType.includes('video/')) {
+        return {
+          status: 'completed',
+          latencyMs: Math.round(performance.now() - started),
+          downloadUrl: undefined,
+          raw: { id, binary: true },
+        };
+      }
+      const text = await ret.text();
+      if (!ret.ok) throw new Error(`venice-video retrieve HTTP ${ret.status}: ${redact(text)}`);
+      const body = JSON.parse(text) as any;
+      const status = String(body.status || '').toUpperCase();
+      if (status === 'COMPLETED' || body.download_url) {
+        return {
+          status: 'completed',
+          latencyMs: Math.round(performance.now() - started),
+          costUsd: typeof body.cost === 'number' ? body.cost : undefined,
+          downloadUrl: body.download_url,
+          raw: body,
+        };
+      }
+      if (status === 'FAILED' || status === 'ERROR') {
+        return { status: 'failed', latencyMs: Math.round(performance.now() - started), raw: body };
+      }
+      await new Promise((r) => setTimeout(r, 3000));
+    }
+    throw new Error('venice-video timeout');
+  },
+};
+
+export const veniceAudioAdapter: AudioAdapter = {
+  id: 'venice-audio',
+  isConfigured: () => Boolean(key()),
+  async speech(input) {
+    const started = performance.now();
+    const response = await veniceFetch('/audio/speech', {
+      method: 'POST',
+      body: JSON.stringify({
+        model: input.model,
+        input: input.input,
+        voice: input.voice || 'af_sky',
+      }),
+    });
+    const contentType = response.headers.get('content-type') || '';
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`venice-tts HTTP ${response.status}: ${redact(text)}`);
+    }
+    if (contentType.includes('application/json')) {
+      const raw = await response.json() as any;
+      return {
+        audioBase64: raw.audio || raw.data,
+        latencyMs: Math.round(performance.now() - started),
+        costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+        raw,
+      };
+    }
+    const buf = Buffer.from(await response.arrayBuffer());
+    return {
+      audioBase64: buf.toString('base64'),
+      latencyMs: Math.round(performance.now() - started),
+      raw: { contentType },
+    };
+  },
+  async transcribe(input) {
+    const started = performance.now();
+    const apiKey = key();
+    if (!apiKey) throw new Error('VENICE_API_KEY is not configured');
+    const bytes = Buffer.from(input.audioBase64, 'base64');
+    const form = new FormData();
+    form.append('model', input.model);
+    form.append('file', new Blob([bytes]), input.filename || 'audio.wav');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120_000);
+    try {
+      const response = await fetch('https://api.venice.ai/api/v1/audio/transcriptions', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { Authorization: `Bearer ${apiKey}` },
+        body: form,
+      });
+      const text = await response.text();
+      if (!response.ok) throw new Error(`venice-stt HTTP ${response.status}: ${redact(text)}`);
+      const raw = JSON.parse(text) as any;
+      return {
+        text: String(raw.text || ''),
+        latencyMs: Math.round(performance.now() - started),
+        costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+        raw,
+      };
+    } finally {
+      clearTimeout(timeout);
+    }
+  },
+};

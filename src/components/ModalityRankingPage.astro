@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Callout from './Callout.astro';
+import { models } from '../data/models';
+import { isPublishedV02, publicResultsV02, type Modality } from '../lib/results-v02';
+import { site } from '../data/site';
+
+interface Props {
+  modality: Modality;
+  title: string;
+  description: string;
+  intro: string;
+  weightLine: string;
+}
+const { modality, title, description, intro, weightLine } = Astro.props;
+const bySlug = new Map(publicResultsV02.results.map((r) => [r.modelSlug, r]));
+const rows = models.map((model) => {
+  const result = bySlug.get(model.slug);
+  const score = result?.trackScores?.[modality];
+  return { model, result, score };
+});
+const published = rows.filter((r) => isPublishedV02(r.result) && r.score?.overall !== undefined);
+const ranked = [...published].sort((a, b) => (b.score!.overall! - a.score!.overall!));
+const pending = rows.filter((r) => !published.includes(r));
+const hasReviewed = ranked.length > 0;
+---
+<BaseLayout title={title} description={description} noindex={!hasReviewed}>
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">Benchmark {site.benchmarkVersion} · {modality} track</p>
+      <h1>{title}</h1>
+      <p class="lede">{intro}</p>
+      <p class="muted">{weightLine}</p>
+      <p class="modality-nav">
+        <a href="/rankings/text/">Text</a>
+        <a href="/rankings/image/">Image</a>
+        <a href="/rankings/video/">Video</a>
+        <a href="/rankings/audio/">Audio</a>
+      </p>
+    </div>
+  </header>
+  <section class="section shell">
+    <Callout title="Publication state" warning={!hasReviewed}>
+      <p>
+        {hasReviewed
+          ? 'Live, human-reviewed v0.2 results for this modality.'
+          : 'No v0.2 ranking is published yet for this modality. Roster is listed; scores stay blank until a fresh live run and human review pass the QA gate.'}
+      </p>
+    </Callout>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Model</th>
+            <th>Overall</th>
+            <th>Speed</th>
+            <th>Cost</th>
+            <th>Reliability</th>
+            <th>Evidence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ranked.map((row, idx) => (
+            <tr>
+              <td>{idx + 1}</td>
+              <td><a href={`/models/${row.model.slug}/`}>{row.model.displayName}</a></td>
+              <td>{row.score?.overall?.toFixed(1)}</td>
+              <td>{row.score?.speed?.toFixed(1) ?? '—'}</td>
+              <td>{row.score?.costEfficiency?.toFixed(1) ?? '—'}</td>
+              <td>{row.score?.reliability?.toFixed(1) ?? '—'}</td>
+              <td><span class="status status--live">Live reviewed</span></td>
+            </tr>
+          ))}
+          {pending.map((row) => (
+            <tr>
+              <td>—</td>
+              <td><a href={`/models/${row.model.slug}/`}>{row.model.displayName}</a></td>
+              <td>PENDING</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="status">Awaiting live test</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</BaseLayout>

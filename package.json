@@ -1,0 +1,47 @@
+{
+  "name": "uncensored-index",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run validate:data && astro build && npm run check:site",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:all": "npm run check && npm run test && npm run benchmark:fixture && npm run build && npm run test:e2e && npm run check:secrets",
+    "validate:data": "tsx scripts/benchmark/validate-models.ts",
+    "benchmark:fixture": "tsx scripts/benchmark/run.ts --mode fixture",
+    "benchmark:smoke": "tsx scripts/benchmark/run.ts --mode smoke",
+    "benchmark:live": "tsx scripts/benchmark/run.ts --mode live",
+    "benchmark:catalog": "tsx scripts/benchmark/catalog-check.ts",
+    "benchmark:catalog:openrouter": "tsx scripts/benchmark/catalog-check.ts --openrouter-only",
+    "benchmark:report": "tsx scripts/benchmark/report.ts",
+    "benchmark:promote": "tsx scripts/benchmark/promote.ts",
+    "check:site": "tsx scripts/checks/check-build.ts",
+    "check:secrets": "tsx scripts/checks/check-secrets.ts",
+    "benchmark:v02:fixture": "tsx scripts/benchmark/v02/run.ts --mode fixture",
+    "benchmark:v02:smoke": "tsx scripts/benchmark/v02/run.ts --mode smoke",
+    "benchmark:v02:live": "tsx scripts/benchmark/v02/run.ts --mode live",
+    "benchmark:v02:recompute": "tsx scripts/benchmark/v02/recompute.ts",
+    "test:v02": "vitest run tests/unit/v02-graders.test.ts tests/unit/v02-scoring.test.ts tests/integration/v02-fixture.test.ts"
+  },
+  "dependencies": {
+    "astro": "7.1.6",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "@axe-core/playwright": "4.12.1",
+    "@playwright/test": "1.62.1",
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

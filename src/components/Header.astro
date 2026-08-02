@@ -1,0 +1,30 @@
+---
+const links = [
+  ['/models/', 'Models'],
+  ['/rankings/text/', 'Rankings'],
+  ['/showcase/adult/', 'Showcase'],
+  ['/methodology/', 'Methodology'],
+  ['/rankings/v01-legacy/', 'v0.1'],
+];
+---
+<header class="site-header">
+  <div class="shell nav">
+    <a class="brand" href="/" aria-label="Uncensored Index home">
+      <span class="brand-mark" aria-hidden="true">UIX</span>
+      <span>Uncensored Index</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav class="nav-links" id="site-nav" aria-label="Primary navigation" data-open="false">
+      {links.map(([href, label]) => <a href={href}>{label}</a>)}
+    </nav>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.querySelector<HTMLElement>('#site-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    if (nav) nav.dataset.open = String(!open);
+  });
+</script>

@@ -1,0 +1,61 @@
+---
+import TextPage from '../components/TextPage.astro';
+import Callout from '../components/Callout.astro';
+import { site } from '../data/site';
+---
+<TextPage title="How we score AI models" description="v0.2 performance-only methodology: per-modality leaderboards for text, image, video, and audio. No compliance theater." kicker={`Benchmark ${site.benchmarkVersion}`}>
+  <Callout title="Current state" warning={true}>
+    <p>v0.2 runners, auto-graders, and site shells are active. Public scores stay blank until a frozen live catalog, paid Venice batch, human review, and independent QA (0-mismatch recompute) all pass.</p>
+  </Callout>
+
+  <h2>The idea</h2>
+  <p>Uncensored Index benchmarks what models actually <strong>produce</strong> — prose, code, images, video, audio — against objective criteria. Not whether they follow meta-instructions about consent or privacy. Not whether they refuse lawful requests. Not whether they remember planted facts.</p>
+  <p>Five dimensions, scored <strong>per modality</strong> (text / image / video / audio). A text-only model simply does not appear on the video board — eligibility, not a penalty.</p>
+
+  <h2>What changed from v0.1</h2>
+  <ul>
+    <li><strong>Removed:</strong> refusal/consent tests, privacy-knowledge probes, memory/recall checks, persona meta-constraints, lawful-boundary safety scenarios, false-memory detection, format-compliance meta-tests, and all safety score caps.</li>
+    <li><strong>Added:</strong> constrained writing, structured JSON, code suites that actually execute, multi-step reasoning, factual knowledge, character sheets, image generation, video generation, TTS/STT audio.</li>
+    <li><strong>Structure:</strong> four modality leaderboards instead of one blended number.</li>
+  </ul>
+  <p>v0.1 scores are archived at <a href="/rankings/v01-legacy/">v0.1 (legacy)</a> and are <em>not</em> comparable to v0.2.</p>
+
+  <h2>Tracks and weights</h2>
+  <h3>Text</h3>
+  <p>T1–T11: two creative prose samples, character sheet + dialogue, constrained haiku, three executable code tasks, two exact-answer reasoning items, five-fact knowledge set, JSON-schema object.</p>
+  <p><strong>Weights:</strong> Output Quality 35 · Capability 25 · Speed 15 · Cost 15 · Reliability 10</p>
+
+  <h3>Image</h3>
+  <p>I1–I5: adherence, aesthetics, text-in-image (e.g. neon “VESPA”), style + negative-prompt control, and an adult showcase sample (I5) that is <strong>not</strong> injected into the rank.</p>
+  <p><strong>Weights:</strong> Adherence 40 · Aesthetic 25 · Speed 15 · Cost 10 · Reliability 10</p>
+
+  <h3>Video</h3>
+  <p>V1–V2: text→video (5s/720p) and image→video. Latency is queue→completed download.</p>
+  <p><strong>Weights:</strong> Quality 50 · Speed 25 · Cost 15 · Reliability 10</p>
+
+  <h3>Audio</h3>
+  <p>A1 TTS naturalness (human) + A2 STT word-error-rate (auto).</p>
+  <p><strong>Weights:</strong> TTS 30 · STT 30 · Speed 20 · Cost 10 · Reliability 10</p>
+
+  <h2>Scoring mechanics</h2>
+  <ul>
+    <li><strong>Relative normalization.</strong> Speed and cost are relative to the best-in-track (min p50 / min cost = 100). Snapshots shift as the roster changes.</li>
+    <li><strong>Human review.</strong> Blind, rubric-fixed, ≥2 raters per sample. Blanks excluded from human dims and reported separately.</li>
+    <li><strong>Reliability.</strong> Real failures only: HTTP/provider errors, blank outputs, undecodable media, queue timeouts. Missing a modality is eligibility, not failure.</li>
+    <li><strong>No safety caps.</strong> Rank scores are never reduced for refusal behavior — refusal cases are not in the suite.</li>
+  </ul>
+
+  <h2>Adult content policy</h2>
+  <p>I5 demonstrates uncensored image capability. Public presentation: 18+ age-gate, blurred by default, click-to-reveal, labelled, never auto-play. Indexable pages stay text-only. Corpus boundary held regardless of the no-compliance stance: no minors, no real-person deepfakes, no non-consensual content — lawful adult only. See <a href="/showcase/adult/">Adult showcase</a>.</p>
+
+  <h2>Evidence states</h2>
+  <ul>
+    <li><strong>Live, reviewed:</strong> indexable and eligible for rankings.</li>
+    <li><strong>Live, awaiting review:</strong> not ranked or indexable.</li>
+    <li><strong>Fixture:</strong> synthetic software-test output, never a model claim.</li>
+    <li><strong>Stale / unavailable:</strong> retest required or provider-absent.</li>
+  </ul>
+
+  <h2>Publication gate</h2>
+  <p>A score publishes only after catalog freeze, fresh live run, sanitization, human review, independent 0-mismatch recompute, secret scan, build checks, accessibility tests, and browser E2E all pass. See the QA acceptance runbook.</p>
+</TextPage>

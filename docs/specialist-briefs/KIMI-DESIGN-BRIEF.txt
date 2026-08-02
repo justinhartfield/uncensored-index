@@ -1,0 +1,52 @@
+You are the design specialist for an evidence-led editorial and benchmarking website named Uncensored Index. Deliver a concrete design critique and revised design specification only. Do not implement code, edit files, or write production copy.
+
+PRODUCT
+Uncensored Index independently tests uncensored, roleplay, and privacy-focused text models. It is an editorial publisher and offline benchmark, not a chatbot, porn gallery, prompt endpoint, or user-upload platform. Public pages contain no explicit imagery. Fixture outputs are software tests and may never look like live evidence.
+
+AUDIENCE
+1. Buyers selecting an uncensored or roleplay model.
+2. Privacy-sensitive users comparing API and encrypted routes.
+3. Technical users evaluating open-weight models.
+4. Researchers and reporters who need dated, reproducible evidence.
+
+DESIGN GOALS
+- Serious lab and editorial-desk credibility.
+- Data dense without becoming a dashboard template.
+- Immediate distinction among live reviewed, live unreviewed, fixture, stale, and unavailable evidence.
+- Mobile-first readability and table fallbacks.
+- Non-explicit, search-safe visual language.
+- WCAG AA contrast and reduced-motion support.
+
+CURRENT DIRECTION
+- Warm cream paper background with a faint horizontal grid.
+- Near-black ink.
+- Acid green used only for verified/action states.
+- Red-orange for warnings.
+- Serif editorial headlines, sans-serif body, monospace metadata.
+- Sharp borders, no gradients, no glassmorphism, no rounded SaaS cards.
+- Oversized homepage headline: “Uncensored models. Controlled tests. No vendor spin.”
+- Dark evidence-state panel listing 13 launch models, zero reviewed, 13 test cases plus performance, and two provider routes.
+- Model cards and methodology matrices use ruled grids.
+
+CURRENT QA FINDINGS
+- Desktop treatment is distinctive and credible, but the hero can dominate the evidence card.
+- Raw “unknown” privacy labels looked untrustworthy and have been changed to “privacy unverified.”
+- Mobile is readable with no clipping, but the six-card roster and eight-method cards create a long page.
+- The design must not imply a score or ranking before live evidence exists.
+- Footer and adult-topic notice are functional but should not feel legalistic or alarmist.
+
+ROUTES
+Homepage; model directory; 13 dynamic model profiles; four ranking shells; comparisons index; methodology; censorship index; model change log; about; editorial policy; affiliate disclosure; privacy; terms; corrections; contact.
+
+REQUIRED OUTPUT
+1. Blunt critique of the current direction.
+2. Revised visual system with exact colors, typography roles, sizes, spacing, borders, and state treatments.
+3. Desktop and mobile homepage layout specification.
+4. Model directory and profile specification.
+5. Ranking table and mobile-card specification.
+6. Evidence-state component specification.
+7. Trust and disclosure placement.
+8. What to remove or avoid.
+9. A prioritized list of implementation changes.
+
+Do not produce code. Do not invent live scores, providers, user testimonials, logos, or model outputs.

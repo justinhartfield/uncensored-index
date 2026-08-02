@@ -1,0 +1,6 @@
+---
+import RankingPage from '../../components/RankingPage.astro';
+import { models } from '../../data/models';
+const roster = models.filter((model) => ['private', 'e2ee', 'local'].includes(model.privacy));
+---
+<RankingPage title="Private and local uncensored LLMs" description="Compare privacy routes, open weights, context, price, and test evidence for uncensored models." kicker="Privacy ranking" models={roster} intro="Private, anonymized, encrypted, and local are not interchangeable. This page shows only routes with a specific documented privacy state." />

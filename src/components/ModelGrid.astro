@@ -1,0 +1,56 @@
+---
+import type { ModelRecord } from '../lib/schemas';
+import EvidenceBadge from './EvidenceBadge.astro';
+interface Props { models: ModelRecord[]; enableFilters?: boolean; }
+const { models, enableFilters = false } = Astro.props;
+const providers = [...new Set(models.map((model) => model.providerId))];
+const privacyValues = [...new Set(models.map((model) => model.privacy))];
+---
+{enableFilters && (
+  <div class="filter-bar" aria-label="Model filters">
+    <label>Provider
+      <select id="provider-filter"><option value="all">All providers</option>{providers.map((value) => <option value={value}>{value}</option>)}</select>
+    </label>
+    <label>Privacy
+      <select id="privacy-filter"><option value="all">All privacy routes</option>{privacyValues.map((value) => <option value={value}>{value}</option>)}</select>
+    </label>
+    <label>Use case
+      <select id="tag-filter"><option value="all">All use cases</option><option value="uncensored">Uncensored</option><option value="roleplay">Roleplay</option><option value="private">Private</option><option value="low-cost">Low cost</option></select>
+    </label>
+  </div>
+)}
+<div class="model-grid" id="model-grid">
+  {models.map((model) => (
+    <a class="model-card" href={`/models/${model.slug}/`} data-provider={model.providerId} data-privacy={model.privacy} data-tags={model.tags.join(' ')}>
+      <EvidenceBadge label="Awaiting live test" />
+      <h3>{model.displayName}</h3>
+      <p>{model.creator} · {model.contextTokens.toLocaleString('en-US')} token context</p>
+      <div class="model-meta">
+        <span class="chip">{model.providerId}</span>
+        <span class="chip">{model.privacy === 'unknown' ? 'privacy unverified' : model.privacy === 'e2ee' ? 'E2EE route' : `${model.privacy} route`}</span>
+        {model.tags.slice(0, 2).map((tag) => <span class="chip">{tag}</span>)}
+      </div>
+    </a>
+  ))}
+</div>
+<p id="filter-empty" class="empty-state" hidden>No models match those filters.</p>
+<script>
+  const selects = [...document.querySelectorAll<HTMLSelectElement>('.filter-bar select')];
+  const cards = [...document.querySelectorAll<HTMLElement>('#model-grid .model-card')];
+  const empty = document.querySelector<HTMLElement>('#filter-empty');
+  const update = () => {
+    const provider = (document.querySelector('#provider-filter') as HTMLSelectElement)?.value || 'all';
+    const privacy = (document.querySelector('#privacy-filter') as HTMLSelectElement)?.value || 'all';
+    const tag = (document.querySelector('#tag-filter') as HTMLSelectElement)?.value || 'all';
+    let shown = 0;
+    for (const card of cards) {
+      const visible = (provider === 'all' || card.dataset.provider === provider)
+        && (privacy === 'all' || card.dataset.privacy === privacy)
+        && (tag === 'all' || card.dataset.tags?.split(' ').includes(tag));
+      card.hidden = !visible;
+      if (visible) shown += 1;
+    }
+    if (empty) empty.hidden = shown !== 0;
+  };
+  selects.forEach((select) => select.addEventListener('change', update));
+</script>

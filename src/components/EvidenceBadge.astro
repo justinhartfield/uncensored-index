@@ -1,0 +1,6 @@
+---
+interface Props { state?: string; label: string; }
+const { state = 'pending', label } = Astro.props;
+const className = state.includes('live') ? 'status status--live' : state === 'fixture' ? 'status status--fixture' : state === 'stale' ? 'status status--stale' : 'status';
+---
+<span class={className}>{label}</span>

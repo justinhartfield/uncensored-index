@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ModelGrid from '../components/ModelGrid.astro';
+import Callout from '../components/Callout.astro';
+import { models } from '../data/models';
+import { publicResults } from '../lib/results';
+import { publicResultsV02 } from '../lib/results-v02';
+import { site } from '../data/site';
+const reviewed = publicResultsV02.results.filter((r) => r.evidenceState === 'live-reviewed' && r.humanReviewed).length;
+const legacyReviewed = publicResults.results.filter((result) => result.evidenceState === 'live-reviewed').length;
+const noindex = reviewed === 0;
+const dataset = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Uncensored Index model benchmark',
+  description: 'A reproducible performance benchmark of uncensored AI models across text, image, video, and audio. Live results publish only after human review.',
+  creator: { '@type': 'Organization', name: site.name },
+  version: site.benchmarkVersion,
+};
+---
+<BaseLayout title={site.name} description={site.description} noindex={noindex}>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(dataset)} />
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <p class="kicker">Independent model testing / benchmark {site.benchmarkVersion}</p>
+        <h1>Uncensored models. Controlled tests. No vendor spin.</h1>
+        <p class="lede">We measure what models actually produce — prose, code, images, video, audio — with per-modality leaderboards. No compliance theater. Every result ties to a model ID, provider route, run id, and reproducible method.</p>
+        <p><a class="button" href="/methodology/">Read the v0.2 protocol</a> <a class="button button--dark" href="/rankings/text/">Text rankings</a></p>
+      </div>
+      <aside class="evidence-panel" aria-label="Current evidence state">
+        <p class="kicker">Evidence state</p>
+        <dl>
+          <div><dt>Launch roster</dt><dd>{models.length} models</dd></div>
+          <div><dt>v0.2 live reviewed</dt><dd>{reviewed}</dd></div>
+          <div><dt>Tracks</dt><dd>Text · Image · Video · Audio</dd></div>
+          <div><dt>v0.1 legacy reviewed</dt><dd>{legacyReviewed}</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </header>
+
+  <section class="section shell">
+    <div class="section-head">
+      <div><p class="kicker">Launch roster</p><h2>Thirteen models, four modality tracks</h2></div>
+      <a href="/models/">View all models</a>
+    </div>
+    <Callout title="No fake leaderboard">
+      <p>Scores remain blank until live API runs and human review are complete. Fixture output tests the pipeline, not the models. <a href="/rankings/v01-legacy/">v0.1 archive</a> is retained for history only.</p>
+    </Callout>
+    <ModelGrid models={models.slice(0, 6)} />
+  </section>
+
+  <section class="section shell">
+    <div class="section-head"><div><p class="kicker">Method</p><h2>What v0.2 measures</h2></div></div>
+    <div class="facts">
+      <div class="fact"><span>01</span><strong>Text performance</strong><p class="muted">Prose, character gen, constrained writing, executable code, reasoning, knowledge, JSON.</p></div>
+      <div class="fact"><span>02</span><strong>Image generation</strong><p class="muted">Adherence, aesthetics, text-in-image, style control — plus a rank-excluded adult showcase.</p></div>
+      <div class="fact"><span>03</span><strong>Video generation</strong><p class="muted">Text→video and image→video quality, queue latency, cost, reliability.</p></div>
+      <div class="fact"><span>04</span><strong>Audio</strong><p class="muted">TTS naturalness and STT word-error-rate, with speed and cost.</p></div>
+      <div class="fact"><span>05</span><strong>Speed and cost</strong><p class="muted">Relative-to-best-in-track normalization. Snapshot-honest.</p></div>
+      <div class="fact"><span>06</span><strong>Reliability</strong><p class="muted">Real failures only — blanks, undecodable media, provider errors.</p></div>
+      <div class="fact"><span>07</span><strong>Evidence provenance</strong><p class="muted">Run ids, prompt hashes, requested vs returned model IDs.</p></div>
+      <div class="fact"><span>08</span><strong>No compliance gates</strong><p class="muted">We do not score refusal, consent, privacy, or planted-memory behavior.</p></div>
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="hero-grid">
+      <div><p class="kicker">Why this exists</p><h2>Most “best” lists do not show the test.</h2></div>
+      <div><p>Vendor claims are not evidence. Affiliate payouts are not evidence. One cherry-picked screenshot is not evidence.</p><p>Uncensored Index publishes the model route, protocol, test date, result state, and limitations. If a model has not passed the publication gate, it does not get a rank.</p><p><a class="button button--dark" href="/editorial-policy/">Editorial rules</a></p></div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,356 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { loadEnvFile } from 'node:process';
+import path from 'node:path';
+import { models } from '../../../src/data/models';
+import { allCasesV02, benchmarkVersionV02, casesForModality, promptHashV02 } from './cases';
+import { gradeAuto } from './graders/index';
+import { estimatedCost, scoreTrack, trackMins } from './score';
+import {
+  FixtureAudioAdapter,
+  FixtureChatAdapter,
+  FixtureImageAdapter,
+  FixtureVideoAdapter,
+} from './adapters/fixture';
+import { veniceAudioAdapter, veniceImageAdapter, veniceVideoAdapter } from './adapters/venice-media';
+import { veniceAdapter } from '../adapters/venice';
+import { openRouterAdapter } from '../adapters/openrouter';
+import { publicExcerpt, redactSecrets } from '../sanitize';
+import type { CaseResultV02, Modality, ModelRunV02 } from './types';
+
+try { loadEnvFile('.env'); } catch { /* optional */ }
+
+function arg(name: string): string | undefined {
+  const i = process.argv.indexOf(name);
+  return i >= 0 ? process.argv[i + 1] : undefined;
+}
+
+type Mode = 'fixture' | 'smoke' | 'live';
+
+function modeFromArgs(): Mode {
+  const v = arg('--mode') || 'fixture';
+  if (!['fixture', 'smoke', 'live'].includes(v)) throw new Error(`Invalid mode ${v}`);
+  return v as Mode;
+}
+
+function modalitiesFromArgs(): Modality[] {
+  const raw = arg('--modality') || 'all';
+  if (raw === 'all') return ['text', 'image', 'video', 'audio'];
+  return raw.split(',').map((s) => s.trim()) as Modality[];
+}
+
+async function runTextCase(
+  mode: Mode,
+  modelId: string,
+  routeType: string,
+  test: ReturnType<typeof casesForModality>[number],
+): Promise<CaseResultV02> {
+  const started = Date.now();
+  try {
+    let content = '';
+    let latencyMs = 0;
+    let promptTokens: number | undefined;
+    let completionTokens: number | undefined;
+    let returnedModelId: string | undefined;
+    if (mode === 'fixture') {
+      const fixture = new FixtureChatAdapter();
+      const res = await fixture.completeForTest(test.id, modelId);
+      content = res.content;
+      latencyMs = res.latencyMs;
+      promptTokens = res.promptTokens;
+      completionTokens = res.completionTokens;
+      returnedModelId = res.returnedModelId;
+    } else {
+      const adapter = routeType === 'venice' ? veniceAdapter : openRouterAdapter;
+      if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
+      const res = await adapter.complete({
+        testId: test.id,
+        model: modelId,
+        messages: test.messages || [],
+        temperature: test.gradeMode === 'human' ? 0.7 : 0.2,
+        topP: 0.9,
+        maxTokens: test.maxTokens || 800,
+        seed: 1701,
+      });
+      content = res.content;
+      latencyMs = res.latencyMs;
+      promptTokens = res.promptTokens;
+      completionTokens = res.completionTokens;
+      returnedModelId = res.returnedModelId;
+    }
+    if (!content.trim()) {
+      return {
+        testId: test.id, modality: 'text', promptHash: promptHashV02(test), status: 'blank',
+        latencyMs, promptTokens, completionTokens, publicExcerpt: '', requestedModelId: modelId, returnedModelId,
+      };
+    }
+    if (test.gradeMode === 'human') {
+      return {
+        testId: test.id, modality: 'text', promptHash: promptHashV02(test), status: 'manual-review',
+        latencyMs, promptTokens, completionTokens,
+        publicExcerpt: publicExcerpt(content, test.public),
+        requestedModelId: modelId, returnedModelId,
+      };
+    }
+    const grade = await gradeAuto(test.grader, content, test.graderConfig || {});
+    return {
+      testId: test.id, modality: 'text', promptHash: promptHashV02(test),
+      status: grade.status === 'blank' ? 'blank' : grade.status === 'manual-review' ? 'manual-review' : grade.status,
+      autoScore: grade.autoScore,
+      latencyMs, promptTokens, completionTokens,
+      publicExcerpt: publicExcerpt(content, test.public),
+      requestedModelId: modelId, returnedModelId,
+    };
+  } catch (error) {
+    return {
+      testId: test.id, modality: 'text', promptHash: promptHashV02(test), status: 'errored',
+      latencyMs: Date.now() - started, publicExcerpt: '',
+      error: redactSecrets(error instanceof Error ? error.message : String(error)),
+      requestedModelId: modelId,
+    };
+  }
+}
+
+async function runImageCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+  try {
+    const adapter = mode === 'fixture' ? new FixtureImageAdapter() : veniceImageAdapter;
+    if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
+    const res = await adapter.generate({
+      model: modelId,
+      prompt: test.prompt || '',
+      negativePrompt: test.negativePrompt,
+    });
+    const latencyMs = res.timingTotalMs ?? res.latencyMs;
+    if (!res.imageBase64) {
+      return {
+        testId: test.id, modality: 'image', promptHash: promptHashV02(test), status: 'blank',
+        latencyMs, estimatedCostUsd: res.costUsd, publicExcerpt: '', requestedModelId: modelId,
+      };
+    }
+    const status = test.gradeMode === 'showcase' ? 'showcase' : 'manual-review';
+    return {
+      testId: test.id, modality: 'image', promptHash: promptHashV02(test), status,
+      latencyMs, estimatedCostUsd: res.costUsd,
+      publicExcerpt: test.adultFlagged ? '[adult sample — gated]' : '[image generated]',
+      mediaMeta: { hasImage: true, adultFlagged: Boolean(test.adultFlagged) },
+      requestedModelId: modelId,
+    };
+  } catch (error) {
+    return {
+      testId: test.id, modality: 'image', promptHash: promptHashV02(test), status: 'errored',
+      latencyMs: 0, publicExcerpt: '',
+      error: redactSecrets(error instanceof Error ? error.message : String(error)),
+      requestedModelId: modelId,
+    };
+  }
+}
+
+async function runVideoCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+  try {
+    const adapter = mode === 'fixture' ? new FixtureVideoAdapter() : veniceVideoAdapter;
+    if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
+    const res = await adapter.queueAndRetrieve({
+      model: modelId,
+      prompt: test.prompt || '',
+      duration: test.media?.duration,
+      resolution: test.media?.resolution,
+      aspectRatio: test.media?.aspectRatio,
+    });
+    if (res.status !== 'completed') {
+      return {
+        testId: test.id, modality: 'video', promptHash: promptHashV02(test), status: 'errored',
+        latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd, publicExcerpt: '',
+        error: 'video-failed', requestedModelId: modelId,
+      };
+    }
+    return {
+      testId: test.id, modality: 'video', promptHash: promptHashV02(test), status: 'manual-review',
+      latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd,
+      publicExcerpt: '[video generated]', mediaMeta: { downloadUrl: res.downloadUrl ? '[redacted]' : undefined },
+      requestedModelId: modelId,
+    };
+  } catch (error) {
+    return {
+      testId: test.id, modality: 'video', promptHash: promptHashV02(test), status: 'errored',
+      latencyMs: 0, publicExcerpt: '',
+      error: redactSecrets(error instanceof Error ? error.message : String(error)),
+      requestedModelId: modelId,
+    };
+  }
+}
+
+async function runAudioCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+  try {
+    const adapter = mode === 'fixture' ? new FixtureAudioAdapter() : veniceAudioAdapter;
+    if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
+    if (test.id === 'A1') {
+      const res = await adapter.speech({ model: modelId, input: test.prompt || '', voice: test.media?.voice });
+      if (!res.audioBase64) {
+        return {
+          testId: test.id, modality: 'audio', promptHash: promptHashV02(test), status: 'blank',
+          latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd, publicExcerpt: '', requestedModelId: modelId,
+        };
+      }
+      return {
+        testId: test.id, modality: 'audio', promptHash: promptHashV02(test), status: 'manual-review',
+        latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd,
+        publicExcerpt: '[tts audio generated]', requestedModelId: modelId,
+      };
+    }
+    // A2 STT — fixture uses known reference; live expects BENCHMARK_STT_AUDIO_B64
+    let audioB64 = process.env.BENCHMARK_STT_AUDIO_B64;
+    if (mode === 'fixture') audioB64 = 'AAAA';
+    if (!audioB64) throw new Error('BENCHMARK_STT_AUDIO_B64 required for live STT');
+    const res = await adapter.transcribe({ model: modelId, audioBase64: audioB64 });
+    const grade = await gradeAuto('wer', res.text, test.graderConfig || {});
+    return {
+      testId: test.id, modality: 'audio', promptHash: promptHashV02(test),
+      status: grade.status === 'blank' ? 'blank' : grade.status === 'passed' ? 'passed' : grade.status === 'failed' ? 'failed' : 'manual-review',
+      autoScore: grade.autoScore,
+      latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd,
+      publicExcerpt: publicExcerpt(res.text, true),
+      requestedModelId: modelId,
+    };
+  } catch (error) {
+    return {
+      testId: test.id, modality: 'audio', promptHash: promptHashV02(test), status: 'errored',
+      latencyMs: 0, publicExcerpt: '',
+      error: redactSecrets(error instanceof Error ? error.message : String(error)),
+      requestedModelId: modelId,
+    };
+  }
+}
+
+async function main() {
+  const mode = modeFromArgs();
+  const modalities = modalitiesFromArgs();
+  const selectedSlug = arg('--model');
+  const selected = selectedSlug ? models.filter((m) => m.slug === selectedSlug) : models;
+  if (!selected.length) throw new Error(`Unknown model ${selectedSlug}`);
+
+  const runId = `v02-${mode}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+  const root = path.resolve(mode === 'fixture' ? 'benchmark-results-fixture' : 'benchmark-results', runId);
+  await mkdir(root, { recursive: true });
+
+  const cases = allCasesV02.filter((c) => modalities.includes(c.modality));
+  const smokeCases = mode === 'smoke'
+    ? modalities.flatMap((m) => casesForModality(m).slice(0, 1))
+    : cases;
+
+  const modelRuns: ModelRunV02[] = [];
+
+  for (const model of selected) {
+    const caseResults: CaseResultV02[] = [];
+    for (const test of smokeCases) {
+      // Eligibility: text models always; media only if modality listed (image/video) or venice for audio/image/video live
+      if (test.modality !== 'text' && mode !== 'fixture') {
+        const mediaModality = test.modality;
+        if (mediaModality !== 'audio' && !model.modalities.includes(mediaModality)) {
+          continue; // eligibility skip — not an error
+        }
+        if (model.routeType !== 'venice') continue;
+      }
+      if (test.modality === 'text') {
+        const result = await runTextCase(mode, model.canonicalId, model.routeType, test);
+        result.estimatedCostUsd = estimatedCost(
+          result.promptTokens, result.completionTokens, model.inputUsdPerMillion, model.outputUsdPerMillion,
+        );
+        caseResults.push(result);
+      } else if (test.modality === 'image') {
+        // fixture runs all models through synthetic image path for pipeline validation
+        const imageModel = mode === 'fixture' ? model.canonicalId : (model.canonicalId.includes('image') ? model.canonicalId : 'venice-sd35');
+        caseResults.push(await runImageCase(mode, imageModel, test));
+      } else if (test.modality === 'video') {
+        const videoModel = mode === 'fixture' ? model.canonicalId : 'wan-2.5-preview-text-to-video';
+        caseResults.push(await runVideoCase(mode, videoModel, test));
+      } else if (test.modality === 'audio') {
+        const audioModel = mode === 'fixture' ? model.canonicalId : (test.id === 'A1' ? 'tts-kokoro' : 'stt-whisper');
+        caseResults.push(await runAudioCase(mode, audioModel, test));
+      }
+      process.stdout.write('.');
+    }
+    process.stdout.write('\n');
+
+    const run: ModelRunV02 = {
+      schemaVersion: 2,
+      benchmarkVersion: benchmarkVersionV02,
+      runId,
+      runType: mode === 'fixture' ? 'fixture' : 'live',
+      testedAt: new Date().toISOString(),
+      modelSlug: model.slug,
+      requestedModelId: model.canonicalId,
+      returnedModelId: caseResults.find((c) => c.returnedModelId)?.returnedModelId,
+      providerId: model.providerId,
+      modalitiesRun: [...new Set(caseResults.map((c) => c.modality))],
+      evidenceState: mode === 'fixture' ? 'fixture' : 'live-unreviewed',
+      humanReviewed: false,
+      publicationStatus: 'private',
+      cases: caseResults,
+      trackScores: {},
+      runMetrics: {
+        averageLatencyMs: (() => {
+          const xs = caseResults.filter((c) => c.status !== 'errored').map((c) => c.latencyMs);
+          return xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : undefined;
+        })(),
+        totalEstimatedCostUsd: caseResults
+          .map((c) => c.estimatedCostUsd)
+          .filter((n): n is number => typeof n === 'number')
+          .reduce((a, b) => a + b, 0) || undefined,
+        errorCount: caseResults.filter((c) => c.status === 'errored').length,
+        blankCount: caseResults.filter((c) => c.status === 'blank').length,
+      },
+    };
+    modelRuns.push(run);
+    await writeFile(path.join(root, `${model.slug}.json`), JSON.stringify(run, null, 2));
+    console.log(`${model.slug}: ${caseResults.length} cases`);
+  }
+
+  // Second pass: relative mins + track scores (fixture human dims seeded for pipeline demo only)
+  for (const run of modelRuns) {
+    if (mode === 'fixture') {
+      for (const c of run.cases) {
+        if (c.status === 'manual-review' && !c.humanScores) {
+          // Deterministic synthetic human scores for fixture recompute demos — NEVER published as live
+          const seed = c.testId.charCodeAt(0) % 3;
+          const base = 3 + seed; // 3-5
+          if (c.modality === 'text') c.humanScores = { voice: base, coherence: Math.min(5, base + 1) };
+          if (c.modality === 'image') c.humanScores = { adherence: base, aesthetic: base, 'text-render': base, control: base };
+          if (c.modality === 'video') c.humanScores = { adherence: base, motion: base };
+          if (c.modality === 'audio') c.humanScores = { naturalness: base, intelligibility: Math.min(5, base + 1) };
+        }
+      }
+    }
+  }
+
+  for (const run of modelRuns) {
+    for (const modality of run.modalitiesRun) {
+      const mins = trackMins(modelRuns, modality);
+      const cases = run.cases.filter((c) => c.modality === modality);
+      run.trackScores[modality] = scoreTrack(modality, cases, mins);
+    }
+    await writeFile(path.join(root, `${run.modelSlug}.json`), JSON.stringify(run, null, 2));
+  }
+
+  const manifest = {
+    schemaVersion: 2,
+    benchmarkVersion: benchmarkVersionV02,
+    runId,
+    mode,
+    modalities,
+    startedAt: new Date().toISOString(),
+    completedAt: new Date().toISOString(),
+    models: modelRuns.map((r) => ({
+      modelSlug: r.modelSlug,
+      caseCount: r.cases.length,
+      trackScores: r.trackScores,
+      errorCount: r.runMetrics.errorCount,
+    })),
+  };
+  await writeFile(path.join(root, 'manifest.json'), JSON.stringify(manifest, null, 2));
+  console.log(`run_dir: ${root}`);
+  console.log(`cases_defined: ${allCasesV02.length}`);
+}
+
+main().catch((error) => {
+  console.error(redactSecrets(error instanceof Error ? error.message : String(error)));
+  process.exitCode = 1;
+});

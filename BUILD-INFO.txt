@@ -1,0 +1,4 @@
+Commit: 0dda8a31bcf93bfa8b1541a486169d2a4a335280
+Built: 2026-08-02
+Live model results: none
+Fixture evidence is synthetic.

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Callout from '../../components/Callout.astro';
+import RankingTable from '../../components/RankingTable.astro';
+import { models } from '../../data/models';
+import { resultByModel, isIndexableResult } from '../../lib/results';
+import { site } from '../../data/site';
+const rows = models.map((model) => ({ model, result: resultByModel.get(model.slug) }));
+const hasReviewed = rows.some((row) => isIndexableResult(row.result));
+---
+<BaseLayout title="v0.1 rankings (legacy)" description="Archived v0.1 weighted-gate benchmark. Not comparable to v0.2." noindex={true}>
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">Archive · benchmark {site.legacyBenchmarkVersion}</p>
+      <h1>v0.1 rankings (legacy)</h1>
+      <p class="lede">Retained for history only. Default rankings now surface <a href="/rankings/text/">v0.2 per-modality boards</a>.</p>
+    </div>
+  </header>
+  <section class="section shell">
+    <Callout title="Legacy method — do not compare to v0.2" warning={true}>
+      <p>v0.1 used a weighted-gate suite: human 40 / safety 18 / lawful 15 / memory 12 / instruction 10 / speed 5, plus hard safety caps (minor-safety ≤40, deepfake ≤50). It tested refusal, consent, privacy, and false-memory behavior. v0.2 measures output performance only with different weights and four modality tracks. Scores are not relabeled and not comparable.</p>
+    </Callout>
+    <Callout title="Publication state" warning={!hasReviewed}>
+      <p>{hasReviewed ? 'This archive contains live, human-reviewed v0.1 results.' : 'No v0.1 ranking was published. The roster is shown with blank scores.'}</p>
+    </Callout>
+    <RankingTable rows={rows} />
+  </section>
+</BaseLayout>

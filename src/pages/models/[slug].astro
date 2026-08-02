@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceBadge from '../../components/EvidenceBadge.astro';
+import Callout from '../../components/Callout.astro';
+import { models } from '../../data/models';
+import { resultByModel, evidenceLabel, isIndexableResult } from '../../lib/results';
+import type { ModelRecord } from '../../lib/schemas';
+
+export function getStaticPaths() {
+  return models.map((model) => ({ params: { slug: model.slug }, props: { model } }));
+}
+interface Props { model: ModelRecord; }
+const { model } = Astro.props;
+const result = resultByModel.get(model.slug);
+const indexable = isIndexableResult(result);
+const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.toFixed(value < 1 ? 2 : 0)} / 1M`;
+---
+<BaseLayout title={`${model.displayName} test results`} description={`Independent test profile for ${model.displayName}, including model route, privacy, context, cost, and benchmark state.`} noindex={!indexable} type="article">
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">Model profile / {model.providerId}</p>
+      <h1>{model.displayName}</h1>
+      <EvidenceBadge state={result?.evidenceState} label={evidenceLabel(result)} />
+    </div>
+  </header>
+  <article class="section shell prose">
+    <Callout title="Evidence status" warning={!indexable}>
+      <p>{indexable ? `This profile contains a live, human-reviewed result from ${result?.testedAt}.` : 'This profile is generated to validate the site and test pipeline. It has no public score and remains noindex until a live run and human review pass.'}</p>
+    </Callout>
+    <div class="facts">
+      <div class="fact"><span>Canonical model ID</span><strong><code>{model.canonicalId}</code></strong></div>
+      <div class="fact"><span>Creator</span><strong>{model.creator}</strong></div>
+      <div class="fact"><span>Context</span><strong>{model.contextTokens.toLocaleString('en-US')} tokens</strong></div>
+      <div class="fact"><span>Privacy route</span><strong>{model.privacy === 'unknown' ? 'Provider policy review pending' : model.privacy === 'e2ee' ? 'End-to-end encrypted route' : `${model.privacy} route`}</strong></div>
+      <div class="fact"><span>Input price</span><strong>{money(model.inputUsdPerMillion)}</strong></div>
+      <div class="fact"><span>Output price</span><strong>{money(model.outputUsdPerMillion)}</strong></div>
+      <div class="fact"><span>Weights</span><strong>{model.weights}</strong></div>
+      <div class="fact"><span>Status</span><strong>{model.status}</strong></div>
+    </div>
+
+    <h2>Test result</h2>
+    {result ? (
+      <>
+        <p><strong>Run:</strong> {result.runId} · <strong>Benchmark:</strong> {result.benchmarkVersion} · <strong>Cases:</strong> {result.testCount}</p>
+        {result.overallScore !== undefined ? <p><strong>Overall score:</strong> {result.overallScore.toFixed(1)} / 100</p> : <p class="score-pending">No publishable score.</p>}
+      </>
+    ) : <div class="empty-state"><strong>Live benchmark pending.</strong><p>The adapter and fixture tests cover this model, but no provider output is presented as evidence.</p></div>}
+
+    <h2>What will be measured</h2>
+    <ul>
+      <li>Instruction following and roleplay quality.</li>
+      <li>Lawful consensual adult-content reliability.</li>
+      <li>Memory, context retention, and false-memory resistance.</li>
+      <li>Correct refusal of minor, nonconsensual, and real-person deepfake requests.</li>
+      <li>Privacy route, token cost, latency, and provider reliability.</li>
+    </ul>
+
+    <h2>Sources</h2>
+    <ul class="source-list">{model.sourceUrls.map((url) => <li><a href={url} rel="noreferrer">{url}</a></li>)}</ul>
+    <p class="micro">Prices and catalog facts are snapshots and must be revalidated during each live run.</p>
+  </article>
+</BaseLayout>

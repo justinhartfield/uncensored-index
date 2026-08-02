@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RankingTable from './RankingTable.astro';
+import Callout from './Callout.astro';
+import { resultByModel, isIndexableResult } from '../lib/results';
+import type { ModelRecord } from '../lib/schemas';
+interface Props { title: string; description: string; kicker: string; models: ModelRecord[]; intro: string; }
+const { title, description, kicker, models, intro } = Astro.props;
+const rows = models.map((model) => ({ model, result: resultByModel.get(model.slug) }));
+const hasReviewed = rows.some((row) => isIndexableResult(row.result));
+---
+<BaseLayout title={title} description={description} noindex={!hasReviewed}>
+  <header class="page-head">
+    <div class="shell">
+      <p class="kicker">{kicker}</p>
+      <h1>{title}</h1>
+      <p class="lede">{intro}</p>
+    </div>
+  </header>
+  <section class="section shell">
+    <Callout title="Publication state" warning={!hasReviewed}>
+      <p>{hasReviewed ? 'This page contains live, human-reviewed benchmark results.' : 'No ranking is published yet. The complete roster is shown, but scores remain blank until live tests and human review pass.'}</p>
+    </Callout>
+    <RankingTable rows={rows} />
+  </section>
+</BaseLayout>

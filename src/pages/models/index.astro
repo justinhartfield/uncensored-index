@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ModelGrid from '../../components/ModelGrid.astro';
+import { models } from '../../data/models';
+import { publicResults } from '../../lib/results';
+const hasLive = publicResults.results.some((result) => result.evidenceState === 'live-reviewed');
+---
+<BaseLayout title="Uncensored AI model directory" description="Browse the launch roster by provider, privacy route, and use case. Untested models remain unranked." noindex={!hasLive}>
+  <header class="page-head"><div class="shell"><p class="kicker">Model directory</p><h1>Models under test</h1><p class="lede">Thirteen text models are in the launch protocol. Filter the roster, inspect provider facts, and see exactly which evidence is still missing.</p></div></header>
+  <section class="section shell">
+    <ModelGrid models={models} enableFilters={true} />
+  </section>
+</BaseLayout>

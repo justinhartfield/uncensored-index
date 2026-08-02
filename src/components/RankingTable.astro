@@ -1,0 +1,40 @@
+---
+import type { ModelRecord, PublicBenchmarkResult } from '../lib/schemas';
+import { evidenceLabel } from '../lib/results';
+interface Row { model: ModelRecord; result?: PublicBenchmarkResult; }
+interface Props { rows: Row[]; }
+const { rows } = Astro.props;
+---
+<div class="table-wrap ranking-table-wrap">
+  <table>
+    <caption class="sr-only">Model ranking and evidence status</caption>
+    <thead><tr><th>Rank</th><th>Model</th><th>Provider</th><th>Privacy</th><th>Context</th><th>Score</th><th>Evidence</th></tr></thead>
+    <tbody>
+      {rows.map(({ model, result }, index) => (
+        <tr>
+          <td class="rank-number">{result?.overallScore !== undefined ? index + 1 : '—'}</td>
+          <td><a href={`/models/${model.slug}/`}><strong>{model.displayName}</strong></a></td>
+          <td>{model.providerId}</td>
+          <td>{model.privacy === 'unknown' ? 'Unverified' : model.privacy.toUpperCase()}</td>
+          <td>{model.contextTokens.toLocaleString('en-US')}</td>
+          <td>{result?.overallScore !== undefined ? result.overallScore.toFixed(1) : <span class="score-pending">PENDING</span>}</td>
+          <td>{evidenceLabel(result)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<div class="ranking-cards" aria-label="Model ranking and evidence status">
+  {rows.map(({ model, result }, index) => (
+    <article class="ranking-card">
+      <div><span class="rank-number">{result?.overallScore !== undefined ? `#${index + 1}` : 'UNRANKED'}</span><span class="score-pending">{result?.overallScore !== undefined ? `${result.overallScore.toFixed(1)} / 100` : 'SCORE PENDING'}</span></div>
+      <h2><a href={`/models/${model.slug}/`}>{model.displayName}</a></h2>
+      <dl>
+        <div><dt>Provider</dt><dd>{model.providerId}</dd></div>
+        <div><dt>Privacy</dt><dd>{model.privacy === 'unknown' ? 'Unverified' : model.privacy.toUpperCase()}</dd></div>
+        <div><dt>Context</dt><dd>{model.contextTokens.toLocaleString('en-US')}</dd></div>
+        <div><dt>Evidence</dt><dd>{evidenceLabel(result)}</dd></div>
+      </dl>
+    </article>
+  ))}
+</div>
