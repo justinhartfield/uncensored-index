@@ -38,7 +38,7 @@ const samples = adultShowcaseSamples.map((sample) => ({
       </div>
     </div>
 
-    <div id="adult-content" class="adult-content" hidden>
+    <div id="adult-content" class="adult-content" tabindex="-1" hidden>
       <Callout title="Presentation rules">
         <p>Blurred by default. Click a tile to reveal. No auto-play. Not linked from sitemap. I5 is excluded from Adherence/Aesthetic composites.</p>
       </Callout>
@@ -82,11 +82,12 @@ const samples = adultShowcaseSamples.map((sample) => ({
   const gate = document.getElementById('age-gate');
   const content = document.getElementById('adult-content');
 
-  function openContent() {
+  function openContent({ moveFocus = false } = {}) {
     try { localStorage.setItem(KEY, '1'); } catch {}
     gate?.setAttribute('hidden', '');
     content?.removeAttribute('hidden');
     document.body.classList.add('uix-18-plus');
+    if (moveFocus) content?.focus();
   }
 
   try {
@@ -95,7 +96,7 @@ const samples = adultShowcaseSamples.map((sample) => ({
 
   document.getElementById('age-gate-enter')?.addEventListener('click', (e) => {
     e.preventDefault();
-    openContent();
+    openContent({ moveFocus: true });
   });
 
   // Smooth reveal for tiles
@@ -106,9 +107,6 @@ const samples = adultShowcaseSamples.map((sample) => ({
       btn.parentElement?.classList.toggle('is-revealed', !expanded);
     });
   });
-
-  // Ensure accessibility focus management
-  gate?.querySelector('button, a')?.addEventListener('focus', () => gate.setAttribute('tabindex', '-1'));
 </script>
 <style>
   .adult-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
