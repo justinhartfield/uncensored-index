@@ -35,7 +35,7 @@ export const ModelSchema = z.object({
   family: z.string().optional(),
   parameterLabel: z.string().optional(),
   contextTokens: z.number().int().positive(),
-  modalities: z.array(z.enum(['text', 'image', 'video'])).min(1),
+  modalities: z.array(z.enum(['text', 'image', 'video', 'audio'])).min(1),
   weights: z.enum(['open', 'closed', 'unknown']),
   privacy: z.enum(['private', 'anonymized', 'e2ee', 'local', 'unknown']),
   inputUsdPerMillion: z.number().nonnegative().optional(),

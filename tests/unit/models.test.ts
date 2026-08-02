@@ -4,8 +4,8 @@ import { providers } from '../../src/data/providers';
 import { ModelSchema, ProviderSchema } from '../../src/lib/schemas';
 
 describe('launch model roster', () => {
-  it('contains exactly 13 validated records', () => {
-    expect(models).toHaveLength(13);
+  it('contains exactly 14 validated text records', () => {
+    expect(models).toHaveLength(14);
     for (const model of models) expect(ModelSchema.parse(model)).toEqual(model);
   });
 

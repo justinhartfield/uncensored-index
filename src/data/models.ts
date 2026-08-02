@@ -92,7 +92,35 @@ const records = [
     releasedAt: '2026-05-23', status: 'active', tags: ['uncensored', 'e2ee', 'private'],
     sourceUrls: ['https://docs.venice.ai/models/text', 'https://www.redpill.ai/models/phala/qwen3.6-35b-a3b-uncensored'],
   },
+  {
+    slug: 'glm-5-2', displayName: 'GLM 5.2', canonicalId: 'zai-org-glm-5-2', creator: 'Z.ai',
+    providerId: 'venice', routeType: 'venice', family: 'GLM 5.2', contextTokens: 202752,
+    modalities: ['text'], weights: 'unknown', privacy: 'private', inputUsdPerMillion: 1.4, outputUsdPerMillion: 4.4,
+    status: 'active', tags: ['generalist', 'private'], sourceUrls: ['https://docs.venice.ai/models/text'],
+  },
+] as const;
+
+const mediaRecords = [
+  {
+    slug: 'venice-sd35', displayName: 'Venice SD 3.5', canonicalId: 'venice-sd35', creator: 'Stability AI / Venice',
+    providerId: 'venice', routeType: 'venice', family: 'Stable Diffusion 3.5', contextTokens: 77,
+    modalities: ['image'], weights: 'open', privacy: 'private', status: 'active',
+    tags: ['image', 'private'], sourceUrls: ['https://docs.venice.ai/models/image'],
+  },
+  {
+    slug: 'wan-2-7-text-to-video', displayName: 'Wan 2.7 Text to Video', canonicalId: 'wan-2-7-text-to-video', creator: 'Alibaba / Venice',
+    providerId: 'venice', routeType: 'venice', family: 'Wan', contextTokens: 77,
+    modalities: ['video'], weights: 'open', privacy: 'private', status: 'active',
+    tags: ['video', 'private'], sourceUrls: ['https://docs.venice.ai/models/video'],
+  },
+  {
+    slug: 'venice-audio-suite', displayName: 'Venice Audio Suite', canonicalId: 'tts-kokoro + openai/whisper-large-v3', creator: 'Venice',
+    providerId: 'venice', routeType: 'venice', family: 'Kokoro / Whisper', contextTokens: 8192,
+    modalities: ['audio'], weights: 'open', privacy: 'private', status: 'active',
+    tags: ['audio', 'tts', 'stt', 'private'], sourceUrls: ['https://docs.venice.ai/models/audio'],
+  },
 ] as const;
 
 export const models: ModelRecord[] = records.map((record) => ModelSchema.parse(record));
+export const mediaModels: ModelRecord[] = mediaRecords.map((record) => ModelSchema.parse(record));
 export const modelBySlug = new Map(models.map((model) => [model.slug, model]));

@@ -8,5 +8,5 @@ for (const model of models) {
   slugs.add(model.slug);
   ids.add(`${model.providerId}:${model.canonicalId}`);
 }
-if (models.length !== 13) throw new Error(`Expected 13 launch models, found ${models.length}`);
+if (models.length !== 14) throw new Error(`Expected 14 launch text models, found ${models.length}`);
 console.log(`validated_models: ${models.length}`);

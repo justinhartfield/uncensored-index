@@ -11,9 +11,9 @@ test('homepage states the evidence gate and has no fake scores', async ({ page }
 
 test('model directory filters without losing server-rendered content', async ({ page }) => {
   await page.goto('/models/');
-  await expect(page.locator('.model-card')).toHaveCount(13);
+  await expect(page.locator('.model-card')).toHaveCount(14);
   await page.locator('#provider-filter').selectOption('venice');
-  await expect(page.locator('.model-card:visible')).toHaveCount(4);
+  await expect(page.locator('.model-card:visible')).toHaveCount(5);
   await page.locator('#privacy-filter').selectOption('e2ee');
   await expect(page.locator('.model-card:visible')).toHaveCount(1);
   await expect(page.getByText('Qwen3.6 35B A3B Uncensored E2EE')).toBeVisible();
@@ -30,8 +30,8 @@ test('pending model profile is noindex and source-backed', async ({ page }) => {
 test('v0.2 text ranking refuses to rank before reviewed evidence', async ({ page }) => {
   await page.goto('/rankings/text/');
   await expect(page.getByText('No v0.2 ranking is published yet')).toBeVisible();
-  await expect(page.locator('tbody tr')).toHaveCount(13);
-  await expect(page.locator('tbody').getByText('PENDING')).toHaveCount(13);
+  await expect(page.locator('tbody tr')).toHaveCount(14);
+  await expect(page.locator('tbody').getByText('PENDING')).toHaveCount(14);
 });
 
 test('v0.1 legacy archive page explains non-comparability', async ({ page }) => {

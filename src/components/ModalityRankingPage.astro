@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Callout from './Callout.astro';
-import { models } from '../data/models';
+import { mediaModels, models } from '../data/models';
 import { isPublishedV02, publicResultsV02, type Modality } from '../lib/results-v02';
 import { site } from '../data/site';
 
@@ -14,7 +14,7 @@ interface Props {
 }
 const { modality, title, description, intro, weightLine } = Astro.props;
 const bySlug = new Map(publicResultsV02.results.map((r) => [r.modelSlug, r]));
-const rows = models.map((model) => {
+const rows = [...models, ...mediaModels].filter((model) => model.modalities.includes(modality)).map((model) => {
   const result = bySlug.get(model.slug);
   const score = result?.trackScores?.[modality];
   return { model, result, score };

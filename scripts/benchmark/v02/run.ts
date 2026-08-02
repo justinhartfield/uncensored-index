@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { loadEnvFile } from 'node:process';
 import path from 'node:path';
-import { models } from '../../../src/data/models';
+import { mediaModels, models } from '../../../src/data/models';
 import { allCasesV02, benchmarkVersionV02, casesForModality, promptHashV02 } from './cases';
 import { gradeAuto } from './graders/index';
 import { estimatedCost, scoreTrack, trackMins } from './score';
@@ -37,6 +37,22 @@ function modalitiesFromArgs(): Modality[] {
   const raw = arg('--modality') || 'all';
   if (raw === 'all') return ['text', 'image', 'video', 'audio'];
   return raw.split(',').map((s) => s.trim()) as Modality[];
+}
+
+function textReservationUsd(model: (typeof models)[number], test: ReturnType<typeof casesForModality>[number]): number {
+  const promptBytes = Buffer.byteLength((test.messages || []).map((message) => message.content).join('\n'));
+  const inputCost = promptBytes * (model.inputUsdPerMillion || 0) / 1_000_000;
+  const outputCost = (test.maxTokens || 800) * (model.outputUsdPerMillion || 0) / 1_000_000;
+  return inputCost + outputCost;
+}
+
+function assertBudget(current: number, reservation: number, cap: number, label: string): void {
+  if (current + reservation > cap) {
+    throw new Error(
+      `maxSpendUsd ${cap} would be exceeded before ${label} ` +
+      `(running total ${current.toFixed(4)}, reservation ${reservation.toFixed(4)}); aborting before paid call`,
+    );
+  }
 }
 
 async function runTextCase(
@@ -225,7 +241,11 @@ async function main() {
   const mode = modeFromArgs();
   const modalities = modalitiesFromArgs();
   const selectedSlug = arg('--model');
-  const selected = selectedSlug ? models.filter((m) => m.slug === selectedSlug) : models;
+  const roster = mode === 'fixture' ? models : [...models, ...mediaModels];
+  const candidates = selectedSlug ? roster.filter((m) => m.slug === selectedSlug) : roster;
+  const selected = mode === 'fixture'
+    ? candidates
+    : candidates.filter((model) => modalities.some((modality) => model.modalities.includes(modality)));
   if (!selected.length) throw new Error(`Unknown model ${selectedSlug}`);
 
   const runId = `v02-${mode}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
@@ -238,12 +258,12 @@ async function main() {
     : cases;
 
   // Live media requires a frozen catalog (IDs + unit prices + max spend). Fixture never reads it.
-  const wantsMedia = smokeCases.some((c) => c.modality !== 'text');
-  const catalog: CatalogFreeze | undefined = mode === 'live' && wantsMedia
+  const paidMode = mode !== 'fixture';
+  const catalog: CatalogFreeze | undefined = paidMode
     ? await loadCatalogFreeze(true)
     : await loadCatalogFreeze(false);
 
-  if (mode === 'live' && catalog) {
+  if (paidMode && catalog) {
     console.log(`catalog_freeze: ${catalog.frozenAt} by ${catalog.frozenBy}; maxSpendUsd=${catalog.maxSpendUsd}`);
   }
 
@@ -253,19 +273,37 @@ async function main() {
   for (const model of selected) {
     const caseResults: CaseResultV02[] = [];
     for (const test of smokeCases) {
-      // Eligibility: text models always; media only if modality listed (image/video) or venice for audio/image/video live
-      if (test.modality !== 'text' && mode !== 'fixture') {
-        const mediaModality = test.modality;
-        if (mediaModality !== 'audio' && !model.modalities.includes(mediaModality)) {
-          continue; // eligibility skip — not an error
+      // Fixture preserves the text-roster × 20-case acceptance corpus. Paid modes route
+      // each modality only to a matching roster entry, avoiding skipped or duplicated media calls.
+      if (mode === 'fixture' && !model.modalities.includes('text')) continue;
+      if (paidMode && !model.modalities.includes(test.modality)) continue;
+      if (paidMode && test.modality !== 'text' && model.routeType !== 'venice') continue;
+
+      let reservationUsd = 0;
+      if (paidMode && catalog) {
+        if (test.modality === 'text') reservationUsd = textReservationUsd(model, test);
+        if (test.modality === 'image') reservationUsd = unitPrice(catalog, 'image', pickModelId(catalog, 'image', model.canonicalId)) || 0;
+        if (test.modality === 'video') reservationUsd = unitPrice(catalog, 'video', pickModelId(catalog, 'video', model.canonicalId)) || 0;
+        if (test.modality === 'audio' && test.id === 'A1') {
+          const price = unitPrice(catalog, 'audioTts', pickModelId(catalog, 'audioTts')) || 0;
+          reservationUsd = price * Math.max(1, Math.ceil((test.prompt || '').length / 1000));
         }
-        if (model.routeType !== 'venice') continue;
+        if (test.modality === 'audio' && test.id === 'A2') {
+          const minutes = Number(process.env.BENCHMARK_STT_AUDIO_DURATION_MINUTES);
+          if (!(minutes > 0)) {
+            throw new Error('BENCHMARK_STT_AUDIO_DURATION_MINUTES must be set to the source audio duration before live STT');
+          }
+          reservationUsd = (unitPrice(catalog, 'audioStt', pickModelId(catalog, 'audioStt')) || 0) * minutes;
+        }
+        assertBudget(estimatedSpendUsd, reservationUsd, catalog.maxSpendUsd, `${model.slug}/${test.id}`);
       }
       if (test.modality === 'text') {
         const result = await runTextCase(mode, model.canonicalId, model.routeType, test);
         result.estimatedCostUsd = estimatedCost(
           result.promptTokens, result.completionTokens, model.inputUsdPerMillion, model.outputUsdPerMillion,
         );
+        if (paidMode && result.estimatedCostUsd === undefined) result.estimatedCostUsd = reservationUsd;
+        if (paidMode) estimatedSpendUsd += result.estimatedCostUsd || 0;
         caseResults.push(result);
       } else if (test.modality === 'image') {
         // fixture: synthetic path; live: frozen catalog model IDs only — never hardcoded defaults.
@@ -299,7 +337,7 @@ async function main() {
         if (typeof result.estimatedCostUsd === 'number') estimatedSpendUsd += result.estimatedCostUsd;
         caseResults.push(result);
       }
-      if (mode === 'live' && catalog && estimatedSpendUsd > catalog.maxSpendUsd) {
+      if (paidMode && catalog && estimatedSpendUsd > catalog.maxSpendUsd) {
         throw new Error(`maxSpendUsd ${catalog.maxSpendUsd} exceeded (running total ${estimatedSpendUsd.toFixed(4)}); aborting paid batch`);
       }
       process.stdout.write('.');

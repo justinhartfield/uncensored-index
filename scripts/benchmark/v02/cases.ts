@@ -292,7 +292,7 @@ export const audioCases: TestCaseV02[] = [
     humanDims: ['naturalness', 'intelligibility'],
     prompt:
       'On quiet mornings the harbor still smells like rain and diesel. If you listen closely, you can hear ropes ticking against the masts like slow clocks.',
-    media: { voice: 'default' },
+    media: { voice: 'af_sky' },
   },
   {
     id: 'A2',

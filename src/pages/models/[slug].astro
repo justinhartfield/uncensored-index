@@ -2,12 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import Callout from '../../components/Callout.astro';
-import { models } from '../../data/models';
+import { mediaModels, models } from '../../data/models';
 import { resultByModel, evidenceLabel, isIndexableResult } from '../../lib/results';
 import type { ModelRecord } from '../../lib/schemas';
 
 export function getStaticPaths() {
-  return models.map((model) => ({ params: { slug: model.slug }, props: { model } }));
+  return [...models, ...mediaModels].map((model) => ({ params: { slug: model.slug }, props: { model } }));
 }
 interface Props { model: ModelRecord; }
 const { model } = Astro.props;
