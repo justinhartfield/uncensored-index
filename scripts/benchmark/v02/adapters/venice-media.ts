@@ -32,6 +32,17 @@ function redact(value: string): string {
     .slice(0, 500);
 }
 
+export function videoQueueBody(input: Parameters<VideoAdapter['queueAndRetrieve']>[0]): Record<string, unknown> {
+  return {
+    model: input.model,
+    prompt: input.prompt,
+    duration: input.duration || '5s',
+    resolution: input.resolution || '720p',
+    aspect_ratio: input.aspectRatio || '16:9',
+    ...(input.imageBase64 ? { image: input.imageBase64 } : {}),
+  };
+}
+
 async function veniceFetch(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<Response> {
   const apiKey = key();
   if (!apiKey) throw new Error('VENICE_API_KEY is not configured');
@@ -91,15 +102,7 @@ export const veniceVideoAdapter: VideoAdapter = {
     const started = performance.now();
     const queueRes = await veniceFetch('/video/queue', {
       method: 'POST',
-      body: JSON.stringify({
-        model: input.model,
-        prompt: input.prompt,
-        duration: input.duration || '5s',
-        resolution: input.resolution || '720p',
-        aspect_ratio: input.aspectRatio || '16:9',
-        ...(input.imageBase64 ? { image: input.imageBase64 } : {}),
-        delete_media_on_completion: false,
-      }),
+      body: JSON.stringify(videoQueueBody(input)),
       timeoutMs: 60_000,
     });
     const queueText = await queueRes.text();

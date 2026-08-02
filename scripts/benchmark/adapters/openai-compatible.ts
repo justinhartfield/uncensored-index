@@ -5,7 +5,7 @@ interface AdapterOptions {
   endpoint: string;
   apiKey: () => string | undefined;
   headers?: Record<string, string>;
-  body?: Record<string, unknown>;
+  body?: Record<string, unknown> | ((request: BenchmarkRequest) => Record<string, unknown>);
 }
 
 const RETRYABLE_STATUS = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
@@ -60,7 +60,7 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
             top_p: request.topP,
             max_tokens: request.maxTokens,
             ...(request.seed !== undefined ? { seed: request.seed } : {}),
-            ...this.options.body,
+            ...(typeof this.options.body === 'function' ? this.options.body(request) : this.options.body),
           }),
         });
         const text = await response.text();
