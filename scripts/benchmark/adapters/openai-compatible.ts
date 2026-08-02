@@ -6,6 +6,8 @@ interface AdapterOptions {
   apiKey: () => string | undefined;
   headers?: Record<string, string>;
   body?: Record<string, unknown> | ((request: BenchmarkRequest) => Record<string, unknown>);
+  /** Per-attempt fetch wall-clock cap in ms (default 120s). Raise for slow encrypted-reasoning routes. */
+  timeoutMs?: number;
 }
 
 const RETRYABLE_STATUS = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
@@ -42,7 +44,7 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
     let lastError: Error | undefined;
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 120_000);
+      const timeout = setTimeout(() => controller.abort(), this.options.timeoutMs ?? 120_000);
       try {
         const response = await fetch(this.options.endpoint, {
           method: 'POST',

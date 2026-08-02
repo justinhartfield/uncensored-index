@@ -8,10 +8,10 @@ describe('Venice request payloads', () => {
     // max_tokens room beyond the shared case budgets (120-400); other models unchanged.
     expect(veniceRequestBody({ model: 'e2ee-qwen3-6-35b-a3b-uncensored-p', maxTokens: 120 })).toMatchObject({
       venice_parameters: { enable_web_search: 'off', include_venice_system_prompt: false },
-      max_tokens: 1024,
+      max_tokens: 4096,
     });
     expect(veniceRequestBody({ model: 'e2ee-qwen3-6-35b-a3b-uncensored-p', maxTokens: 2048 })).toMatchObject({
-      max_tokens: 2048,
+      max_tokens: 4096,
     });
     expect(veniceRequestBody({ model: 'zai-org-glm-5-2', maxTokens: 120 })).not.toHaveProperty('max_tokens');
   });
