@@ -43,6 +43,11 @@ export function videoQueueBody(input: Parameters<VideoAdapter['queueAndRetrieve'
   };
 }
 
+/** `POST /video/retrieve` and `POST /video/complete` both require `{ model, queue_id }` (Venice V1 schema). */
+export function videoRetrieveBody(model: string, queueId: string): Record<string, unknown> {
+  return { model, queue_id: queueId };
+}
+
 async function veniceFetch(path: string, init: RequestInit & { timeoutMs?: number } = {}): Promise<Response> {
   const apiKey = key();
   if (!apiKey) throw new Error('VENICE_API_KEY is not configured');
@@ -108,40 +113,60 @@ export const veniceVideoAdapter: VideoAdapter = {
     const queueText = await queueRes.text();
     if (!queueRes.ok) throw new Error(`venice-video queue HTTP ${queueRes.status}: ${redact(queueText)}`);
     const queued = JSON.parse(queueText) as any;
-    const id = queued.id || queued.queue_id || queued.request_id;
-    if (!id) throw new Error('venice-video queue missing id');
+    const queueId = queued.queue_id || queued.id || queued.request_id;
+    if (!queueId) throw new Error('venice-video queue missing queue_id');
+    // VPS-backed/private models return a short-lived download_url only at queue time; persist alongside queue_id.
+    const queuedDownloadUrl = typeof queued.download_url === 'string' ? queued.download_url : undefined;
+
+    const cleanup = async () => {
+      // Best-effort hygiene: delete the finished video from Venice storage once retrieved.
+      try {
+        await veniceFetch('/video/complete', {
+          method: 'POST',
+          body: JSON.stringify(videoRetrieveBody(input.model, queueId)),
+          timeoutMs: 30_000,
+        });
+      } catch {
+        /* cleanup is best-effort, never blocks the result */
+      }
+    };
 
     const deadline = Date.now() + 10 * 60_000;
     while (Date.now() < deadline) {
       const ret = await veniceFetch('/video/retrieve', {
         method: 'POST',
-        body: JSON.stringify({ id }),
+        body: JSON.stringify(videoRetrieveBody(input.model, queueId)),
         timeoutMs: 60_000,
       });
       const contentType = ret.headers.get('content-type') || '';
       if (contentType.includes('video/')) {
-        return {
-          status: 'completed',
+        const result = {
+          status: 'completed' as const,
           latencyMs: Math.round(performance.now() - started),
-          downloadUrl: undefined,
-          raw: { id, binary: true },
+          downloadUrl: queuedDownloadUrl,
+          raw: { queueId, binary: true },
         };
+        await cleanup();
+        return result;
       }
       const text = await ret.text();
       if (!ret.ok) throw new Error(`venice-video retrieve HTTP ${ret.status}: ${redact(text)}`);
       const body = JSON.parse(text) as any;
       const status = String(body.status || '').toUpperCase();
       if (status === 'COMPLETED' || body.download_url) {
-        return {
-          status: 'completed',
+        const result = {
+          status: 'completed' as const,
           latencyMs: Math.round(performance.now() - started),
           costUsd: extractVeniceCost(body),
-          downloadUrl: body.download_url,
+          // JSON completion means the file is not inline: for VPS/private models the delivery URL came from the queue response.
+          downloadUrl: body.download_url || queuedDownloadUrl,
           raw: body,
         };
+        await cleanup();
+        return result;
       }
       if (status === 'FAILED' || status === 'ERROR') {
-        return { status: 'failed', latencyMs: Math.round(performance.now() - started), raw: body };
+        return { status: 'failed' as const, latencyMs: Math.round(performance.now() - started), raw: body };
       }
       await new Promise((r) => setTimeout(r, 3000));
     }
