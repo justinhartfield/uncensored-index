@@ -182,6 +182,9 @@
   repeating-linear-gradient(45deg, #2a2a28, #2a2a28 8px, #3a3a36 8px, #3a3a36 16px);
   filter: blur(12px); inset: 0; position: absolute; }
 .adult-tile__label { background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; padding: 0.4rem 0.6rem; position: relative; text-transform: uppercase; z-index: 1; }
+.adult-tile__image { filter: blur(28px); height: 100%; inset: 0; object-fit: cover; position: absolute; transform: scale(1.08); transition: filter 180ms ease, transform 180ms ease; width: 100%; }
+.adult-tile.is-revealed .adult-tile__image { filter: none; transform: none; }
+.adult-tile__unavailable { cursor: default; }
 .adult-tile.is-revealed .adult-tile__blur { filter: none; opacity: 0.15; }
 .adult-tile figcaption { display: grid; gap: 0.25rem; padding: 0.75rem; }
 .adult-tile .muted { color: var(--muted); font-size: 0.85rem; }

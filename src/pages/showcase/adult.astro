@@ -1,11 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Callout from '../../components/Callout.astro';
+import { adultShowcaseSamples } from '../../data/adult-showcase';
+import { publicResultsV02 } from '../../lib/results-v02';
 import { site } from '../../data/site';
-// Adult media is never embedded raw for SEO crawlers — placeholder slots only until live reviewed samples exist.
-const samples: Array<{ id: string; model: string; caption: string; ready: boolean }> = [
-  { id: 'I5-demo', model: 'pending live run', caption: 'Tasteful fine-art nude study (atelier lighting). Rank-excluded showcase.', ready: false },
-];
+
+const imageRun = publicResultsV02.results.find((result) => result.modelSlug === 'venice-sd35');
+const evidenceById = new Map((imageRun?.cases || []).map((result) => [result.testId, result]));
+const samples = adultShowcaseSamples.map((sample) => ({
+  ...sample,
+  evidence: evidenceById.get(sample.id),
+  ready: sample.reviewed && Boolean(sample.assetSrc),
+}));
 ---
 <BaseLayout
   title="Adult showcase"
@@ -36,16 +42,33 @@ const samples: Array<{ id: string; model: string; caption: string; ready: boolea
       <Callout title="Presentation rules">
         <p>Blurred by default. Click a tile to reveal. No auto-play. Not linked from sitemap. I5 is excluded from Adherence/Aesthetic composites.</p>
       </Callout>
+      {samples.every((sample) => !sample.ready) && (
+        <Callout title="Generated evidence retained; public asset awaiting review" warning={true}>
+          <p>The live I5 case completed, but the benchmark retained only its public-safe evidence record—not the image bytes. The gallery will not fabricate or expose an unreviewed replacement. A reviewed local asset must be added before reveal is enabled.</p>
+        </Callout>
+      )}
       <div class="adult-grid">
         {samples.map((sample) => (
           <figure class="adult-tile" data-adult-tile>
-            <button type="button" class="adult-tile__reveal" data-reveal aria-expanded="false">
-              <span class="adult-tile__blur" aria-hidden="true"></span>
-              <span class="adult-tile__label">{sample.ready ? 'Click to reveal' : 'Sample pending live run'}</span>
-            </button>
+            {sample.ready ? (
+              <button type="button" class="adult-tile__reveal" data-reveal aria-expanded="false">
+                <img class="adult-tile__image" src={sample.assetSrc} alt={sample.alt || ''} loading="lazy" />
+                <span class="adult-tile__label">Click to reveal</span>
+              </button>
+            ) : (
+              <div class="adult-tile__reveal adult-tile__unavailable">
+                <span class="adult-tile__blur" aria-hidden="true"></span>
+                <span class="adult-tile__label">Asset awaiting review</span>
+              </div>
+            )}
             <figcaption>
-              <strong>{sample.id}</strong> · {sample.model}
+              <strong>{sample.id}</strong> · <a href={`/models/${sample.modelSlug}/`}>{sample.modelName}</a>
               <span class="muted">{sample.caption}</span>
+              <span class="micro">
+                Live result: {sample.evidence?.status || 'unavailable'}
+                {sample.evidence?.latencyMs ? ` · ${(sample.evidence.latencyMs / 1000).toFixed(1)}s` : ''}
+                {sample.evidence?.estimatedCostUsd !== undefined ? ` · $${sample.evidence.estimatedCostUsd.toFixed(4)}` : ''}
+              </span>
             </figcaption>
           </figure>
         ))}
