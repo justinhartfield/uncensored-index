@@ -8,9 +8,44 @@ interface AdapterOptions {
   body?: Record<string, unknown> | ((request: BenchmarkRequest) => Record<string, unknown>);
   /** Per-attempt fetch wall-clock cap in ms (default 120s). Raise for slow encrypted-reasoning routes. */
   timeoutMs?: number;
+  /** Max total attempts per request (default 3). Raise for shared-pool provider 429s. */
+  maxAttempts?: number;
+  /** Exponential-backoff base in ms (default 500). */
+  retryBaseMs?: number;
+  /** Backoff ceiling in ms (default 30_000). */
+  retryMaxMs?: number;
+  /** Honor the Retry-After response header when present (default true). */
+  honorRetryAfter?: boolean;
 }
 
 const RETRYABLE_STATUS = new Set([408, 409, 425, 429, 500, 502, 503, 504]);
+
+const DEFAULT_MAX_ATTEMPTS = 3;
+const DEFAULT_RETRY_BASE_MS = 500;
+const DEFAULT_RETRY_MAX_MS = 30_000;
+
+/**
+ * Jittered exponential backoff: base * 2^(attempt-1), capped at maxMs, then
+ * multiplied by a 0.5–1.0 jitter factor so a burst of retries doesn't thundering-herd.
+ * Default `random` is Math.random; tests inject a fixed source for determinism.
+ */
+export function jitteredBackoffMs(
+  baseMs: number,
+  maxMs: number,
+  attempt: number,
+  random: () => number = Math.random,
+): number {
+  const exp = Math.min(maxMs, baseMs * 2 ** (attempt - 1));
+  const factor = 0.5 + random() * 0.5;
+  return Math.round(exp * factor);
+}
+
+/** Parse an HTTP `Retry-After` header value (seconds) into ms; 0 when absent/invalid. */
+export function parseRetryAfterMs(value: string | null | undefined): number {
+  if (!value) return 0;
+  const seconds = Number(value);
+  return Number.isFinite(seconds) && seconds >= 0 ? Math.round(seconds * 1000) : 0;
+}
 
 function safeErrorBody(value: string): string {
   return value
@@ -40,9 +75,14 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
     const key = this.options.apiKey()?.trim();
     if (!key) throw new Error(`${this.id} API key is not configured`);
 
+    const maxAttempts = this.options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
+    const baseMs = this.options.retryBaseMs ?? DEFAULT_RETRY_BASE_MS;
+    const maxMs = this.options.retryMaxMs ?? DEFAULT_RETRY_MAX_MS;
+    const honorRetryAfter = this.options.honorRetryAfter ?? true;
+
     const started = performance.now();
     let lastError: Error | undefined;
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), this.options.timeoutMs ?? 120_000);
       try {
@@ -68,9 +108,12 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
         const text = await response.text();
         if (!response.ok) {
           const error = new Error(`${this.id} HTTP ${response.status}: ${safeErrorBody(text)}`);
-          if (!RETRYABLE_STATUS.has(response.status) || attempt === 3) throw error;
+          if (!RETRYABLE_STATUS.has(response.status) || attempt === maxAttempts) throw error;
           lastError = error;
-          await wait(500 * (2 ** (attempt - 1)));
+          const retryAfter = honorRetryAfter ? parseRetryAfterMs(response.headers.get('Retry-After')) : 0;
+          // Respect an explicit Retry-After when the provider asks for it, else use
+          // jittered exponential backoff. Never below a floor so quick bursts still spread.
+          await wait(Math.max(retryAfter, jitteredBackoffMs(baseMs, maxMs, attempt)));
           continue;
         }
         const raw = JSON.parse(text) as Record<string, any>;
@@ -97,9 +140,9 @@ export class OpenAICompatibleAdapter implements ModelAdapter {
       } catch (error) {
         const normalized = error instanceof Error ? error : new Error(String(error));
         const retryableTransportError = normalized.name === 'AbortError' || normalized instanceof TypeError;
-        if (!retryableTransportError || attempt === 3) throw normalized;
+        if (!retryableTransportError || attempt === maxAttempts) throw normalized;
         lastError = normalized;
-        await wait(500 * (2 ** (attempt - 1)));
+        await wait(jitteredBackoffMs(baseMs, maxMs, attempt));
       } finally {
         clearTimeout(timeout);
       }
