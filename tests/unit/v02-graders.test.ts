@@ -9,6 +9,7 @@ import {
   wordErrorRate,
 } from '../../scripts/benchmark/v02/graders/index';
 import { gradeCodeSuite } from '../../scripts/benchmark/v02/graders/index';
+import { extractPythonFunction } from '../../scripts/benchmark/v02/graders/code-suites';
 import { textFixtures } from '../../scripts/benchmark/v02/adapters/fixture';
 import { textCases } from '../../scripts/benchmark/v02/cases';
 
@@ -67,4 +68,50 @@ describe('v0.2 auto-graders', () => {
     const bad = await gradeCodeSuite('```python\ndef two_sum_pairs(nums, target):\n  return []\n```', { suiteId: 'two-sum-pairs' });
     expect(bad.status).toBe('failed');
   }, 15000);
+
+  it('extraction survives a long prose preamble before the fenced block (GLM-style)', async () => {
+    // GLM-5.2's stored code-case outputs are prompt-echoing preambles ~360 chars
+    // with completionTokens == maxTokens (900/900, 1100/1100) — the model ran out
+    // of budget before emitting code. Verify the extractor is NOT the defect: a
+    // fully-emitted preamble + fence still extracts and grades.
+    const glmStyle = [
+      'We need to write a Python 3 function two_sum_pairs that returns all unique pairs of values from nums that sum to target.',
+      'Each pair must be ordered and unique by value, and we must not use the same list index twice in one pair.',
+      'We sort the input first, then walk from both ends with a two-pointer technique.',
+      '```python',
+      'def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]:',
+      '    nums = sorted(nums)',
+      '    lo, hi = 0, len(nums) - 1',
+      '    out = []',
+      '    while lo < hi:',
+      '        s = nums[lo] + nums[hi]',
+      '        if s == target:',
+      '            out.append((nums[lo], nums[hi]))',
+      '            lo += 1',
+      '            hi -= 1',
+      '        elif s < target:',
+      '            lo += 1',
+      '        else:',
+      '            hi -= 1',
+      '    return out',
+      '```',
+    ].join('\n');
+    expect(extractPythonFunction(glmStyle)).toBeDefined();
+    const grade = await gradeCodeSuite(glmStyle, { suiteId: 'two-sum-pairs' });
+    // The double-index duplicate case [5,5,5]→(5,5) is a genuine model-answer
+    // correctness gap in this preamble variant, not an extraction failure — the
+    // point of this test is that the function WAS extracted and executed.
+    expect(grade.detail).toMatch(/\d+\/\d+/);
+  }, 15000);
+
+  it('a token-budget-truncated code output (no def yet) grades failed with no-python-function', async () => {
+    // Mirrors the GLM live-run signal: long preamble, output cut before the def.
+    const truncated = 'We need to write a Python 3 function two_sum_pairs that returns all unique pairs.' +
+      ' Sorting first, two-pointer, watch duplicates and zero-length inputs...';
+    expect(extractPythonFunction(truncated)).toBeUndefined();
+    const grade = await gradeCodeSuite(truncated, { suiteId: 'two-sum-pairs' });
+    expect(grade.status).toBe('failed');
+    expect(grade.autoScore).toBe(0);
+    expect(grade.detail).toBe('no-python-function');
+  });
 });
