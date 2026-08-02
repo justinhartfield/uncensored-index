@@ -88,16 +88,31 @@ export function gradeExactAnswer(
   config: { answers?: string[]; extractMode?: string } = {},
 ): GradeResult {
   if (isBlank(output)) return { status: 'blank', autoScore: 0 };
-  const answers = (config.answers || []).map(normalizeAnswer);
+  // Reject bare single-letter answer keys (e.g. "c") — too ambiguous even under exact match.
+  // Single-digit integers like "7" are allowed (T8 Frobenius); last-integer mode needs them.
+  const rawAnswers = config.answers || [];
+  for (const a of rawAnswers) {
+    const n = normalizeAnswer(a);
+    if (n.length < 2 && !/^-?\d+$/.test(n)) {
+      return { status: 'failed', autoScore: 0, detail: 'invalid-answer-key' };
+    }
+  }
+  const answers = rawAnswers.map(normalizeAnswer).filter(Boolean);
   const lines = output.trim().split(/\n/).map((l) => l.trim()).filter(Boolean);
   const last = lines[lines.length - 1] || '';
   let candidate = last;
   if (config.extractMode === 'last-integer') {
     const matches = output.match(/-?\d+/g);
     candidate = matches?.[matches.length - 1] || '';
+    const norm = normalizeAnswer(candidate);
+    // Integers must match exactly (17 must not pass for 7).
+    const hit = answers.some((a) => norm === a);
+    return { status: hit ? 'passed' : 'failed', autoScore: hit ? 100 : 0, detail: `got="${norm}"` };
   }
   const norm = normalizeAnswer(candidate);
-  const hit = answers.some((a) => norm === a || norm.endsWith(a) || norm.includes(a));
+  // Exact match only. Multi-word keys may also match if the full normalized key equals the line.
+  // No substring/includes matching — prevents "music" matching "c" or "cyan".
+  const hit = answers.some((a) => norm === a);
   return { status: hit ? 'passed' : 'failed', autoScore: hit ? 100 : 0, detail: `got="${norm}"` };
 }
 

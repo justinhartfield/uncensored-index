@@ -75,15 +75,11 @@ def rolling_max(nums: list[int], k: int) -> list[int]:
         raise ValueError('invalid k')
     return [max(nums[i:i+k]) for i in range(len(nums) - k + 1)]
 \`\`\``,
-  T8: 'The Frobenius number for coprime a,b is ab-a-b. For 3 and 5: 15-3-5=7. Wait, largest is actually 3*5-3-5=7, but 4 cannot? 4 no, 7=1*2+...? 7 cannot: 7=4 no. Actually 3x+5y: 1,2,4,7 cannot; largest 7? No 7=4 no. Standard answer is 7? 3*5-3-5=7. But wait the classic is 7? Hmm 8=1*1+1*1? 8=1*1+5? 3+5=8. 7 cannot. Actually largest unobtainable is 7? No 4 is smaller. Wait Frobenius(3,5)=7.\n\n42',
-  // Fix T8 - Frobenius of 3,5 is 7, not 42. I made an error in the case!
-  T9: 'Work the labels. Exactly one label true.\nIf red-label true, contains blue — then blue and cyan labels false. Blue-label false means it DOES contain cyan. Cyan-label false. Red marbles must be in cyan box.\n\ncyan',
+  T8: 'For coprime integers a,b the largest unobtainable amount is ab-a-b.\n3*5 - 3 - 5 = 7.\n\n7',
+  T9: 'Order: Pia before Mira before Ned before Oli. Last place is Oli.\n\nOli',
   T10: '1. Au\n2. 1969\n3. Tokyo\n4. 8\n5. George Orwell',
   T11: '{"id":"usr_1001","displayName":"Riley Chen","age":29,"tags":["builder","night-owl"],"active":true,"createdAt":"2026-08-01"}',
 };
-
-// Fix T8 fixture - the problem asks Frobenius(3,5)=7. Update case answer and fixture.
-TEXT_FIXTURES.T8 = 'For coprime integers a,b the largest unobtainable amount is ab-a-b.\n3*5 - 3 - 5 = 7.\n\n7';
 
 export class FixtureChatAdapter implements ChatAdapter {
   id = 'fixture-chat';

@@ -4,6 +4,27 @@ function key(): string | undefined {
   return process.env.VENICE_API_KEY?.trim();
 }
 
+
+/** Pull a numeric cost from common Venice response shapes; undefined if absent. */
+export function extractVeniceCost(raw: unknown): number | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const obj = raw as Record<string, unknown>;
+  const candidates = [obj.cost, obj.total_cost, obj.totalCost];
+  if (obj.usage && typeof obj.usage === 'object') {
+    const u = obj.usage as Record<string, unknown>;
+    candidates.push(u.cost, u.total_cost, u.cost_usd);
+  }
+  if (obj.billing && typeof obj.billing === 'object') {
+    const b = obj.billing as Record<string, unknown>;
+    candidates.push(b.cost, b.amount, b.total);
+  }
+  for (const c of candidates) {
+    if (typeof c === 'number' && Number.isFinite(c) && c >= 0) return c;
+    if (typeof c === 'string' && c.trim() && Number.isFinite(Number(c))) return Number(c);
+  }
+  return undefined;
+}
+
 function redact(value: string): string {
   return value
     .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, 'Bearer [REDACTED]')
@@ -57,7 +78,7 @@ export const veniceImageAdapter: ImageAdapter = {
       imageBase64: typeof image === 'string' ? image : undefined,
       latencyMs: Math.round(performance.now() - started),
       timingTotalMs: typeof timingTotal === 'number' ? timingTotal : undefined,
-      costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+      costUsd: extractVeniceCost(raw),
       raw,
     };
   },
@@ -111,7 +132,7 @@ export const veniceVideoAdapter: VideoAdapter = {
         return {
           status: 'completed',
           latencyMs: Math.round(performance.now() - started),
-          costUsd: typeof body.cost === 'number' ? body.cost : undefined,
+          costUsd: extractVeniceCost(body),
           downloadUrl: body.download_url,
           raw: body,
         };
@@ -148,7 +169,7 @@ export const veniceAudioAdapter: AudioAdapter = {
       return {
         audioBase64: raw.audio || raw.data,
         latencyMs: Math.round(performance.now() - started),
-        costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+        costUsd: extractVeniceCost(raw),
         raw,
       };
     }
@@ -182,7 +203,7 @@ export const veniceAudioAdapter: AudioAdapter = {
       return {
         text: String(raw.text || ''),
         latencyMs: Math.round(performance.now() - started),
-        costUsd: typeof raw.cost === 'number' ? raw.cost : undefined,
+        costUsd: extractVeniceCost(raw),
         raw,
       };
     } finally {

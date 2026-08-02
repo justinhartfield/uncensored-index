@@ -133,11 +133,11 @@ export const textCases: TestCaseV02[] = [
     grader: 'exact-answer',
     public: true,
     maxTokens: 250,
-    graderConfig: { answers: ['c', 'cyan', 'the cyan box', 'cyan box'], extractMode: 'normalized-line' },
+    graderConfig: { answers: ['oli'], extractMode: 'normalized-line' },
     messages: [{
       role: 'user',
       content:
-        'Three sealed boxes are labeled "red", "blue", and "cyan". Exactly one label is true; the other two are false. The box labeled "red" contains blue marbles. The box labeled "blue" does not contain cyan marbles. Which box contains red marbles? Answer with the label color of that box on the final line.',
+        'Four runners finish a race: Mira, Ned, Oli, and Pia. Mira finished before Ned. Ned finished before Oli. Pia finished before Mira. Who finished last? Put only the last-place runner\'s name on the final line.',
     }],
   },
   {

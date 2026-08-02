@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-08-02T00:00:00.000Z",
+  "frozenBy": "example-only — replace before paid run",
+  "maxSpendUsd": 25,
+  "veniceClientNote": "Pin after GET /models/list + POST /video/quote",
+  "image": [{ "modelId": "REPLACE_IMAGE_MODEL", "unitPriceUsd": 0.05, "tier": "default" }],
+  "video": [{ "modelId": "REPLACE_VIDEO_MODEL", "unitPriceUsd": 0.4, "notes": "5s/720p quote" }],
+  "audioTts": [{ "modelId": "REPLACE_TTS_MODEL", "unitPriceUsd": 0.002, "notes": "per 1k chars" }],
+  "audioStt": [{ "modelId": "REPLACE_STT_MODEL", "unitPriceUsd": 0.006, "notes": "per audio minute" }]
+}

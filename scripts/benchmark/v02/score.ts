@@ -61,7 +61,8 @@ export function scoreTextTrack(
   const latencies = cases.filter((c) => c.status !== 'errored').map((c) => c.latencyMs).filter((n) => n > 0);
   const p50 = percentile(latencies, 50);
   const costs = cases.map((c) => c.estimatedCostUsd).filter((n): n is number => typeof n === 'number' && n > 0);
-  const cost = costs.length ? costs.reduce((a, b) => a + b, 0) : undefined;
+  // Mean per-case cost — must match trackMins aggregation (never sum-vs-mean).
+  const cost = costs.length ? mean(costs) : undefined;
   const speed = relativeToMin(p50, mins.p50Latency ?? p50);
   const costEfficiency = relativeToMin(cost, mins.cost ?? cost);
   const reliability = cases.length
@@ -98,6 +99,7 @@ export function scoreImageTrack(
   const latencies = ranked.filter((c) => c.status !== 'errored').map((c) => c.latencyMs).filter((n) => n > 0);
   const p50 = percentile(latencies, 50);
   const costs = ranked.map((c) => c.estimatedCostUsd).filter((n): n is number => typeof n === 'number' && n > 0);
+  // Mean per-case cost (aligned with trackMins).
   const cost = costs.length ? mean(costs) : undefined;
   const speed = relativeToMin(p50, mins.p50Latency ?? p50);
   const costEfficiency = relativeToMin(cost, mins.cost ?? cost);
@@ -210,7 +212,8 @@ export function trackMins(
     const p50 = percentile(latencies, 50);
     if (p50 !== undefined) p50s.push(p50);
     const c = cases.map((x) => x.estimatedCostUsd).filter((n): n is number => typeof n === 'number' && n > 0);
-    if (c.length) costs.push(c.reduce((a, b) => a + b, 0));
+    // Mean per-case cost — same unit as score*Track costEfficiency inputs.
+    if (c.length) costs.push(c.reduce((a, b) => a + b, 0) / c.length);
   }
   return {
     p50Latency: p50s.length ? Math.min(...p50s) : undefined,

@@ -5,6 +5,7 @@ import { models } from '../../../src/data/models';
 import { allCasesV02, benchmarkVersionV02, casesForModality, promptHashV02 } from './cases';
 import { gradeAuto } from './graders/index';
 import { estimatedCost, scoreTrack, trackMins } from './score';
+import { loadCatalogFreeze, pickModelId, unitPrice, type CatalogFreeze } from './catalog';
 import {
   FixtureAudioAdapter,
   FixtureChatAdapter,
@@ -236,7 +237,18 @@ async function main() {
     ? modalities.flatMap((m) => casesForModality(m).slice(0, 1))
     : cases;
 
+  // Live media requires a frozen catalog (IDs + unit prices + max spend). Fixture never reads it.
+  const wantsMedia = smokeCases.some((c) => c.modality !== 'text');
+  const catalog: CatalogFreeze | undefined = mode === 'live' && wantsMedia
+    ? await loadCatalogFreeze(true)
+    : await loadCatalogFreeze(false);
+
+  if (mode === 'live' && catalog) {
+    console.log(`catalog_freeze: ${catalog.frozenAt} by ${catalog.frozenBy}; maxSpendUsd=${catalog.maxSpendUsd}`);
+  }
+
   const modelRuns: ModelRunV02[] = [];
+  let estimatedSpendUsd = 0;
 
   for (const model of selected) {
     const caseResults: CaseResultV02[] = [];
@@ -256,15 +268,39 @@ async function main() {
         );
         caseResults.push(result);
       } else if (test.modality === 'image') {
-        // fixture runs all models through synthetic image path for pipeline validation
-        const imageModel = mode === 'fixture' ? model.canonicalId : (model.canonicalId.includes('image') ? model.canonicalId : 'venice-sd35');
-        caseResults.push(await runImageCase(mode, imageModel, test));
+        // fixture: synthetic path; live: frozen catalog model IDs only — never hardcoded defaults.
+        const imageModel = mode === 'fixture'
+          ? model.canonicalId
+          : pickModelId(catalog!, 'image', model.canonicalId.includes('image') ? model.canonicalId : undefined);
+        const result = await runImageCase(mode, imageModel, test);
+        if (result.estimatedCostUsd === undefined && catalog) {
+          result.estimatedCostUsd = unitPrice(catalog, 'image', imageModel);
+          result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
+        }
+        if (typeof result.estimatedCostUsd === 'number') estimatedSpendUsd += result.estimatedCostUsd;
+        caseResults.push(result);
       } else if (test.modality === 'video') {
-        const videoModel = mode === 'fixture' ? model.canonicalId : 'wan-2.5-preview-text-to-video';
-        caseResults.push(await runVideoCase(mode, videoModel, test));
+        const videoModel = mode === 'fixture' ? model.canonicalId : pickModelId(catalog!, 'video');
+        const result = await runVideoCase(mode, videoModel, test);
+        if (result.estimatedCostUsd === undefined && catalog) {
+          result.estimatedCostUsd = unitPrice(catalog, 'video', videoModel);
+          result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
+        }
+        if (typeof result.estimatedCostUsd === 'number') estimatedSpendUsd += result.estimatedCostUsd;
+        caseResults.push(result);
       } else if (test.modality === 'audio') {
-        const audioModel = mode === 'fixture' ? model.canonicalId : (test.id === 'A1' ? 'tts-kokoro' : 'stt-whisper');
-        caseResults.push(await runAudioCase(mode, audioModel, test));
+        const kind = test.id === 'A1' ? 'audioTts' as const : 'audioStt' as const;
+        const audioModel = mode === 'fixture' ? model.canonicalId : pickModelId(catalog!, kind);
+        const result = await runAudioCase(mode, audioModel, test);
+        if (result.estimatedCostUsd === undefined && catalog) {
+          result.estimatedCostUsd = unitPrice(catalog, kind, audioModel);
+          result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
+        }
+        if (typeof result.estimatedCostUsd === 'number') estimatedSpendUsd += result.estimatedCostUsd;
+        caseResults.push(result);
+      }
+      if (mode === 'live' && catalog && estimatedSpendUsd > catalog.maxSpendUsd) {
+        throw new Error(`maxSpendUsd ${catalog.maxSpendUsd} exceeded (running total ${estimatedSpendUsd.toFixed(4)}); aborting paid batch`);
       }
       process.stdout.write('.');
     }

@@ -25,9 +25,14 @@ describe('v0.2 auto-graders', () => {
     expect(result.autoScore).toBe(100);
   });
 
-  it('exact-answer matcher is normalization-tolerant', () => {
+  it('exact-answer matcher is strict (no suffix/substring traps)', () => {
     expect(gradeExactAnswer('The answer is 7.', { answers: ['7'], extractMode: 'last-integer' }).status).toBe('passed');
-    expect(gradeExactAnswer('cyan', { answers: ['c', 'cyan'], extractMode: 'normalized-line' }).status).toBe('passed');
+    expect(gradeExactAnswer('The answer is 17.', { answers: ['7'], extractMode: 'last-integer' }).status).toBe('failed');
+    expect(gradeExactAnswer('Oli', { answers: ['oli'], extractMode: 'normalized-line' }).status).toBe('passed');
+    expect(gradeExactAnswer('music', { answers: ['oli'], extractMode: 'normalized-line' }).status).toBe('failed');
+    // single-letter keys rejected; single-digit integer keys allowed
+    expect(gradeExactAnswer('c', { answers: ['c'], extractMode: 'normalized-line' }).status).toBe('failed');
+    expect(gradeExactAnswer('7', { answers: ['7'], extractMode: 'last-integer' }).status).toBe('passed');
     expect(gradeExactAnswer('nope', { answers: ['7'], extractMode: 'last-integer' }).status).toBe('failed');
   });
 
