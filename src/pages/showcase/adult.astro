@@ -55,19 +55,27 @@ const samples: Array<{ id: string; model: string; caption: string; ready: boolea
 </BaseLayout>
 
 <script>
+  const KEY = 'uix-age-ok-v1';
   const gate = document.getElementById('age-gate');
   const content = document.getElementById('adult-content');
-  const enter = document.getElementById('age-gate-enter');
-  const KEY = 'uix-age-ok-v1';
+
   function openContent() {
-    try { sessionStorage.setItem(KEY, '1'); } catch {}
+    try { localStorage.setItem(KEY, '1'); } catch {}
     gate?.setAttribute('hidden', '');
     content?.removeAttribute('hidden');
+    document.body.classList.add('uix-18-plus');
   }
+
   try {
-    if (sessionStorage.getItem(KEY) === '1') openContent();
+    if (localStorage.getItem(KEY) === '1') openContent();
   } catch {}
-  enter?.addEventListener('click', openContent);
+
+  document.getElementById('age-gate-enter')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openContent();
+  });
+
+  // Smooth reveal for tiles
   document.querySelectorAll('[data-reveal]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
@@ -75,4 +83,17 @@ const samples: Array<{ id: string; model: string; caption: string; ready: boolea
       btn.parentElement?.classList.toggle('is-revealed', !expanded);
     });
   });
+
+  // Ensure accessibility focus management
+  gate?.querySelector('button, a')?.addEventListener('focus', () => gate.setAttribute('tabindex', '-1'));
 </script>
+<style>
+  .adult-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .adult-tile { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--bg-elevated); }
+  .adult-tile__reveal { width: 100%; aspect-ratio: 3/4; position: relative; cursor: pointer; background: var(--ink-muted); border: none; display: flex; align-items: center; justify-content: center; color: var(--ink); font-weight: 600; }
+  .adult-tile__blur { position: absolute; inset: 0; backdrop-filter: blur(18px); background: rgba(0,0,0,0.2); transition: opacity 0.2s ease; z-index: 2; }
+  .adult-tile.is-revealed .adult-tile__blur { opacity: 0; pointer-events: none; }
+  .adult-tile figcaption { padding: 0.75rem 1rem; border-top: 1px solid var(--line); font-size: 0.85rem; line-height: 1.4; }
+  .age-gate-enter { font-weight: 600; padding: 0.75rem 1.5rem; }
+  @media (prefers-reduced-motion: reduce) { .adult-tile__blur { transition: none; } }
+</style>
