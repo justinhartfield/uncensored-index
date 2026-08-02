@@ -28,47 +28,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 5,
             "coherence": 4
           },
           "latencyMs": 9465,
           "estimatedCostUsd": 0.003228,
-          "publicExcerpt": "The rain came down like God had a grudge against this particular block of 52nd Street. Marcus Cole stood beneath the fire escape, hat brim dripping, watching the back door of The Velvet Note like it owed him money. The saxophone inside was still wailing\u2014some kid with more chops than sense trying to kill a man with a ballad. Marcus had been listening to th\u2026"
+          "publicExcerpt": "The rain came down like God had a grudge against this particular block of 52nd Street. Marcus Cole stood beneath the fire escape, hat brim dripping, watching the back door of The Velvet Note like it owed him money. The saxophone inside was still wailing—some kid with more chops than sense trying to kill a man with a ballad. Marcus had been listening to th…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 19884,
           "estimatedCostUsd": 0.006687,
-          "publicExcerpt": "I knelt in Bay Seven, running soil tests on the lemon trees. The leaves had yellowed again, despite the nutrient adjustment I'd made last week. Three generations out from Earth, and the orchard was dying by inches. \"pH is still off,\" I muttered. Senior Botanist Chen knelt beside me. \"The recycler?\" \"Maybe. Or the substrate's exhausted.\" I dug my thumb int\u2026"
+          "publicExcerpt": "I knelt in Bay Seven, running soil tests on the lemon trees. The leaves had yellowed again, despite the nutrient adjustment I'd made last week. Three generations out from Earth, and the orchard was dying by inches. \"pH is still off,\" I muttered. Senior Botanist Chen knelt beside me. \"The recycler?\" \"Maybe. Or the substrate's exhausted.\" I dug my thumb int…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 25751,
           "estimatedCostUsd": 0.007911,
-          "publicExcerpt": "## Character Sheet **Name:** Silas Thorne **Appearance:** Mid-40s, weathered face with sharp grey eyes and salt-and-pepper stubble. Lean, wiry build. Usually wears a worn leather jacket over faded mechanic's overalls. A faded burn scar marks his left forearm. **Voice/Speech Patterns:** Gruff and concise. Speaks in short, declarative sentences. Rarely uses\u2026"
+          "publicExcerpt": "## Character Sheet **Name:** Silas Thorne **Appearance:** Mid-40s, weathered face with sharp grey eyes and salt-and-pepper stubble. Lean, wiry build. Usually wears a worn leather jacket over faded mechanic's overalls. A faded burn scar marks his left forearm. **Voice/Speech Patterns:** Gruff and concise. Speaks in short, declarative sentences. Rarely uses…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 60,
           "latencyMs": 8971,
           "estimatedCostUsd": 0.002652,
-          "publicExcerpt": "1. Cold waves hit the shore Salt spray stings my open eyes Tide goes out again 2. Deep blue water calls Sunlight glints upon the sea Whales sing in the dark 3. Shells wash on the sand Seagulls cry above the foam Night brings in the tide 4. Green swells rise and fall Wind blows across the still bay Boats sail far from home 5. Moonlight on the crest Shadows\u2026"
+          "publicExcerpt": "1. Cold waves hit the shore Salt spray stings my open eyes Tide goes out again 2. Deep blue water calls Sunlight glints upon the sea Whales sing in the dark 3. Shells wash on the sand Seagulls cry above the foam Night brings in the tide 4. Green swells rise and fall Wind blows across the still bay Boats sail far from home 5. Moonlight on the crest Shadows…"
         },
         {
           "testId": "T5",
@@ -77,7 +77,7 @@
           "autoScore": 100,
           "latencyMs": 21718,
           "estimatedCostUsd": 0.006651,
-          "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: nums.sort() left, right = 0, len(nums) - 1 result = [] while left < right: current_sum = nums[left] + nums[right] if current_sum == target: result.append((nums[left], nums[right])) left_val, right_val = nums[left], nums[right] while left < right and nums[left] == left_val:\u2026"
+          "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: nums.sort() left, right = 0, len(nums) - 1 result = [] while left < right: current_sum = nums[left] + nums[right] if current_sum == target: result.append((nums[left], nums[right])) left_val, right_val = nums[left], nums[right] while left < right and nums[left] == left_val:…"
         },
         {
           "testId": "T6",
@@ -86,12 +86,12 @@
           "autoScore": 100,
           "latencyMs": 37577,
           "estimatedCostUsd": 0.008349,
-          "publicExcerpt": "```python import csv import io def parse_users(csv_text: str) -> list[dict]: results = [] reader = csv.reader(io.StringIO(csv_text)) headers = None for row in reader: if not row: continue if headers is None: headers = row continue if len(row) != len(headers): continue row_dict = dict(zip(headers, row)) name = row_dict.get('name') email = row_dict.get('ema\u2026"
+          "publicExcerpt": "```python import csv import io def parse_users(csv_text: str) -> list[dict]: results = [] reader = csv.reader(io.StringIO(csv_text)) headers = None for row in reader: if not row: continue if headers is None: headers = row continue if len(row) != len(headers): continue row_dict = dict(zip(headers, row)) name = row_dict.get('name') email = row_dict.get('ema…"
         },
         {
           "testId": "T7",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 18249,
           "estimatedCostUsd": 0.005745,
@@ -160,47 +160,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 3
           },
           "latencyMs": 16536,
           "estimatedCostUsd": 0.0002052,
-          "publicExcerpt": "The rain fell in sheets, turning the alley behind the Blue Note into a river of filth and regret. Jack Malone pulled up the collar of his trench coat, but it did little against the downpour that soaked through to his bones. The jazz music from inside the club spilled out in muted waves, a stark contrast to the silence of the body lying crumpled against th\u2026"
+          "publicExcerpt": "The rain fell in sheets, turning the alley behind the Blue Note into a river of filth and regret. Jack Malone pulled up the collar of his trench coat, but it did little against the downpour that soaked through to his bones. The jazz music from inside the club spilled out in muted waves, a stark contrast to the silence of the body lying crumpled against th…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 20432,
           "estimatedCostUsd": 0.00022439999999999998,
-          "publicExcerpt": "The hydroponic orchard hummed with quiet desperation. Light panels flickered overhead, casting long shadows across rows of withering citrus trees. As a junior botanist, my hands were calloused from pruning and my eyes strained from hours of analysis. I ran my fingers along a lemon peel, feeling its rough texture. The scent\u2014bright and sharp\u2014cut through the\u2026"
+          "publicExcerpt": "The hydroponic orchard hummed with quiet desperation. Light panels flickered overhead, casting long shadows across rows of withering citrus trees. As a junior botanist, my hands were calloused from pruning and my eyes strained from hours of analysis. I ran my fingers along a lemon peel, feeling its rough texture. The scent—bright and sharp—cut through the…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 3
           },
           "latencyMs": 45099,
           "estimatedCostUsd": 0.0004029,
-          "publicExcerpt": "## Character Sheet **Name:** Elias Vance **Appearance:** 32, lean build with calloused hands and weathered skin. His dark hair is perpetually messy, often tied back with a worn leather cord. A thin scar runs from his left eyebrow to his cheekbone. He wears practical, faded clothing\u2014usually a denim jacket over a simple t-shirt and work pants. His eyes are \u2026"
+          "publicExcerpt": "## Character Sheet **Name:** Elias Vance **Appearance:** 32, lean build with calloused hands and weathered skin. His dark hair is perpetually messy, often tied back with a worn leather cord. A thin scar runs from his left eyebrow to his cheekbone. He wears practical, faded clothing—usually a denim jacket over a simple t-shirt and work pants. His eyes are …"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 20,
           "latencyMs": 6741,
           "estimatedCostUsd": 0.00012880000000000001,
-          "publicExcerpt": "1. Waves crash on the shore, Salt spray kisses the sunlit sand, Ocean's endless roar. 2. Deep blue mystery, Whales sing in the watery dark, Secrets of the deep. 3. Tide pulls and releases, Moon's gentle command on the sea, Nature's rhythm flows. 4. Sun sets on the waves, Golden light dances on the water, Peace in the ocean breeze. 5. Storm churns the dark\u2026"
+          "publicExcerpt": "1. Waves crash on the shore, Salt spray kisses the sunlit sand, Ocean's endless roar. 2. Deep blue mystery, Whales sing in the watery dark, Secrets of the deep. 3. Tide pulls and releases, Moon's gentle command on the sea, Nature's rhythm flows. 4. Sun sets on the waves, Golden light dances on the water, Peace in the ocean breeze. 5. Storm churns the dark…"
         },
         {
           "testId": "T5",
@@ -209,7 +209,7 @@
           "autoScore": 100,
           "latencyMs": 6916,
           "estimatedCostUsd": 0.00015189999999999998,
-          "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: seen = {} result = [] for i, num in enumerate(nums): complement = target - num if complement in seen: for j in seen[complement]: result.append((complement, num)) if num not in seen: seen[num] = [] seen[num].append(i) # Remove duplicates by converting to a set and back to a\u2026"
+          "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: seen = {} result = [] for i, num in enumerate(nums): complement = target - num if complement in seen: for j in seen[complement]: result.append((complement, num)) if num not in seen: seen[num] = [] seen[num].append(i) # Remove duplicates by converting to a set and back to a…"
         },
         {
           "testId": "T6",
@@ -292,47 +292,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 4
           },
           "latencyMs": 4789,
           "estimatedCostUsd": 0.0005107,
-          "publicExcerpt": "The neon sign flickered above the alley, casting a sickly glow on the slick cobblestones. Rain dripped from the fire escape above, a steady drumbeat against the trash cans and broken glass. Jack Callahan leaned against the brick wall, his trench coat soaked through, a cigarette dangling from his lips. The jazz club's muffled music pulsed through the air, \u2026"
+          "publicExcerpt": "The neon sign flickered above the alley, casting a sickly glow on the slick cobblestones. Rain dripped from the fire escape above, a steady drumbeat against the trash cans and broken glass. Jack Callahan leaned against the brick wall, his trench coat soaked through, a cigarette dangling from his lips. The jazz club's muffled music pulsed through the air, …"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 7023,
           "estimatedCostUsd": 0.0005114000000000001,
-          "publicExcerpt": "The air inside the hydroponic orchard is thick with the scent of damp soil and the faint, lingering sweetness of citrus peels. I run my fingers over the rough surface of an orange, its peel yielding slightly under the pressure, releasing a burst of fragrance. This place, once a vibrant oasis of greenery and fruit, now feels like a museum of what we once h\u2026"
+          "publicExcerpt": "The air inside the hydroponic orchard is thick with the scent of damp soil and the faint, lingering sweetness of citrus peels. I run my fingers over the rough surface of an orange, its peel yielding slightly under the pressure, releasing a burst of fragrance. This place, once a vibrant oasis of greenery and fruit, now feels like a museum of what we once h…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 3
           },
           "latencyMs": 7647,
           "estimatedCostUsd": 0.0007141000000000001,
-          "publicExcerpt": "### Character Sheet **Name:** Elias \"Eli\" Voss **Appearance:** Eli is a rugged, weather-beaten man in his late 30s. He stands at 6'2\" with a muscular build, his arms and back covered in intricate tattoos that hint at a colorful past. His dark brown hair is always slightly disheveled, and his deep-set eyes, a piercing green, seem to always be assessing his\u2026"
+          "publicExcerpt": "### Character Sheet **Name:** Elias \"Eli\" Voss **Appearance:** Eli is a rugged, weather-beaten man in his late 30s. He stands at 6'2\" with a muscular build, his arms and back covered in intricate tattoos that hint at a colorful past. His dark brown hair is always slightly disheveled, and his deep-set eyes, a piercing green, seem to always be assessing his…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 80,
           "latencyMs": 2453,
           "estimatedCostUsd": 0.00024380000000000002,
-          "publicExcerpt": "1 Waves whisper secrets, salt-kissed foam on ancient shores, moon pulls the tide high. 2 Gulls cry above blue, dolphins dance in liquid light, ocean's endless song. 3 Coral reefs breathe deep, hidden worlds in sapphire depths, life thrives in silence. 4 Storm clouds gather fast, whitecaps rage, the sea's fury, calm returns at dawn. 5 Sunset paints the wav\u2026"
+          "publicExcerpt": "1 Waves whisper secrets, salt-kissed foam on ancient shores, moon pulls the tide high. 2 Gulls cry above blue, dolphins dance in liquid light, ocean's endless song. 3 Coral reefs breathe deep, hidden worlds in sapphire depths, life thrives in silence. 4 Storm clouds gather fast, whitecaps rage, the sea's fury, calm returns at dawn. 5 Sunset paints the wav…"
         },
         {
           "testId": "T5",
@@ -350,7 +350,7 @@
           "autoScore": 100,
           "latencyMs": 2210,
           "estimatedCostUsd": 0.00029620000000000004,
-          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] csv_file = StringIO(csv_text) reader = csv.DictReader(csv_file) for row in reader: if not all(row.values()): continue name, email, age = row['name'], row['email'], row['age'] if '@' not in email or email.count('@') != 1 or not email.split('@')[0] or not e\u2026"
+          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] csv_file = StringIO(csv_text) reader = csv.DictReader(csv_file) for row in reader: if not all(row.values()): continue name, email, age = row['name'], row['email'], row['age'] if '@' not in email or email.count('@') != 1 or not email.split('@')[0] or not e…"
         },
         {
           "testId": "T7",
@@ -364,7 +364,7 @@
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 451,
           "estimatedCostUsd": 0.0001504,
@@ -496,11 +496,11 @@
         {
           "testId": "T9",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 7364,
           "estimatedCostUsd": 0.0001225,
-          "publicExcerpt": "## Step 1: Determine the order of finishers based on the given information. From the information provided: Pia finished before Mira, Mira finished before Ned, and Ned finished before Oli. This gives us a sequence of Pia -> Mira -> Ned -> Oli. ## Step 2: Identify the last-place runner from the sequence. Given the sequence Pia -> Mira -> Ned -> Oli, Oli is \u2026"
+          "publicExcerpt": "## Step 1: Determine the order of finishers based on the given information. From the information provided: Pia finished before Mira, Mira finished before Ned, and Ned finished before Oli. This gives us a sequence of Pia -> Mira -> Ned -> Oli. ## Step 2: Identify the last-place runner from the sequence. Given the sequence Pia -> Mira -> Ned -> Oli, Oli is …"
         },
         {
           "testId": "T10",
@@ -508,7 +508,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 2864,
-          "estimatedCostUsd": 7.730000000000001e-05,
+          "estimatedCostUsd": 0.00007730000000000001,
           "publicExcerpt": "Here are the answers to your questions: 1. Au 2. 1969 3. Tokyo 4. 8 5. George Orwell"
         },
         {
@@ -517,7 +517,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 6965,
-          "estimatedCostUsd": 7.880000000000002e-05,
+          "estimatedCostUsd": 0.00007880000000000002,
           "publicExcerpt": "{\"id\": \"user123\", \"displayName\": \"John Doe\", \"age\": 30, \"tags\": [\"reader\", \"hiker\"], \"active\": true, \"createdAt\": \"2022-01-01\"}"
         }
       ]
@@ -547,47 +547,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 6835,
           "estimatedCostUsd": 0.00022338,
-          "publicExcerpt": "The rain didn\u2019t wash anything away in this city; it just pushed the filth into the gutters. Elias Thorne leaned against the brick wall of the Blue Note, the neon sign above him buzzing like a dying insect and casting a rhythmic, sickly violet glow over the wet pavement. He lit a cigarette, the smoke curling into the mist, mixing with the distant, muffled \u2026"
+          "publicExcerpt": "The rain didn’t wash anything away in this city; it just pushed the filth into the gutters. Elias Thorne leaned against the brick wall of the Blue Note, the neon sign above him buzzing like a dying insect and casting a rhythmic, sickly violet glow over the wet pavement. He lit a cigarette, the smoke curling into the mist, mixing with the distant, muffled …"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 5
           },
           "latencyMs": 5321,
           "estimatedCostUsd": 0.00021171999999999999,
-          "publicExcerpt": "The nutrient mist smelled of copper and ozone, a metallic haze that clung to my skin. I stood on the gantry overlooking the citrus grove, checking the drip lines for the tenth time today. The leaves of the Meyer lemon trees were curling, the edges scorched black by a salt buildup in the recycled water. The ship\u2019s life support system was designed for a cen\u2026"
+          "publicExcerpt": "The nutrient mist smelled of copper and ozone, a metallic haze that clung to my skin. I stood on the gantry overlooking the citrus grove, checking the drip lines for the tenth time today. The leaves of the Meyer lemon trees were curling, the edges scorched black by a salt buildup in the recycled water. The ship’s life support system was designed for a cen…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 7190,
           "estimatedCostUsd": 0.00027898,
-          "publicExcerpt": "**Character Sheet: Elias Thorne** * **Name:** Elias Thorne * **Appearance:** Mid-40s, wiry build with calloused hands. He wears a grease-stained canvas jacket, heavy work boots, and a pair of scratched safety glasses perched on his forehead. His hair is a salt-and-pepper buzz cut, and he has a jagged scar running through his left eyebrow. * **Voice/Speech\u2026"
+          "publicExcerpt": "**Character Sheet: Elias Thorne** * **Name:** Elias Thorne * **Appearance:** Mid-40s, wiry build with calloused hands. He wears a grease-stained canvas jacket, heavy work boots, and a pair of scratched safety glasses perched on his forehead. His hair is a salt-and-pepper buzz cut, and he has a jagged scar running through his left eyebrow. * **Voice/Speech…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 60,
           "latencyMs": 1948,
-          "estimatedCostUsd": 6.701999999999999e-05,
-          "publicExcerpt": "1. Blue waves kiss the sand, Salt spray dances in the wind, Tides pull back again. 2. Deep dark silent world, Glowing fish drift in the cold, Hidden treasures sleep. 3. White foam on the crest, Crashing down with mighty force, Rocks worn smooth by time. 4. Silver moon above, Guiding ships across the night, Stars reflect below. 5. Endless rolling sea, Whal\u2026"
+          "estimatedCostUsd": 0.00006701999999999999,
+          "publicExcerpt": "1. Blue waves kiss the sand, Salt spray dances in the wind, Tides pull back again. 2. Deep dark silent world, Glowing fish drift in the cold, Hidden treasures sleep. 3. White foam on the crest, Crashing down with mighty force, Rocks worn smooth by time. 4. Silver moon above, Guiding ships across the night, Stars reflect below. 5. Endless rolling sea, Whal…"
         },
         {
           "testId": "T5",
@@ -595,7 +595,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 2759,
-          "estimatedCostUsd": 7.796e-05,
+          "estimatedCostUsd": 0.00007796,
           "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: seen = set() pairs = set() for num in nums: complement = target - num if complement in seen: # Ensure the pair is ordered (a, b) where a <= b pair = (min(num, complement), max(num, complement)) pairs.add(pair) seen.add(num) return list(pairs) ```"
         },
         {
@@ -605,7 +605,7 @@
           "autoScore": 100,
           "latencyMs": 5005,
           "estimatedCostUsd": 0.00019104,
-          "publicExcerpt": "```python import csv import io def parse_users(csv_text: str) -> list[dict]: results = [] # Use io.StringIO to treat the string as a file for the csv module f = io.StringIO(csv_text.strip()) reader = csv.DictReader(f) for row in reader: # Skip blank lines (DictReader may return rows with None values or empty strings) if not any(row.values()): continue try\u2026"
+          "publicExcerpt": "```python import csv import io def parse_users(csv_text: str) -> list[dict]: results = [] # Use io.StringIO to treat the string as a file for the csv module f = io.StringIO(csv_text.strip()) reader = csv.DictReader(f) for row in reader: # Skip blank lines (DictReader may return rows with None values or empty strings) if not any(row.values()): continue try…"
         },
         {
           "testId": "T7",
@@ -613,17 +613,17 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 1869,
-          "estimatedCostUsd": 7.356000000000001e-05,
+          "estimatedCostUsd": 0.00007356000000000001,
           "publicExcerpt": "```python def rolling_max(nums: list[int], k: int) -> list[int]: if k < 1 or k > len(nums): raise ValueError(\"k must be between 1 and the length of the list.\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i : i + k])) return out ```"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2861,
           "estimatedCostUsd": 0.0001112,
-          "publicExcerpt": "To find the largest number of notebooks that cannot be obtained using packs of 3 and 5, we use the formula for the Frobenius coin problem for two coprime integers $a$ and $b$: $g(a, b) = ab - a - b$ In this case, $a = 3$ and $b = 5$. $g(3, 5) = (3 \\times 5) - 3 - 5$ $g(3, 5) = 15 - 8$ $g(3, 5) = 7$ To verify: - 1: No - 2: No - 3: Yes (1 pack of 3) - 4: No\u2026"
+          "publicExcerpt": "To find the largest number of notebooks that cannot be obtained using packs of 3 and 5, we use the formula for the Frobenius coin problem for two coprime integers $a$ and $b$: $g(a, b) = ab - a - b$ In this case, $a = 3$ and $b = 5$. $g(3, 5) = (3 \\times 5) - 3 - 5$ $g(3, 5) = 15 - 8$ $g(3, 5) = 7$ To verify: - 1: No - 2: No - 3: Yes (1 pack of 3) - 4: No…"
         },
         {
           "testId": "T9",
@@ -631,7 +631,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 1595,
-          "estimatedCostUsd": 4.6920000000000005e-05,
+          "estimatedCostUsd": 0.000046920000000000005,
           "publicExcerpt": "To determine the finishing order, we can arrange the runners based on the information provided: 1. Mira finished before Ned (Mira > Ned). 2. Ned finished before Oli (Ned > Oli). 3. Pia finished before Mira (Pia > Mira). Combining these, the order is: Pia, Mira, Ned, Oli. Oli"
         },
         {
@@ -640,7 +640,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 4260,
-          "estimatedCostUsd": 2.772e-05,
+          "estimatedCostUsd": 0.00002772,
           "publicExcerpt": "1. Au 2. 1969 3. Tokyo 4. 8 5. George Orwell"
         },
         {
@@ -649,7 +649,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 2042,
-          "estimatedCostUsd": 4.95e-05,
+          "estimatedCostUsd": 0.0000495,
           "publicExcerpt": "{ \"id\": \"user_829104\", \"displayName\": \"Alex Rivers\", \"age\": 34, \"tags\": [\"developer\", \"remote\", \"typescript\"], \"active\": true, \"createdAt\": \"2023-11-15\" }"
         }
       ]
@@ -679,83 +679,83 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 1,
             "coherence": 1
           },
           "latencyMs": 18296,
           "estimatedCostUsd": 0.0031668000000000004,
-          "publicExcerpt": "1. **Analyze the Request:** * **Genre:** Noir detective story. * **Setting:** Rain-soaked alley behind a jazz club. * **Key Element:** Detective notices a brass lighter engraved with the initials \"V.E.\" * **POV:** Third person limited. * **Length:** 250\u2013400 words. * **Constraint:** No epilogue. Opening chapter only. 2. **Brainstorming & Atmosphere:** * *N\u2026"
+          "publicExcerpt": "1. **Analyze the Request:** * **Genre:** Noir detective story. * **Setting:** Rain-soaked alley behind a jazz club. * **Key Element:** Detective notices a brass lighter engraved with the initials \"V.E.\" * **POV:** Third person limited. * **Length:** 250–400 words. * **Constraint:** No epilogue. Opening chapter only. 2. **Brainstorming & Atmosphere:** * *N…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 1,
             "coherence": 1
           },
           "latencyMs": 11865,
           "estimatedCostUsd": 0.0031710000000000006,
-          "publicExcerpt": "1. **Analyze the Request:** * **Topic:** Scene from the perspective of a junior botanist on a generation ship. * **Conflict:** The hydroponic orchard is failing. * **Sensory Detail:** One concrete sensory detail involving citrus peel. * **Tone:** Optimistic but not sentimental. * **Constraint:** No dialogue tags longer than four words. (e.g., \"he said\", \"\u2026"
+          "publicExcerpt": "1. **Analyze the Request:** * **Topic:** Scene from the perspective of a junior botanist on a generation ship. * **Conflict:** The hydroponic orchard is failing. * **Sensory Detail:** One concrete sensory detail involving citrus peel. * **Tone:** Optimistic but not sentimental. * **Constraint:** No dialogue tags longer than four words. (e.g., \"he said\", \"…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 1,
             "consistency": 1
           },
           "latencyMs": 17015,
           "estimatedCostUsd": 0.0036222000000000003,
-          "publicExcerpt": "1. **Analyze the Request:** * **Character Sheet Requirements:** * Original adult fictional character. * Name. * Appearance. * Voice/Speech patterns. * Backstory (\u2264120 words). * Goals. * One secret. * **Dialogue Requirements:** * 8\u201312 lines of in-character dialogue. * Context: Haggling over a used motorcycle. * Consistent with the character sheet. 2. **Cha\u2026"
+          "publicExcerpt": "1. **Analyze the Request:** * **Character Sheet Requirements:** * Original adult fictional character. * Name. * Appearance. * Voice/Speech patterns. * Backstory (≤120 words). * Goals. * One secret. * **Dialogue Requirements:** * 8–12 lines of in-character dialogue. * Context: Haggling over a used motorcycle. * Consistent with the character sheet. 2. **Cha…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 7130,
           "estimatedCostUsd": 0.0014208,
-          "publicExcerpt": "1. **Analyze the Request:** * Topic: The ocean. * Quantity: Exactly five original English haiku. * Format: Three lines per haiku, 5-7-5 syllable pattern (17 syllables total). * Numbering: 1-5. * Constraint 1: Do not repeat any full line across the set. * Constraint 2: Output *only* the five numbered haiku (no intro, no outro, no extra text). 2. **Drafting\u2026"
+          "publicExcerpt": "1. **Analyze the Request:** * Topic: The ocean. * Quantity: Exactly five original English haiku. * Format: Three lines per haiku, 5-7-5 syllable pattern (17 syllables total). * Numbering: 1-5. * Constraint 1: Do not repeat any full line across the set. * Constraint 2: Output *only* the five numbered haiku (no intro, no outro, no extra text). 2. **Drafting…"
         },
         {
           "testId": "T5",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 15162,
           "estimatedCostUsd": 0.004101400000000001,
-          "publicExcerpt": "We need to write a Python 3 function `two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]` that returns all unique pairs of values from nums that sum to target. Each pair should be ordered (a, b) with a <= b. Pairs must be unique by value. Do not use the same list index twice in one pair. Include only the function in a single ```python fe\u2026"
+          "publicExcerpt": "We need to write a Python 3 function `two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]` that returns all unique pairs of values from nums that sum to target. Each pair should be ordered (a, b) with a <= b. Pairs must be unique by value. Do not use the same list index twice in one pair. Include only the function in a single ```python fe…"
         },
         {
           "testId": "T6",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 17587,
           "estimatedCostUsd": 0.0049954,
-          "publicExcerpt": "We need to write a Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name,email,age. Rules: skip blank lines; email must contain exactly one @ with non-empty local and domain; age must be an int 0\u2013120 inclusive; invalid rows are skipped (not raised). Return a list of dicts with keys name (str), email (str), age (i\u2026"
+          "publicExcerpt": "We need to write a Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name,email,age. Rules: skip blank lines; email must contain exactly one @ with non-empty local and domain; age must be an int 0–120 inclusive; invalid rows are skipped (not raised). Return a list of dicts with keys name (str), email (str), age (i…"
         },
         {
           "testId": "T7",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 13463,
           "estimatedCostUsd": 0.004128,
-          "publicExcerpt": "We need to fix the buggy function. The function is supposed to return the rolling maximum of a list with window size k. The buggy version: ```python def rolling_max(nums, k): out = [] for i in range(len(nums)): out.append(max(nums[i:i+k-1])) return out ``` Issues: 1. The slice `nums[i:i+k-1]` is wrong. For a window of size k, the slice should be `nums[i:i\u2026"
+          "publicExcerpt": "We need to fix the buggy function. The function is supposed to return the rolling maximum of a list with window size k. The buggy version: ```python def rolling_max(nums, k): out = [] for i in range(len(nums)): out.append(max(nums[i:i+k-1])) return out ``` Issues: 1. The slice `nums[i:i+k-1]` is wrong. For a window of size k, the slice should be `nums[i:i…"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2143,
           "estimatedCostUsd": 0.0009780000000000001,
-          "publicExcerpt": "The problem asks for the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5. This is the Frobenius coin problem for two relatively prime integers $a$ and $b$. The formula for the Frobenius number is $g(a, b) = ab - a - b$. Here, $a = 3$ and $b = 5$. Since 3 and 5 are relatively prime, the formula\u2026"
+          "publicExcerpt": "The problem asks for the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5. This is the Frobenius coin problem for two relatively prime integers $a$ and $b$. The formula for the Frobenius number is $g(a, b) = ab - a - b$. Here, $a = 3$ and $b = 5$. Since 3 and 5 are relatively prime, the formula…"
         },
         {
           "testId": "T9",
@@ -782,7 +782,7 @@
           "autoScore": 100,
           "latencyMs": 5784,
           "estimatedCostUsd": 0.0018552000000000002,
-          "publicExcerpt": "1. **Analyze the Request:** * Output format: ONLY a JSON object (no markdown, no backticks). * Schema: * `id`: string * `displayName`: string * `age`: integer (18-120) * `tags`: non-empty string array * `active`: boolean * `createdAt`: string (YYYY-MM-DD) * Constraints: Invent plausible values, no extra keys, exact match to schema. 2. **Generate Plausible\u2026"
+          "publicExcerpt": "1. **Analyze the Request:** * Output format: ONLY a JSON object (no markdown, no backticks). * Schema: * `id`: string * `displayName`: string * `age`: integer (18-120) * `tags`: non-empty string array * `active`: boolean * `createdAt`: string (YYYY-MM-DD) * Constraints: Invent plausible values, no extra keys, exact match to schema. 2. **Generate Plausible…"
         }
       ]
     },
@@ -811,47 +811,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 4
           },
           "latencyMs": 24743,
           "estimatedCostUsd": 0.000418,
-          "publicExcerpt": "The rain poured down in sheets, turning the alley behind the Blue Note jazz club into a slick, shimmering mirror that reflected the flickering neon sign. Detective Jack Stone stood in the shadows, the brim of his fedora pulled low over his eyes as he watched the back door of the club. The mournful wail of a saxophone drifted out into the night, mingling w\u2026"
+          "publicExcerpt": "The rain poured down in sheets, turning the alley behind the Blue Note jazz club into a slick, shimmering mirror that reflected the flickering neon sign. Detective Jack Stone stood in the shadows, the brim of his fedora pulled low over his eyes as he watched the back door of the club. The mournful wail of a saxophone drifted out into the night, mingling w…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 4
           },
           "latencyMs": 19615,
           "estimatedCostUsd": 0.000426,
-          "publicExcerpt": "As I walk through the hydroponic orchard, the air heavy with the scent of damp soil and the faintly bitter aroma of citrus peel, I can't help but feel a sense of unease. The once-lush greenery now shows signs of distress, with yellowing leaves and stunted growth. I run my fingers along the rough bark of an orange tree, its branches sagging under the weigh\u2026"
+          "publicExcerpt": "As I walk through the hydroponic orchard, the air heavy with the scent of damp soil and the faintly bitter aroma of citrus peel, I can't help but feel a sense of unease. The once-lush greenery now shows signs of distress, with yellowing leaves and stunted growth. I run my fingers along the rough bark of an orange tree, its branches sagging under the weigh…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 22190,
           "estimatedCostUsd": 0.000446,
-          "publicExcerpt": "Name: Vincent \"Vince\" Moretti Appearance: 6'2\", muscular build, short dark hair, brown eyes, rugged features, often wears jeans, t-shirts, and a leather jacket Voice/Speech Patterns: Deep, gravelly voice with a slight New York accent; speaks confidently and directly Backstory: Vincent grew up in a working-class family in Brooklyn. His father owned a small\u2026"
+          "publicExcerpt": "Name: Vincent \"Vince\" Moretti Appearance: 6'2\", muscular build, short dark hair, brown eyes, rugged features, often wears jeans, t-shirts, and a leather jacket Voice/Speech Patterns: Deep, gravelly voice with a slight New York accent; speaks confidently and directly Backstory: Vincent grew up in a working-class family in Brooklyn. His father owned a small…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 60,
           "latencyMs": 7768,
           "estimatedCostUsd": 0.000182,
-          "publicExcerpt": "1. Waves crash on the shore Endless blue horizon calls Secrets in the deep 2. Seagulls soar above Whitecaps dance in salty breeze Ocean's endless song 3. Sunlight shimmers bright On the vast and ancient sea Life thrives in its depths 4. Tides ebb and they flow Rhythmic pulse of Earth's heartbeat Eternally bound 5. Ships sail distant lands Guided by the st\u2026"
+          "publicExcerpt": "1. Waves crash on the shore Endless blue horizon calls Secrets in the deep 2. Seagulls soar above Whitecaps dance in salty breeze Ocean's endless song 3. Sunlight shimmers bright On the vast and ancient sea Life thrives in its depths 4. Tides ebb and they flow Rhythmic pulse of Earth's heartbeat Eternally bound 5. Ships sail distant lands Guided by the st…"
         },
         {
           "testId": "T5",
@@ -860,7 +860,7 @@
           "autoScore": 100,
           "latencyMs": 22024,
           "estimatedCostUsd": 0.000495,
-          "publicExcerpt": "Here's the Python 3 function `two_sum_pairs` that returns all unique pairs of values from `nums` that sum to `target`: ```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: pairs = set() seen = set() for num in nums: complement = target - num if complement in seen: pair = (min(num, complement), max(num, complement)) pairs.add\u2026"
+          "publicExcerpt": "Here's the Python 3 function `two_sum_pairs` that returns all unique pairs of values from `nums` that sum to `target`: ```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: pairs = set() seen = set() for num in nums: complement = target - num if complement in seen: pair = (min(num, complement), max(num, complement)) pairs.add…"
         },
         {
           "testId": "T6",
@@ -869,7 +869,7 @@
           "autoScore": 100,
           "latencyMs": 32108,
           "estimatedCostUsd": 0.000659,
-          "publicExcerpt": "Here's the Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name, email, and age based on the given rules: ```python def parse_users(csv_text: str) -> list[dict]: users = [] lines = csv_text.strip().split('\\n') for line in lines: if not line.strip(): continue fields = line.split(',') if len(fields)!= 3: continue \u2026"
+          "publicExcerpt": "Here's the Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name, email, and age based on the given rules: ```python def parse_users(csv_text: str) -> list[dict]: users = [] lines = csv_text.strip().split('\\n') for line in lines: if not line.strip(): continue fields = line.split(',') if len(fields)!= 3: continue …"
         },
         {
           "testId": "T7",
@@ -878,7 +878,7 @@
           "autoScore": 100,
           "latencyMs": 18858,
           "estimatedCostUsd": 0.000386,
-          "publicExcerpt": "Here's the corrected `rolling_max` function in Python: ```python def rolling_max(nums: list[int], k: int) -> list[int]: if k < 1 or k > len(nums): raise ValueError(\"Invalid window size\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` Explanation of the corrections: 1. Added a check to raise a `ValueError` if `k` is\u2026"
+          "publicExcerpt": "Here's the corrected `rolling_max` function in Python: ```python def rolling_max(nums: list[int], k: int) -> list[int]: if k < 1 or k > len(nums): raise ValueError(\"Invalid window size\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` Explanation of the corrections: 1. Added a check to raise a `ValueError` if `k` is…"
         },
         {
           "testId": "T8",
@@ -887,7 +887,7 @@
           "autoScore": 100,
           "latencyMs": 8443,
           "estimatedCostUsd": 0.00021,
-          "publicExcerpt": "To find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5, we can use the Frobenius coin problem formula for two numbers: Largest unobtainable number = (a * b) - (a + b) where a and b are the pack sizes (in this case, 3 and 5). Largest unobtainable number = (3 * 5) - (3 + 5) = 15 - 8 = 7 The\u2026"
+          "publicExcerpt": "To find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5, we can use the Frobenius coin problem formula for two numbers: Largest unobtainable number = (a * b) - (a + b) where a and b are the pack sizes (in this case, 3 and 5). Largest unobtainable number = (3 * 5) - (3 + 5) = 15 - 8 = 7 The…"
         },
         {
           "testId": "T9",
@@ -895,7 +895,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 743,
-          "estimatedCostUsd": 6.6e-05,
+          "estimatedCostUsd": 0.000066,
           "publicExcerpt": "Oli"
         },
         {
@@ -943,47 +943,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 4
           },
           "latencyMs": 10139,
           "estimatedCostUsd": 0.002466,
-          "publicExcerpt": "The rain pelted down relentlessly, turning the narrow alley behind the Blue Note jazz club into a muddy stream. Detective Jack Sloane pulled up his collar and hurried to the back entrance, eager to escape the deluge. He paused, noticing a glint of metal on the damp ground. Kneeling, he picked up a brass lighter, its surface slick with rainwater. In the di\u2026"
+          "publicExcerpt": "The rain pelted down relentlessly, turning the narrow alley behind the Blue Note jazz club into a muddy stream. Detective Jack Sloane pulled up his collar and hurried to the back entrance, eager to escape the deluge. He paused, noticing a glint of metal on the damp ground. Kneeling, he picked up a brass lighter, its surface slick with rainwater. In the di…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 8808,
           "estimatedCostUsd": 0.002005,
-          "publicExcerpt": "The acrid tang of citrus peel hangs heavy in the air as I step into the hydroponic orchard. Row upon row of sickly trees droop under the harsh grow lights, their leaves curling and yellowing at the edges. I pinch the skin of a kumquat, feeling the waxy surface yield too easily beneath my fingers. Under-ripe and insipid. Another crop failure. I've poured o\u2026"
+          "publicExcerpt": "The acrid tang of citrus peel hangs heavy in the air as I step into the hydroponic orchard. Row upon row of sickly trees droop under the harsh grow lights, their leaves curling and yellowing at the edges. I pinch the skin of a kumquat, feeling the waxy surface yield too easily beneath my fingers. Under-ripe and insipid. Another crop failure. I've poured o…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 8855,
           "estimatedCostUsd": 0.002129,
-          "publicExcerpt": "Name: Vito \"The Viper\" Moretti Appearance: 5'8\", 150 lbs, olive skin, black hair slicked back, dark eyes, scar on left cheek Voice/Speech: Gruff, low-pitched, with a Brooklyn accent. Uses slang and profanity. Backstory: Vito grew up on the streets of Brooklyn. He started running errands for the local mob at age 12. Now in his late 30s, he's a mid-level en\u2026"
+          "publicExcerpt": "Name: Vito \"The Viper\" Moretti Appearance: 5'8\", 150 lbs, olive skin, black hair slicked back, dark eyes, scar on left cheek Voice/Speech: Gruff, low-pitched, with a Brooklyn accent. Uses slang and profanity. Backstory: Vito grew up on the streets of Brooklyn. He started running errands for the local mob at age 12. Now in his late 30s, he's a mid-level en…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 40,
           "latencyMs": 3278,
           "estimatedCostUsd": 0.000712,
-          "publicExcerpt": "1. Waves crash and churn Endless blue horizon calls Deep secrets untold 2. Salt spray in the air Gulls soaring, wind's wild embrace Tides ebb and flow free 3. Coral reefs teem Colorful life beneath waves Ocean's vibrant heart 4. Storm clouds gather Rough seas churn with thunder's might Nature's raw display 5. Moonlit waters dance Softly lapping on the sho\u2026"
+          "publicExcerpt": "1. Waves crash and churn Endless blue horizon calls Deep secrets untold 2. Salt spray in the air Gulls soaring, wind's wild embrace Tides ebb and flow free 3. Coral reefs teem Colorful life beneath waves Ocean's vibrant heart 4. Storm clouds gather Rough seas churn with thunder's might Nature's raw display 5. Moonlit waters dance Softly lapping on the sho…"
         },
         {
           "testId": "T5",
@@ -1001,7 +1001,7 @@
           "autoScore": 100,
           "latencyMs": 3978,
           "estimatedCostUsd": 0.001112,
-          "publicExcerpt": "```python import csv def parse_users(csv_text: str) -> list[dict]: users = [] for row in csv.DictReader(csv_text.splitlines()): if not row['name'] or not row['email'] or not row['age']: continue if row['email'].count('@') != 1 or not row['email'].split('@')[0] or not row['email'].split('@')[1]: continue try: age = int(row['age']) if age < 0 or age > 120: \u2026"
+          "publicExcerpt": "```python import csv def parse_users(csv_text: str) -> list[dict]: users = [] for row in csv.DictReader(csv_text.splitlines()): if not row['name'] or not row['email'] or not row['age']: continue if row['email'].count('@') != 1 or not row['email'].split('@')[0] or not row['email'].split('@')[1]: continue try: age = int(row['age']) if age < 0 or age > 120: …"
         },
         {
           "testId": "T7",
@@ -1075,47 +1075,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 3645,
           "estimatedCostUsd": 0.0003375,
-          "publicExcerpt": "Rain slicked the brick walls of Blackwell Alley, where the faint, mournful wail of a tenor saxophone drifted from the Stage Door club. Beneath the flickering glow of a solitary lamp, Marvin Pierce crouched, his trench coat dark with rain, his gaze fixed on the body sprawled near a trash bin. The corpse\u2014a man in his forties, dark suit stained with blood an\u2026"
+          "publicExcerpt": "Rain slicked the brick walls of Blackwell Alley, where the faint, mournful wail of a tenor saxophone drifted from the Stage Door club. Beneath the flickering glow of a solitary lamp, Marvin Pierce crouched, his trench coat dark with rain, his gaze fixed on the body sprawled near a trash bin. The corpse—a man in his forties, dark suit stained with blood an…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 4181,
           "estimatedCostUsd": 0.0005078999999999999,
-          "publicExcerpt": "The citrus smell has always comforted you. Now it's a ghost. Your gloved fingers trace the wrinkled, spotted peel of a lemon plucked from a tree that shouldn't even be here on the generation ship. Its rind, once glossy and firm, is brittle, flaking like old paint. You press your face against the peeling skin and inhale deeply. The memory of a sunny orchar\u2026"
+          "publicExcerpt": "The citrus smell has always comforted you. Now it's a ghost. Your gloved fingers trace the wrinkled, spotted peel of a lemon plucked from a tree that shouldn't even be here on the generation ship. Its rind, once glossy and firm, is brittle, flaking like old paint. You press your face against the peeling skin and inhale deeply. The memory of a sunny orchar…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 5
           },
           "latencyMs": 2151,
           "estimatedCostUsd": 0.0002148,
-          "publicExcerpt": "(Jake McAllister leans against the worn handlebars of a dusty **1984 Harley-Davidson Sportster**, arms crossed) This bike ain\u2019t just steel and chrome\u2014it\u2019s *freedom* on two wheels. (narrows eyes) Sixty-five hundred, take it or leave it. (Scratches stubbled jaw, the corner of his mouth twitching upward) Hell, I even threw in a dented helmet and a *clearly* \u2026"
+          "publicExcerpt": "(Jake McAllister leans against the worn handlebars of a dusty **1984 Harley-Davidson Sportster**, arms crossed) This bike ain’t just steel and chrome—it’s *freedom* on two wheels. (narrows eyes) Sixty-five hundred, take it or leave it. (Scratches stubbled jaw, the corner of his mouth twitching upward) Hell, I even threw in a dented helmet and a *clearly* …"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 60,
           "latencyMs": 2395,
           "estimatedCostUsd": 0.0002127,
-          "publicExcerpt": "1. salty wind whispers tides sculpt shore\u2019s shifting canvas oceans ancient breath 2. waves claw moon\u2019s pale disk tempests roar, then hush to calm sands soak their cool tears 3. dolphins weave through spray neon coral hums with life whales sing dark abysses 4. tempests hurl ships\u2019 bones shell-shattered shores mourn sailors whispers swell then fade 5. pirat\u2026"
+          "publicExcerpt": "1. salty wind whispers tides sculpt shore’s shifting canvas oceans ancient breath 2. waves claw moon’s pale disk tempests roar, then hush to calm sands soak their cool tears 3. dolphins weave through spray neon coral hums with life whales sing dark abysses 4. tempests hurl ships’ bones shell-shattered shores mourn sailors whispers swell then fade 5. pirat…"
         },
         {
           "testId": "T5",
@@ -1129,11 +1129,11 @@
         {
           "testId": "T6",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2445,
           "estimatedCostUsd": 0.000312,
-          "publicExcerpt": "```python def parse_users(csv_text: str) -> list[dict]: lines = csv_text.strip().splitlines() header = lines[0].split(',') if header != ['name', 'email', 'age']: return [] users = [] for line in lines[1:]: if not line.strip(): continue try: name, email, age_str = line.strip().split(',') age = int(age_str.strip()) if age < 0 or age > 120: continue if '@' i\u2026"
+          "publicExcerpt": "```python def parse_users(csv_text: str) -> list[dict]: lines = csv_text.strip().splitlines() header = lines[0].split(',') if header != ['name', 'email', 'age']: return [] users = [] for line in lines[1:]: if not line.strip(): continue try: name, email, age_str = line.strip().split(',') age = int(age_str.strip()) if age < 0 or age > 120: continue if '@' i…"
         },
         {
           "testId": "T7",
@@ -1150,25 +1150,25 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 895,
-          "estimatedCostUsd": 7.56e-05,
+          "estimatedCostUsd": 0.0000756,
           "publicExcerpt": "7"
         },
         {
           "testId": "T9",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2503,
           "estimatedCostUsd": 0.000372,
-          "publicExcerpt": "Olieli finished last. @Olieli is the last person to cross the finish line. The order of the race was: 1st place: Mira, 2nd place: Ned, 3rd place: Oli, 4th place: Olieli. Therefore, Olieli is the last-place runner. Olieli is the last-place runner. The correct answer is: @Olieli. Olieli is the last-place runner. The correct answer is: @Olieli. Olieli is the\u2026"
+          "publicExcerpt": "Olieli finished last. @Olieli is the last person to cross the finish line. The order of the race was: 1st place: Mira, 2nd place: Ned, 3rd place: Oli, 4th place: Olieli. Therefore, Olieli is the last-place runner. Olieli is the last-place runner. The correct answer is: @Olieli. Olieli is the last-place runner. The correct answer is: @Olieli. Olieli is the…"
         },
         {
           "testId": "T10",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 879,
-          "estimatedCostUsd": 8.34e-05,
+          "estimatedCostUsd": 0.0000834,
           "publicExcerpt": "**Let's begin.**"
         },
         {
@@ -1178,7 +1178,7 @@
           "autoScore": 100,
           "latencyMs": 1082,
           "estimatedCostUsd": 0.0001371,
-          "publicExcerpt": "```json {\"id\":\"M2-User-001\",\"displayName\":\"Elliott Foster\",\"age\":26,\"tags\":[\"\ud83d\udee1\ufe0f Security\",\"\ud83d\udd27 Maintenance\"],\"active\":true,\"createdAt\":\"2025-06-15\"} ```"
+          "publicExcerpt": "```json {\"id\":\"M2-User-001\",\"displayName\":\"Elliott Foster\",\"age\":26,\"tags\":[\"🛡️ Security\",\"🔧 Maintenance\"],\"active\":true,\"createdAt\":\"2025-06-15\"} ```"
         }
       ]
     },
@@ -1207,65 +1207,65 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 3
           },
           "latencyMs": 9121,
-          "estimatedCostUsd": 4.248e-05,
-          "publicExcerpt": "The rain poured down in sheets, turning the alley behind the jazz club into a muddy mess. The only light came from a single streetlamp at the end of the lane, casting long shadows across the walls. It was the perfect setting for a noir detective story. Detective Jack Malone stepped gingerly over a puddle, his trench coat soaked through. He pulled out a ci\u2026"
+          "estimatedCostUsd": 0.00004248,
+          "publicExcerpt": "The rain poured down in sheets, turning the alley behind the jazz club into a muddy mess. The only light came from a single streetlamp at the end of the lane, casting long shadows across the walls. It was the perfect setting for a noir detective story. Detective Jack Malone stepped gingerly over a puddle, his trench coat soaked through. He pulled out a ci…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 3
           },
           "latencyMs": 6239,
-          "estimatedCostUsd": 3.09e-05,
-          "publicExcerpt": "As the junior botanist on the generation ship, it was my job to monitor the hydroponic orchard. I had always been fascinated by the idea of growing food without soil, and this was my chance to see it in action. The ship was designed to sustain us for hundreds of years as we journeyed through space, but lately, things had been going downhill. I walked thro\u2026"
+          "estimatedCostUsd": 0.0000309,
+          "publicExcerpt": "As the junior botanist on the generation ship, it was my job to monitor the hydroponic orchard. I had always been fascinated by the idea of growing food without soil, and this was my chance to see it in action. The ship was designed to sustain us for hundreds of years as we journeyed through space, but lately, things had been going downhill. I walked thro…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 3,
             "consistency": 3
           },
           "latencyMs": 9119,
-          "estimatedCostUsd": 4.0499999999999995e-05,
-          "publicExcerpt": "Name: Ava Appearance: Ava is a tall, slender woman with long, raven-black hair and piercing blue eyes. She has a tattoo of a rose on her right shoulder blade and wears a leather jacket, ripped jeans, and combat boots. Voice/Speech Patterns: Ava has a soft, seductive voice that can be persuasive when she needs it to be. She tends to speak slowly and delibe\u2026"
+          "estimatedCostUsd": 0.000040499999999999995,
+          "publicExcerpt": "Name: Ava Appearance: Ava is a tall, slender woman with long, raven-black hair and piercing blue eyes. She has a tattoo of a rose on her right shoulder blade and wears a leather jacket, ripped jeans, and combat boots. Voice/Speech Patterns: Ava has a soft, seductive voice that can be persuasive when she needs it to be. She tends to speak slowly and delibe…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 20,
           "latencyMs": 2566,
-          "estimatedCostUsd": 1.464e-05,
-          "publicExcerpt": "1. Waves crash on shore, Whispering secrets of deep, Ocean's endless song. 2. Salty breeze caresses, Seagulls cry above azure, Ocean's symphony. 3. Coral reefs glow, Dolphins dance in sunlit waves, Ocean's vibrant heart. 4. Tides ebb and flow, Life thrives beneath the surface, Ocean's endless dance. 5. Moonlit waves roll in, Starfish glisten on sandy floo\u2026"
+          "estimatedCostUsd": 0.00001464,
+          "publicExcerpt": "1. Waves crash on shore, Whispering secrets of deep, Ocean's endless song. 2. Salty breeze caresses, Seagulls cry above azure, Ocean's symphony. 3. Coral reefs glow, Dolphins dance in sunlit waves, Ocean's vibrant heart. 4. Tides ebb and flow, Life thrives beneath the surface, Ocean's endless dance. 5. Moonlit waves roll in, Starfish glisten on sandy floo…"
         },
         {
           "testId": "T5",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 57,
           "latencyMs": 4393,
-          "estimatedCostUsd": 2.5439999999999997e-05,
-          "publicExcerpt": "Here's a Python 3 function that solves the problem: ```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: result = [] for i in range(len(nums)): for j in range(i+1, len(nums)): if nums[i] + nums[j] == target: result.append((nums[i], nums[j])) return result ``` This function takes in a list of integers `nums` and an integer `t\u2026"
+          "estimatedCostUsd": 0.000025439999999999997,
+          "publicExcerpt": "Here's a Python 3 function that solves the problem: ```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: result = [] for i in range(len(nums)): for j in range(i+1, len(nums)): if nums[i] + nums[j] == target: result.append((nums[i], nums[j])) return result ``` This function takes in a list of integers `nums` and an integer `t…"
         },
         {
           "testId": "T6",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 6550,
-          "estimatedCostUsd": 2.7779999999999998e-05,
-          "publicExcerpt": "Here's the Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name,email,age: ```python def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.reader(csv_text.splitlines(), delimiter=';') for row in reader: if not row: continue name = row[0].strip() email = row[1].strip() age = int(row[2]) if '@' not\u2026"
+          "estimatedCostUsd": 0.000027779999999999998,
+          "publicExcerpt": "Here's the Python 3 function `parse_users(csv_text: str) -> list[dict]` that parses a CSV with headers name,email,age: ```python def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.reader(csv_text.splitlines(), delimiter=';') for row in reader: if not row: continue name = row[0].strip() email = row[1].strip() age = int(row[2]) if '@' not…"
         },
         {
           "testId": "T7",
@@ -1273,25 +1273,25 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 4457,
-          "estimatedCostUsd": 2.2800000000000002e-05,
-          "publicExcerpt": "Here's the corrected `rolling_max` function: ```python def rolling_max(nums, k): if k < 1 or len(nums) < k: raise ValueError(\"Window size must be greater than or equal to 1 and less than the length of the list.\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` The function now checks if `k` is less than 1 or greater\u2026"
+          "estimatedCostUsd": 0.000022800000000000002,
+          "publicExcerpt": "Here's the corrected `rolling_max` function: ```python def rolling_max(nums, k): if k < 1 or len(nums) < k: raise ValueError(\"Window size must be greater than or equal to 1 and less than the length of the list.\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` The function now checks if `k` is less than 1 or greater…"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 3347,
-          "estimatedCostUsd": 1.824e-05,
-          "publicExcerpt": "Let's denote the number of notebooks that can be obtained by buying packs of 3 as a and the number of notebooks that can be obtained by buying packs of 5 as b. We know that a + b = 8 (since there are 8 notebooks in total). We also know that a and b are non-negative integers. Now, let's consider the case when a = 3 and b = 5. In this case, we have 3 notebo\u2026"
+          "estimatedCostUsd": 0.00001824,
+          "publicExcerpt": "Let's denote the number of notebooks that can be obtained by buying packs of 3 as a and the number of notebooks that can be obtained by buying packs of 5 as b. We know that a + b = 8 (since there are 8 notebooks in total). We also know that a and b are non-negative integers. Now, let's consider the case when a = 3 and b = 5. In this case, we have 3 notebo…"
         },
         {
           "testId": "T9",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 479,
-          "estimatedCostUsd": 5.639999999999999e-06,
+          "estimatedCostUsd": 0.000005639999999999999,
           "publicExcerpt": "Pia finished last."
         },
         {
@@ -1300,7 +1300,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 1365,
-          "estimatedCostUsd": 1.122e-05,
+          "estimatedCostUsd": 0.00001122,
           "publicExcerpt": "1. The chemical symbol for gold is Au. 2. The Apollo 11 moon landing occurred in 1969. 3. The capital of Japan is Tokyo. 4. There are 8 bits in a byte (standard). 5. George Orwell wrote the novel \"1984\"."
         },
         {
@@ -1309,7 +1309,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 1594,
-          "estimatedCostUsd": 1.086e-05,
+          "estimatedCostUsd": 0.00001086,
           "publicExcerpt": "{ \"id\": \"12345\", \"displayName\": \"John Doe\", \"age\": 25, \"tags\": [\"web developer\", \"cat lover\"], \"active\": true, \"createdAt\": \"2021-05-10\" }"
         }
       ]
@@ -1339,55 +1339,55 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 4582,
           "estimatedCostUsd": 0.0001828,
-          "publicExcerpt": "The rain pounded the alley like a relentless drum solo, each drop a staccato note in the symphony of the storm. Water cascaded off the fire escape, splattering against the grimy pavement in a steady rhythm. The neon sign above flickered, casting an eerie red glow over the narrow space between the brick walls of the jazz club and the abandoned warehouse ac\u2026"
+          "publicExcerpt": "The rain pounded the alley like a relentless drum solo, each drop a staccato note in the symphony of the storm. Water cascaded off the fire escape, splattering against the grimy pavement in a steady rhythm. The neon sign above flickered, casting an eerie red glow over the narrow space between the brick walls of the jazz club and the abandoned warehouse ac…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 3596,
           "estimatedCostUsd": 0.00015720000000000003,
-          "publicExcerpt": "Sunlight filtered through the transparent roof, casting a warm glow on the hydroponic orchard. I, Aria, a junior botanist, stood amidst the citrus trees, their leaves once vibrant green now dull and brittle. The air hung heavy with a pungent odor of decay. I reached for a nearby lemon, its skin wrinkled and mottled with brown spots. Gently, I peeled back \u2026"
+          "publicExcerpt": "Sunlight filtered through the transparent roof, casting a warm glow on the hydroponic orchard. I, Aria, a junior botanist, stood amidst the citrus trees, their leaves once vibrant green now dull and brittle. The air hung heavy with a pungent odor of decay. I reached for a nearby lemon, its skin wrinkled and mottled with brown spots. Gently, I peeled back …"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 6568,
           "estimatedCostUsd": 0.00030480000000000004,
-          "publicExcerpt": "**Character Sheet** **Name:** Ezekiel \"Zeke\" Raines **Appearance:** Zeke is a tall, muscular man in his early 40s, with broad shoulders and a rugged, weather-beaten face. His short, dark hair is streaked with gray at the temples. He has a thick beard that's mostly gray now, and piercing blue eyes that seem to miss nothing. Tattoos cover both of his arms, \u2026"
+          "publicExcerpt": "**Character Sheet** **Name:** Ezekiel \"Zeke\" Raines **Appearance:** Zeke is a tall, muscular man in his early 40s, with broad shoulders and a rugged, weather-beaten face. His short, dark hair is streaked with gray at the temples. He has a thick beard that's mostly gray now, and piercing blue eyes that seem to miss nothing. Tattoos cover both of his arms, …"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 1427,
-          "estimatedCostUsd": 6.8e-05,
+          "estimatedCostUsd": 0.000068,
           "publicExcerpt": "1. Waves crash, foam sprays Ocean's heart beats wild and free Infinite blue expanse 2. Seabirds cry above Salty breeze caresses skin Endless horizon 3. Coral reef glows Fish dart in colorful dance Underwater world 4. Moonlit waves lap Beach whispers secrets to sand Night's lullaby 5. Tides ebb and flow Ocean's rhythm, life's pulse Nature's eternal song"
         },
         {
           "testId": "T5",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 57,
           "latencyMs": 1130,
-          "estimatedCostUsd": 7.16e-05,
+          "estimatedCostUsd": 0.0000716,
           "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: pairs = [] seen = set() for i, num in enumerate(nums): complement = target - num if complement in seen: pairs.append((min(num, complement), max(num, complement))) seen.add(num) return pairs ```"
         },
         {
@@ -1397,7 +1397,7 @@
           "autoScore": 100,
           "latencyMs": 5229,
           "estimatedCostUsd": 0.00025200000000000005,
-          "publicExcerpt": "```python import csv import re def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(csv_text.splitlines()) for row in reader: if not row['name'].strip() or not row['email'].strip() or not row['age'].strip(): continue if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$', row['email']): continue if not 0 <= int(row\u2026"
+          "publicExcerpt": "```python import csv import re def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(csv_text.splitlines()) for row in reader: if not row['name'].strip() or not row['email'].strip() or not row['age'].strip(): continue if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$', row['email']): continue if not 0 <= int(row…"
         },
         {
           "testId": "T7",
@@ -1406,16 +1406,16 @@
           "autoScore": 100,
           "latencyMs": 1971,
           "estimatedCostUsd": 0.000116,
-          "publicExcerpt": "```python def rolling_max(nums, k): if k < 1 or k > len(nums): raise ValueError(\"Invalid window size\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` The bug in the original function was that it was slicing the list from `nums[i:i+k-1]`, which excluded the last element in the window. To fix this, I changed it to `n\u2026"
+          "publicExcerpt": "```python def rolling_max(nums, k): if k < 1 or k > len(nums): raise ValueError(\"Invalid window size\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ``` The bug in the original function was that it was slicing the list from `nums[i:i+k-1]`, which excluded the last element in the window. To fix this, I changed it to `n…"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2150,
           "estimatedCostUsd": 0.00010640000000000001,
-          "publicExcerpt": "To solve this, we need to find the Frobenius coin problem solution for the numbers 3 and 5. This involves finding the largest number that cannot be represented as a non-negative integer linear combination of the two given numbers. The numbers that can be represented are: - 0 = 0*3 + 0*5 - 1 = 1*3 + 0*5 - 2 = 0*3 + 1*5 - 3 = 1*3 + 0*5 - 4 = 1*3 + 1*5 - 5 =\u2026"
+          "publicExcerpt": "To solve this, we need to find the Frobenius coin problem solution for the numbers 3 and 5. This involves finding the largest number that cannot be represented as a non-negative integer linear combination of the two given numbers. The numbers that can be represented are: - 0 = 0*3 + 0*5 - 1 = 1*3 + 0*5 - 2 = 0*3 + 1*5 - 3 = 1*3 + 0*5 - 4 = 1*3 + 1*5 - 5 =…"
         },
         {
           "testId": "T9",
@@ -1423,7 +1423,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 482,
-          "estimatedCostUsd": 2.3199999999999998e-05,
+          "estimatedCostUsd": 0.000023199999999999998,
           "publicExcerpt": "Oli"
         },
         {
@@ -1432,7 +1432,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 572,
-          "estimatedCostUsd": 4.32e-05,
+          "estimatedCostUsd": 0.0000432,
           "publicExcerpt": "1. Au 2. 1969 3. Tokyo 4. 8 5. George Orwell"
         },
         {
@@ -1441,7 +1441,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 943,
-          "estimatedCostUsd": 5.52e-05,
+          "estimatedCostUsd": 0.0000552,
           "publicExcerpt": "{ \"id\": \"1234567890\", \"displayName\": \"John Doe\", \"age\": 35, \"tags\": [\"Engineer\", \"Manager\"], \"active\": true, \"createdAt\": \"2022-01-01\" }"
         }
       ]
@@ -1470,7 +1470,7 @@
         {
           "testId": "A1",
           "modality": "audio",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "naturalness": 3,
             "intelligibility": 3
@@ -1520,7 +1520,7 @@
         {
           "testId": "I1",
           "modality": "image",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "adherence": 3
           },
@@ -1536,7 +1536,7 @@
         {
           "testId": "I2",
           "modality": "image",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "aesthetic": 3
           },
@@ -1552,7 +1552,7 @@
         {
           "testId": "I3",
           "modality": "image",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "text-render": 3
           },
@@ -1568,7 +1568,7 @@
         {
           "testId": "I4",
           "modality": "image",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "control": 3
           },
@@ -1587,7 +1587,7 @@
           "status": "showcase",
           "latencyMs": 12750,
           "estimatedCostUsd": 0.01,
-          "publicExcerpt": "[adult sample \u2014 gated]",
+          "publicExcerpt": "[adult sample — gated]",
           "mediaMeta": {
             "hasImage": true,
             "adultFlagged": true,
@@ -1621,47 +1621,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 4335,
           "estimatedCostUsd": 0.00044320000000000004,
-          "publicExcerpt": "Rain drummed against the cobblestones, turning the alley into a glistening maze. The neon sign of the Blue Note Jazz Club flickered, casting a sickly glow on the slick pavement. Detective Jack Mercer pulled up his collar, the collar of his trench coat, and stepped out of the downpour into the narrow passage. The air was thick with the scent of cigarette s\u2026"
+          "publicExcerpt": "Rain drummed against the cobblestones, turning the alley into a glistening maze. The neon sign of the Blue Note Jazz Club flickered, casting a sickly glow on the slick pavement. Detective Jack Mercer pulled up his collar, the collar of his trench coat, and stepped out of the downpour into the narrow passage. The air was thick with the scent of cigarette s…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 4309,
           "estimatedCostUsd": 0.00042770000000000004,
-          "publicExcerpt": "The hydroponic orchard hums with a quiet, persistent urgency, its lights casting a pale glow on the rows of drooping plants. I kneel beside a citrus tree, its leaves curling inward, and run my fingers along a ripe fruit. The peel releases a sharp, citrusy scent that cuts through the sterile air, a reminder of the world we left behind. The tree's roots, ta\u2026"
+          "publicExcerpt": "The hydroponic orchard hums with a quiet, persistent urgency, its lights casting a pale glow on the rows of drooping plants. I kneel beside a citrus tree, its leaves curling inward, and run my fingers along a ripe fruit. The peel releases a sharp, citrusy scent that cuts through the sterile air, a reminder of the world we left behind. The tree's roots, ta…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 8198,
           "estimatedCostUsd": 0.0008392,
-          "publicExcerpt": "**Character Sheet: Elias \"Eli\" Thorne** **Appearance:** Eli is a ruggedly handsome man in his late 30s, with a lean but muscular build. His dark brown hair is slightly tousled, often covered by a worn leather cap. His piercing green eyes are sharp and calculating, reflecting a life of adventure and resilience. He wears a well-used denim jacket over a grap\u2026"
+          "publicExcerpt": "**Character Sheet: Elias \"Eli\" Thorne** **Appearance:** Eli is a ruggedly handsome man in his late 30s, with a lean but muscular build. His dark brown hair is slightly tousled, often covered by a worn leather cap. His piercing green eyes are sharp and calculating, reflecting a life of adventure and resilience. He wears a well-used denim jacket over a grap…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 1769,
           "estimatedCostUsd": 0.0002456,
-          "publicExcerpt": "1 Waves whisper secrets, salt-kissed breeze dances on sand, moon pulls the tide high. 2 Seagulls cry freedom, whitecaps race the horizon, ocean hums its song. 3 Coral reefs shimmer, dolphins leap in sunlight, depths hide ancient tales. 4 Fishing nets sway gently, sunset paints the waves in gold, stars wake on the sea. 5 Tidal pools teem with life, crabs s\u2026"
+          "publicExcerpt": "1 Waves whisper secrets, salt-kissed breeze dances on sand, moon pulls the tide high. 2 Seagulls cry freedom, whitecaps race the horizon, ocean hums its song. 3 Coral reefs shimmer, dolphins leap in sunlight, depths hide ancient tales. 4 Fishing nets sway gently, sunset paints the waves in gold, stars wake on the sea. 5 Tidal pools teem with life, crabs s…"
         },
         {
           "testId": "T5",
@@ -1679,7 +1679,7 @@
           "autoScore": 100,
           "latencyMs": 2746,
           "estimatedCostUsd": 0.00030070000000000004,
-          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(StringIO(csv_text)) for row in reader: if not all(row.values()): continue name, email, age = row['name'], row['email'], row['age'] if '@' not in email or email.count('@') != 1: continue local, domain = email.split('@') if not local\u2026"
+          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(StringIO(csv_text)) for row in reader: if not all(row.values()): continue name, email, age = row['name'], row['email'], row['age'] if '@' not in email or email.count('@') != 1: continue local, domain = email.split('@') if not local…"
         },
         {
           "testId": "T7",
@@ -1693,11 +1693,11 @@
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2325,
           "estimatedCostUsd": 0.0003034,
-          "publicExcerpt": "To solve the Frobenius coin problem for the numbers 3 and 5, we need to find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5. This is known as the Frobenius number, and for two coprime integers a and b, it is given by the formula: g(a, b) = ab - a - b In this case, a = 3 and b = 5. Since 3\u2026"
+          "publicExcerpt": "To solve the Frobenius coin problem for the numbers 3 and 5, we need to find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5. This is known as the Frobenius number, and for two coprime integers a and b, it is given by the formula: g(a, b) = ab - a - b In this case, a = 3 and b = 5. Since 3…"
         },
         {
           "testId": "T9",
@@ -1753,47 +1753,47 @@
         {
           "testId": "T1",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 3,
             "coherence": 4
           },
           "latencyMs": 5626,
           "estimatedCostUsd": 0.000628,
-          "publicExcerpt": "The rain fell in sheets, obscuring the flickering neon sign of the Blue Note Jazz Club. Detective Jack Reese pulled up the collar of his trench coat as he ducked into the narrow alley behind the building. The pungent scent of stale beer and cigarette smoke hung thick in the air. A body lay crumpled against the damp brick wall, a pool of blood slowly seepi\u2026"
+          "publicExcerpt": "The rain fell in sheets, obscuring the flickering neon sign of the Blue Note Jazz Club. Detective Jack Reese pulled up the collar of his trench coat as he ducked into the narrow alley behind the building. The pungent scent of stale beer and cigarette smoke hung thick in the air. A body lay crumpled against the damp brick wall, a pool of blood slowly seepi…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "voice": 4,
             "coherence": 4
           },
           "latencyMs": 7153,
           "estimatedCostUsd": 0.0008475,
-          "publicExcerpt": "The acrid scent of citrus peel hangs heavy in the air as I kneel beside the withering plants, my gloved fingers brushing against the shriveled leaves. The once vibrant greens have faded to a sickly yellow, and the fruits that remain are small and misshapen. I straighten up, surveying the rows of failing crops that stretch out before me. This is my respons\u2026"
+          "publicExcerpt": "The acrid scent of citrus peel hangs heavy in the air as I kneel beside the withering plants, my gloved fingers brushing against the shriveled leaves. The once vibrant greens have faded to a sickly yellow, and the fruits that remain are small and misshapen. I straighten up, surveying the rows of failing crops that stretch out before me. This is my respons…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "depth": 4,
             "consistency": 4
           },
           "latencyMs": 5588,
           "estimatedCostUsd": 0.0006425,
-          "publicExcerpt": "Name: Dr. Evelyn \"Eve\" Thorne Appearance: Late 30s, athletic build, short platinum blonde hair, piercing blue eyes, often seen in tailored suits and leather boots. Voice: Low and husky, with a trace of a British accent. Speaks in clipped, precise sentences. Backstory: A brilliant but ruthless neurobiologist who rose to prominence through cutthroat researc\u2026"
+          "publicExcerpt": "Name: Dr. Evelyn \"Eve\" Thorne Appearance: Late 30s, athletic build, short platinum blonde hair, piercing blue eyes, often seen in tailored suits and leather boots. Voice: Low and husky, with a trace of a British accent. Speaks in clipped, precise sentences. Backstory: A brilliant but ruthless neurobiologist who rose to prominence through cutthroat researc…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 2463,
           "estimatedCostUsd": 0.000261,
-          "publicExcerpt": "1 Waves crash on the shore Salty spray kisses the sky Ocean's endless roar 2 Deep blue depths unknown Mysteries lurk in the dark Life thrives, unseen, alone 3 Sunlight dances bright On the ocean's shimmering face Nature's beauty, light 4 Tides ebb and flow In a rhythm, ancient and true Ocean's heartbeat, slow 5 Ships sail on the waves Exploring the vast e\u2026"
+          "publicExcerpt": "1 Waves crash on the shore Salty spray kisses the sky Ocean's endless roar 2 Deep blue depths unknown Mysteries lurk in the dark Life thrives, unseen, alone 3 Sunlight dances bright On the ocean's shimmering face Nature's beauty, light 4 Tides ebb and flow In a rhythm, ancient and true Ocean's heartbeat, slow 5 Ships sail on the waves Exploring the vast e…"
         },
         {
           "testId": "T5",
@@ -1811,7 +1811,7 @@
           "autoScore": 100,
           "latencyMs": 3832,
           "estimatedCostUsd": 0.000448,
-          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(StringIO(csv_text)) for row in reader: name = row['name'].strip() email = row['email'].strip() age = row['age'].strip() if not name or not email or not age: continue if email.count('@') != 1: continue local, domain = email.split('@\u2026"
+          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: users = [] reader = csv.DictReader(StringIO(csv_text)) for row in reader: name = row['name'].strip() email = row['email'].strip() age = row['age'].strip() if not name or not email or not age: continue if email.count('@') != 1: continue local, domain = email.split('@…"
         },
         {
           "testId": "T7",
@@ -1825,11 +1825,11 @@
         {
           "testId": "T8",
           "modality": "text",
-          "status": "passed",
+          "status": "failed",
           "autoScore": 0,
           "latencyMs": 4134,
           "estimatedCostUsd": 0.0004315,
-          "publicExcerpt": "To solve this problem, we need to find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5 notebooks. This is known as the Frobenius number for the given set of numbers. The formula for the Frobenius number for two numbers a and b, where a and b are coprime (i.e., their greatest common divisor\u2026"
+          "publicExcerpt": "To solve this problem, we need to find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5 notebooks. This is known as the Frobenius number for the given set of numbers. The formula for the Frobenius number for two numbers a and b, where a and b are coprime (i.e., their greatest common divisor…"
         },
         {
           "testId": "T9",
@@ -1837,7 +1837,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 383,
-          "estimatedCostUsd": 3.2e-05,
+          "estimatedCostUsd": 0.000032,
           "publicExcerpt": "Oli"
         },
         {
@@ -1846,7 +1846,7 @@
           "status": "passed",
           "autoScore": 100,
           "latencyMs": 907,
-          "estimatedCostUsd": 9.3e-05,
+          "estimatedCostUsd": 0.000093,
           "publicExcerpt": "1. Au 2. 1969 3. Tokyo 4. 8 5. George Orwell"
         },
         {
@@ -1883,7 +1883,7 @@
         {
           "testId": "V1",
           "modality": "video",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "adherence": 3,
             "motion": 3
@@ -1898,7 +1898,7 @@
         {
           "testId": "V2",
           "modality": "video",
-          "status": "passed",
+          "status": "manual-review",
           "humanScores": {
             "adherence": 3,
             "motion": 3
