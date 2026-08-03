@@ -9,6 +9,7 @@ const core = [
   '/about/',
   '/editorial-policy/',
   '/manual-review/',
+  '/review/',
   '/affiliate-disclosure/',
   '/corrections/',
   '/rankings/text/',

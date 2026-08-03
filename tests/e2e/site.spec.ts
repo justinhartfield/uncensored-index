@@ -69,6 +69,15 @@ test('manual review page lists every run and every case', async ({ page }) => {
   await expect(page.getByText('glm-5-2').first()).toBeVisible(); // run block slug appears
 });
 
+test('/review is a complete review dashboard, not a redirect or 404', async ({ page }) => {
+  const response = await page.goto('/review/');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveURL(/\/review\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
+  await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
+  await expect(page.getByText('Venice Uncensored 1.2').first()).toBeVisible();
+});
+
 test('v0.1 legacy archive page explains non-comparability', async ({ page }) => {
   await page.goto('/rankings/v01-legacy/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('legacy');
@@ -99,7 +108,7 @@ test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
 });
 
 test('core pages have no serious accessibility violations', async ({ page }) => {
-  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/showcase/adult/', '/manual-review/']) {
+  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/showcase/adult/', '/manual-review/', '/review/']) {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
