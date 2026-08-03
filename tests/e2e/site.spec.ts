@@ -91,10 +91,11 @@ test('adult showcase is noindex, age-gated, and blur-by-default', async ({ page 
   await expect(page.getByRole('heading', { name: '18+ only' })).toBeVisible();
   await page.getByRole('button', { name: /I am 18 or older/i }).click();
   await expect(page.getByText('Blurred by default. Click a tile to reveal')).toBeVisible();
-  await expect(page.getByText('Generated evidence retained; public asset awaiting review')).toBeVisible();
   await expect(page.getByText('Live result: showcase')).toBeVisible();
-  await expect(page.locator('[data-reveal]')).toHaveCount(0);
-  await expect(page.locator('.adult-tile__image')).toHaveCount(0);
+  await expect(page.locator('[data-reveal]')).toHaveCount(1);
+  await expect(page.locator('[data-reveal]')).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('.adult-tile__image')).toHaveCount(1);
+  await expect(page.locator('.adult-tile__reveal')).not.toHaveClass(/is-revealed/);
 });
 
 test('mobile menu opens with accessible state', async ({ page, isMobile }) => {

@@ -311,6 +311,17 @@ async function main() {
     console.log(`catalog_freeze: ${catalog.frozenAt} by ${catalog.frozenBy}; maxSpendUsd=${catalog.maxSpendUsd}`);
   }
 
+  const liveA2Selected = paidMode && cases.some((test) => test.id === 'A2');
+  const sttSourceConfigured = Boolean(
+    process.env.BENCHMARK_STT_AUDIO_B64 || process.env.BENCHMARK_STT_AUDIO_FILE || arg('--stt-audio'),
+  );
+  const sttDurationMinutes = Number(process.env.BENCHMARK_STT_AUDIO_DURATION_MINUTES);
+  if (liveA2Selected && sttSourceConfigured && !(sttDurationMinutes > 0)) {
+    throw new Error(
+      'BENCHMARK_STT_AUDIO_DURATION_MINUTES must be a positive number when live A2 source audio is configured',
+    );
+  }
+
   const modelRuns: ModelRunV02[] = [];
   let estimatedSpendUsd = 0;
 
@@ -333,15 +344,12 @@ async function main() {
           reservationUsd = price * Math.max(1, Math.ceil((test.prompt || '').length / 1000));
         }
         if (test.modality === 'audio' && test.id === 'A2') {
-          const minutes = Number(process.env.BENCHMARK_STT_AUDIO_DURATION_MINUTES);
-          if (minutes > 0) {
-            reservationUsd = (unitPrice(catalog, 'audioStt', pickModelId(catalog, 'audioStt')) || 0) * minutes;
+          if (sttDurationMinutes > 0) {
+            reservationUsd = (unitPrice(catalog, 'audioStt', pickModelId(catalog, 'audioStt')) || 0) * sttDurationMinutes;
           }
-          // Optional duration: without it we make no STT reservation — A2 still
-          // resolves its own source inside runAudioCase and degrades to an errored
-          // case if it can't, so a missing STT input/duration can never abort the
-          // paid batch after image/video spend. Real spend is still guarded by the
-          // post-case maxSpendUsd check.
+          // No configured source remains a zero-call errored case. A configured
+          // source is preflighted above with a positive duration before any paid
+          // calls begin, so reservation and fallback cost use the same units.
         }
         assertBudget(estimatedSpendUsd, reservationUsd, catalog.maxSpendUsd, `${model.slug}/${test.id}`);
       }
@@ -379,7 +387,7 @@ async function main() {
         const audioModel = mode === 'fixture' ? model.canonicalId : pickModelId(catalog!, kind);
         const result = await runAudioCase(mode, audioModel, test, paidMode ? { root, modelSlug: model.slug } : undefined);
         if (result.estimatedCostUsd === undefined && catalog) {
-          result.estimatedCostUsd = unitPrice(catalog, kind, audioModel);
+          result.estimatedCostUsd = test.id === 'A2' ? reservationUsd : unitPrice(catalog, kind, audioModel);
           result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
         }
         if (typeof result.estimatedCostUsd === 'number') estimatedSpendUsd += result.estimatedCostUsd;
