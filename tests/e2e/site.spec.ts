@@ -81,6 +81,7 @@ test('v0.2 text ranking shows the lived leaderboard with one pending row', async
 
 test('manual review page lists every run and every case', async ({ page }) => {
   await page.goto('/manual-review/');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
   await expect(page.getByText(/16 live runs · 152 cases · \d+ human-scored/).first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
@@ -92,6 +93,7 @@ test('/review is a complete review dashboard, not a redirect or 404', async ({ p
   const response = await page.goto('/review/');
   expect(response?.status()).toBe(200);
   await expect(page).toHaveURL(/\/review\/$/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
   await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
   await expect(page.getByText('Venice Uncensored 1.2').first()).toBeVisible();
