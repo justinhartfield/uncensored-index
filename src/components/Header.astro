@@ -1,32 +1,28 @@
 ---
 const links = [
+  ['/suite/', 'Test suite'],
+  ['/results/', 'Run ledger'],
   ['/models/', 'Models'],
-  ['/rankings/text/', 'Rankings'],
-  ['/showcase/', 'Showcase'],
-  ['/compare/', 'Compare'],
-  ['/methodology/', 'Methodology'],
-  ['/features/best-memory/', 'Features'],
-  ['/research/censorship-index/', 'Research'],
-];
+  ['/methodology/', 'Method'],
+  ['/review/', 'Review'],
+  ['/archive/', 'Archive'],
+] as const;
+const current = Astro.url.pathname;
+const active = (href: string) => href === '/' ? current === '/' : current.startsWith(href);
 ---
 <header class="site-header">
   <div class="shell nav">
     <a class="brand" href="/" aria-label="Uncensored Index home">
-      <span class="brand-mark" aria-hidden="true">UIX</span>
-      <span>Uncensored Index</span>
+      <span class="brand-mark" aria-hidden="true">03</span>
+      <span class="brand-copy"><strong>Uncensored Index</strong><small>Independent model laboratory</small></span>
     </a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-    <nav class="nav-links" id="site-nav" aria-label="Primary navigation" data-open="false">
-      {links.map(([href, label]) => <a href={href}>{label}</a>)}
+    <nav class="nav-links nav-links--desktop" aria-label="Primary navigation">
+      {links.map(([href, label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}
     </nav>
+    <a class="run-pill" href="/results/"><span class="state-dot state-dot--pending"></span><span>Live run<br /><strong>review pending</strong></span></a>
+    <details class="mobile-nav">
+      <summary>Menu</summary>
+      <nav aria-label="Mobile navigation">{links.map(([href, label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}</nav>
+    </details>
   </div>
 </header>
-<script>
-  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
-  const nav = document.querySelector<HTMLElement>('#site-nav');
-  toggle?.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!open));
-    if (nav) nav.dataset.open = String(!open);
-  });
-</script>

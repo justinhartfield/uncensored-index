@@ -2,23 +2,14 @@
 import { site } from '../data/site';
 ---
 <footer class="site-footer">
+  <div class="shell footer-lead">
+    <div><p class="kicker">UIX / benchmark {site.benchmarkVersion}</p><h2>Evidence first.<br />Rankings later.</h2></div>
+    <p>The v0.3 provider run is complete. All 163 case executions remain private and unranked until two-reviewer artifact approval. Old v0.2 evidence is preserved as an archive, not presented as current.</p>
+  </div>
   <div class="shell footer-grid">
-    <div>
-      <strong>{site.name}</strong>
-      <p class="micro">Independent model testing. Public pages are non-explicit. Affiliate relationships never change editorial scores.</p>
-    </div>
-    <nav class="footer-links" aria-label="Editorial policies">
-      <a href="/editorial-policy/">Editorial policy</a>
-      <a href="/affiliate-disclosure/">Affiliate disclosure</a>
-      <a href="/corrections/">Corrections</a>
-      <a href="/manual-review/">Manual review</a>
-      <a href="/methodology/">Methodology</a>
-    </nav>
-    <nav class="footer-links" aria-label="Legal and contact">
-      <a href="/privacy/">Privacy</a>
-      <a href="/terms/">Terms</a>
-      <a href="/about/">About</a>
-      <a href="/contact/">Contact</a>
-    </nav>
+    <div><strong>{site.name}</strong><p class="micro">Independent model testing across text, image, video, and audio.</p></div>
+    <nav class="footer-links" aria-label="Benchmark"><a href="/suite/">v0.3 test suite</a><a href="/results/">Run ledger</a><a href="/methodology/">Methodology</a><a href="/archive/">Version archive</a></nav>
+    <nav class="footer-links" aria-label="Editorial policies"><a href="/editorial-policy/">Editorial policy</a><a href="/affiliate-disclosure/">Affiliate disclosure</a><a href="/corrections/">Corrections</a><a href="/about/">About</a></nav>
+    <nav class="footer-links" aria-label="Legal and contact"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact</a><span class="micro">Run date 03 Aug 2026</span></nav>
   </div>
 </footer>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SuiteMatrix from './SuiteMatrix.astro';
+import { mediaModels, models } from '../data/models';
+import { modalityMeta, v03CasesByModality, v03Run, type V03SuiteCase } from '../data/v03-suite';
+interface Props { modality: 'text' | 'image' | 'video' | 'audio'; }
+const { modality } = Astro.props;
+const meta = modalityMeta[modality];
+const tests = (v03CasesByModality.get(modality) || []) as V03SuiteCase[];
+const roster = [...models, ...mediaModels].filter((model) => model.modalities.includes(modality));
+---
+<BaseLayout title={`${meta.label} evidence — v0.3 review pending`} description={`${meta.label} track coverage for the live v0.3 benchmark suite. Rankings remain closed until two-reviewer artifact approval.`} noindex={true}>
+  <header class="page-head page-head--dark">
+    <div class="shell page-head__grid">
+      <div><p class="kicker">Suite 0.3 / {meta.code} track</p><h1>{meta.label} evidence, not a leaderboard.</h1><p class="lede">{meta.description}</p></div>
+      <dl class="page-stats"><div><dt>Cases</dt><dd>{tests.length}</dd></div><div><dt>Routes</dt><dd>{meta.routeCount}</dd></div><div><dt>Review</dt><dd>0 / {tests.length * meta.routeCount}</dd></div></dl>
+    </div>
+  </header>
+  <section class="section shell">
+    <div class="review-banner"><span class="state-dot state-dot--pending"></span><div><strong>Live run complete. Rankings closed.</strong><p>{tests.length * meta.routeCount} {meta.label.toLowerCase()} executions are retained in run <code>{v03Run.runId}</code>. Automated outcomes are prefilled; no public score exists until two humans review every artifact.</p></div></div>
+    <SuiteMatrix compact={true} />
+  </section>
+  <section class="section section--tint"><div class="shell">
+    <div class="section-head"><div><p class="kicker">Route coverage</p><h2>{roster.length} model{roster.length === 1 ? '' : 's'} in this track</h2></div><a href="/results/">Open run ledger</a></div>
+    <div class="ledger-list">{roster.map((model) => <a class="ledger-row" href={`/models/${model.slug}/`}><span>{model.displayName}</span><span>{model.providerId}</span><span>{model.slug === 'qwen3-6-35b-uncensored-e2ee' ? 'excluded / transport' : 'live / pending review'}</span></a>)}</div>
+  </div></section>
+  <section class="section shell archive-note"><p><strong>Looking for the old scores?</strong> The v0.2 leaderboard is preserved in the <a href={`/archive/v02/${modality}/`}>versioned archive</a>. It is not comparable to this suite.</p></section>
+</BaseLayout>

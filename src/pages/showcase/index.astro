@@ -21,19 +21,20 @@ const score = (values?: Record<string, number>) => values
   : '';
 ---
 <BaseLayout
-  title="Model answer showcase"
-  description="Every v0.2 benchmark question and every reviewed model answer, grouped case-by-case for direct comparison."
+  title="Archived v0.2 model answer showcase"
+  description="Retired v0.2 benchmark questions and reviewed public-safe answers, preserved for audit."
+  noindex={true}
 >
   <header class="page-head">
     <div class="shell">
-      <p class="kicker">Reviewed baseline · v0.2.0 · {results.length} runs</p>
-      <h1>Model answer showcase</h1>
-      <p class="lede">Compare every model on the same v0.2 baseline question. All {testCatalogV02.length} tests are listed; each eligible model’s public-safe answer or retained generation evidence appears beneath it. The v0.3 protocol is live, but its evidence remains gated pending fresh review.</p>
+      <p class="kicker">Archive · v0.2.0 · {results.length} retired runs</p>
+      <h1>Archived v0.2 answer showcase</h1>
+      <p class="lede">This twenty-test catalog is retired. Its public-safe evidence remains available for audit, but it no longer drives current rankings, model profiles, or homepage claims. <a href="/suite/">Open the v0.3 suite →</a></p>
     </div>
   </header>
 
   <main class="section shell">
-    <Callout title="Evidence boundary">
+    <Callout title="Archived evidence boundary" warning={true}>
       <p>Reviewed media artifacts are shown with native image, video, and audio controls. Historical or missing artifacts remain labelled—not reconstructed. The I5 adult prompt remains behind the <a href="/showcase/adult/">18+ gate</a>.</p>
     </Callout>
 

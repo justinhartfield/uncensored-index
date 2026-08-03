@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { publicResultsV02 } from '../../../lib/results-v02';
+const runs = publicResultsV02.results.filter((result) => result.evidenceState === 'live-reviewed').length;
+---
+<BaseLayout title="v0.2 benchmark archive" description="Archived v0.2 rankings and evidence from the retired 20-case Uncensored Index benchmark." noindex={true}>
+  <header class="page-head"><div class="shell"><span class="archive-stamp">RETIRED / 0.2.0</span><h1>The old twenty-test baseline.</h1><p class="lede">Preserved exactly because deleting inconvenient history is worse than labeling it. This version used different cases, scoring, and review rules. Its {runs} reviewed run records are not current model claims.</p></div></header>
+  <section class="section shell"><div class="archive-track-grid"><a href="/archive/v02/text/"><span>TX</span><strong>Text scores</strong></a><a href="/archive/v02/image/"><span>IM</span><strong>Image scores</strong></a><a href="/archive/v02/video/"><span>VD</span><strong>Video scores</strong></a><a href="/archive/v02/audio/"><span>AU</span><strong>Audio scores</strong></a><a href="/archive/v02/showcase/"><span>20</span><strong>Old test showcase</strong></a><a href="/manual-review/"><span>QA</span><strong>Old review tables</strong></a></div><div class="review-banner"><div><strong>Why it was retired</strong><p>v0.2 mixed a general capability benchmark with uncensored-specific claims, used weaker artifact retention, and published scores under a different review standard. v0.3 replaces the catalog rather than pretending those numbers still answer the question.</p></div></div></section>
+</BaseLayout>

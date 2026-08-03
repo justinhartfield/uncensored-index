@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { modalityMeta, v03SuiteCases } from '../../data/v03-suite';
+export function getStaticPaths() { return v03SuiteCases.map((test) => ({ params: { slug: test.slug }, props: { test } })); }
+const { test } = Astro.props;
+const index = v03SuiteCases.findIndex((entry) => entry.slug === test.slug);
+const previous = v03SuiteCases[index - 1];
+const next = v03SuiteCases[index + 1];
+const meta = modalityMeta[test.modality];
+const noindex = test.adultFlagged || test.family === 'boundary-control';
+---
+<BaseLayout title={`${test.id} — ${test.title}`} description={`${test.id} in the v0.3 ${meta.label.toLowerCase()} suite: ${test.constraintChecks.join(', ')}.`} noindex={noindex} type="article">
+  <header class="case-head" data-modality={test.modality}>
+    <div class="shell case-head__grid">
+      <div><p class="kicker">{meta.code} / case {String(test.order).padStart(2, '0')} of 33</p><h1>{test.id}<br /><span>{test.title}</span></h1></div>
+      <dl class="case-meta"><div><dt>Family</dt><dd>{test.family === 'boundary-control' ? 'Audit-only boundary' : 'Lawful capability'}</dd></div><div><dt>Expected</dt><dd>{test.expectedOutcome}</dd></div><div><dt>Live executions</dt><dd>{test.executionCount}</dd></div><div><dt>Review state</dt><dd>Pending</dd></div></dl>
+    </div>
+  </header>
+  <article class="section shell case-article">
+    <div class="case-main">
+      <p class="kicker">Canonical definition</p>
+      {test.family === 'boundary-control' ? (
+        <div class="private-control"><strong>Exact control withheld.</strong><p>This prompt stays in the controlled corpus so the public site cannot become a source of prohibited material or teach models the audit wording. Its definition hash and executed payload hash are retained separately.</p></div>
+      ) : (
+        <details class="prompt-card" open={!test.adultFlagged}>
+          <summary>{test.adultFlagged ? '18+ test prompt — open definition' : 'Exact public test prompt'}</summary>
+          <p>{test.publicPrompt}</p>
+        </details>
+      )}
+      <h2>What reviewers inspect</h2>
+      <ul class="constraint-grid">{test.constraintChecks.map((constraint) => <li>{constraint.replaceAll('-', ' ')}</li>)}</ul>
+      <h2>Human dimensions</h2>
+      <p>{test.humanDims.map((dimension) => dimension.replaceAll('-', ' ')).join(' · ')}</p>
+      {test.media && <><h2>Media parameters</h2><dl class="inline-ledger">{Object.entries(test.media).map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}</dl></>}
+    </div>
+    <aside class="case-aside">
+      <p class="kicker">Live run evidence</p>
+      <strong class="big-state">{test.technicalFailures ? `${test.technicalFailures} error` : `${test.executionCount} retained`}</strong>
+      <p>{test.technicalFailures ? 'A repeatable technical failure remains in this case. Failed evidence cannot publish.' : 'Artifacts are retained privately with pending automated prefill labels.'}</p>
+      <div class="review-meter"><span style={`--progress:0%`}></span></div><p class="micro">0 / {test.executionCount} human approvals complete</p>
+      <a href="/review/">Review protocol →</a>
+    </aside>
+  </article>
+  <nav class="case-pagination shell" aria-label="Adjacent test cases"><span>{previous ? <a href={`/suite/${previous.slug}/`}>← {previous.id} {previous.title}</a> : ''}</span><a href="/suite/">All 33 tests</a><span>{next ? <a href={`/suite/${next.slug}/`}>{next.id} {next.title} →</a> : ''}</span></nav>
+</BaseLayout>

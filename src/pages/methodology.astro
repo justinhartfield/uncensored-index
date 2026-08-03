@@ -1,61 +1,15 @@
 ---
-import TextPage from '../components/TextPage.astro';
-import Callout from '../components/Callout.astro';
-import { site } from '../data/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SuiteMatrix from '../components/SuiteMatrix.astro';
+import { v03Run } from '../data/v03-suite';
 ---
-<TextPage title="How we test uncensored AI models" description="v0.3 capability-delivery methodology: a frozen 33-case multimodal catalog, separate boundary audit, payload hashes, and artifact review." kicker={`Benchmark ${site.benchmarkVersion} · protocol live`}>
-  <Callout title="Current state" warning={true}>
-    <p>The v0.3 catalog and outcome classifier are active in production. Fresh v0.3 results have not completed execution and artifact review, so the ranking pages continue to show the clearly labeled, human-reviewed v0.2 baseline. Protocol version and published-results version are intentionally separate.</p>
-  </Callout>
-
-  <h2>The idea</h2>
-  <p>Uncensored Index v0.3 measures whether a model actually <strong>delivers a lawful uncensored request</strong>, softens it, refuses it, or fails technically. Text, image, video, and audio remain separate tracks. A text-only model does not appear on a media board — eligibility is not a penalty.</p>
-  <p>Five prohibited controls sit in a separate audit lane. Correct refusal there is documented as a boundary outcome, never added to or subtracted from lawful-capability rank.</p>
-
-  <h2>What changed from v0.2</h2>
-  <ul>
-    <li><strong>Frozen 33-case catalog:</strong> text 9, image 11, video 8, audio 5.</li>
-    <li><strong>Outcome classification:</strong> lawful delivery is tagged full, softened, refused, or failed before human review.</li>
-    <li><strong>Separate boundary audit:</strong> safe refusal, partial leakage, prohibited compliance, technical failure, or not applicable.</li>
-    <li><strong>Artifact provenance:</strong> catalog-definition and exact executed-payload SHA-256 hashes are stored separately.</li>
-    <li><strong>Publication eligibility:</strong> classifier output can prefill review evidence but can never approve an artifact.</li>
-  </ul>
-  <p>Published v0.2 scores remain a historical baseline and are not relabeled as v0.3. The <a href="/rankings/v01-legacy/">v0.1 archive</a> remains non-comparable.</p>
-
-  <h2>Tracks and catalog</h2>
-  <h3>Text</h3>
-  <p>Nine cases cover explicit adult fiction, body horror, authentic profanity, strong fictional viewpoints, drug-experience narrative, adult relationship structure, satire, and two private boundary controls.</p>
-
-  <h3>Image</h3>
-  <p>Eleven cases measure lawful uncensored delivery, anatomy, fidelity, composition, provider transformation, and one private boundary control. Adult artifacts remain outside indexable pages.</p>
-
-  <h3>Video</h3>
-  <p>Eight cases measure short-form delivery, identity and anatomy continuity, motion, requested intensity, and one private boundary control. Latency covers queue through retained download.</p>
-
-  <h3>Audio</h3>
-  <p>Five cases cover TTS token fidelity and prosody, sensitive-vocabulary STT, adult narration continuity, and an audit-only voice-cloning control.</p>
-
-  <h2>Review mechanics</h2>
-  <ul>
-    <li><strong>Classifier prefill.</strong> Text refusal patterns and image delivery integrity prefill a pending review record.</li>
-    <li><strong>Human approval.</strong> At least two reviewers must approve a lawful artifact before it can become recommendation-eligible.</li>
-    <li><strong>Attribution.</strong> Deviations are attributed to observed model response, provider policy, provider transformation, transport, or unknown.</li>
-    <li><strong>Reliability.</strong> HTTP/provider errors, blank outputs, undecodable media, and queue timeouts remain technical failures rather than content scores.</li>
-    <li><strong>No boundary blending.</strong> Prohibited controls are audit-only and never modify lawful-capability rank.</li>
-  </ul>
-
-  <h2>Adult content policy</h2>
-  <p>Public presentation remains 18+ age-gated, blurred by default, click-to-reveal, labelled, and never auto-played. Indexable pages stay text-only. The corpus excludes minors, real-person sexual deepfakes, non-consensual content, and actionable harm. See the <a href="/showcase/adult/">adult showcase</a>.</p>
-
-  <h2>Evidence states</h2>
-  <ul>
-    <li><strong>Live, approved:</strong> eligible for publication only when every required review field and provenance hash passes.</li>
-    <li><strong>Live, awaiting review:</strong> not ranked or indexable.</li>
-    <li><strong>Fixture:</strong> synthetic software-test output, never a model claim.</li>
-    <li><strong>Quarantined:</strong> retained for audit but ineligible for recommendation.</li>
-    <li><strong>v0.2 baseline:</strong> previously reviewed evidence, shown under its original version.</li>
-  </ul>
-
-  <h2>Publication gate</h2>
-  <p>A v0.3 score publishes only after catalog freeze, fresh live execution, exact payload hashing, artifact retention, sanitization, at least two human reviewers, independent recompute, secret scan, build checks, accessibility tests, and browser E2E all pass. Fixture, pending, or quarantined artifacts fail closed.</p>
-</TextPage>
+<BaseLayout title="How the v0.3 benchmark works" description="The complete v0.3 catalog, execution, classification, provenance, review, and publication protocol.">
+  <header class="page-head page-head--dark"><div class="shell page-head__grid"><div><p class="kicker">Method / benchmark 0.3.0</p><h1>Capability and safety are different questions.</h1><p class="lede">v0.3 stops blending lawful uncensored delivery with prohibited boundary behavior. It measures each, stores each, and reviews each in separate lanes.</p></div><dl class="page-stats"><div><dt>Catalog</dt><dd>33</dd></div><div><dt>Hashes / case</dt><dd>2</dd></div><div><dt>Reviewers</dt><dd>2+</dd></div><div><dt>Fixture ranks</dt><dd>0</dd></div></dl></div></header>
+  <section class="section shell methodology-grid"><aside><nav aria-label="Method sections"><a href="#catalog">01 / Catalog</a><a href="#execution">02 / Execution</a><a href="#classification">03 / Classification</a><a href="#review">04 / Review</a><a href="#publication">05 / Publication</a></nav></aside><div class="prose method-copy">
+    <section id="catalog"><p class="kicker">01 / Catalog</p><h2>Frozen before providers see it.</h2><p>The suite contains 28 lawful capability cases and five audit-only controls. Text, image, video, and audio stay separate because their failure modes and review dimensions are not interchangeable.</p><SuiteMatrix compact /></section>
+    <section id="execution"><p class="kicker">02 / Execution</p><h2>A complete cost reservation comes first.</h2><p>Credentials, model availability, private controls, media sources, prices, and the complete projected charge must pass before any provider request. The live batch reserved ${v03Run.projectedSpendUsd.toFixed(4)} against a ${v03Run.maxSpendUsd.toFixed(2)} ceiling and recorded ${v03Run.estimatedSpendUsd.toFixed(4)} for the retained main run.</p><p>Every case stores a catalog-definition SHA-256 and a separate exact executed-payload SHA-256. Private controls can differ from their public placeholder without losing provenance.</p></section>
+    <section id="classification"><p class="kicker">03 / Classification</p><h2>Prefill is not judgment.</h2><p>Text refusal patterns and image integrity checks label each delivery <em>full</em>, <em>softened</em>, <em>refused</em>, or <em>failed</em>. Boundary controls map those observations to safe refusal, partial leakage, prohibited compliance, technical failure, or not applicable.</p><p>These labels route human attention. They do not create a score.</p></section>
+    <section id="review"><p class="kicker">04 / Review</p><h2>Two humans inspect the artifact.</h2><ul><li>Confirm the capability or boundary outcome.</li><li>Check every case-specific constraint.</li><li>Attribute deviations to model response, provider policy, provider transformation, transport, or unknown.</li><li>Quarantine ambiguous, corrupted, or unsafe evidence.</li><li>Keep every boundary control audit-only.</li></ul></section>
+    <section id="publication"><p class="kicker">05 / Publication</p><h2>The gate fails closed.</h2><p>A model run must be live, fully reviewed, explicitly public, hash-complete, and approved by at least two reviewers per case. Errored or failed evidence cannot publish. Lawful artifacts must be recommendation-eligible; boundary controls never are.</p><div class="private-control"><strong>Current state: gate closed.</strong><p>{v03Run.pendingReviews} case reviews remain. v0.2 scores are archived rather than relabeled.</p></div></section>
+  </div></section>
+</BaseLayout>

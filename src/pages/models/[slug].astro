@@ -1,123 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
-import Callout from '../../components/Callout.astro';
-import V02CaseTable from '../../components/V02CaseTable.astro';
 import { mediaModels, models } from '../../data/models';
-import { site } from '../../data/site';
-import { isPublishedV02, MEDIA_PROVISIONAL_NOTE, resultBySlugV02, type Modality, type TrackScorePublic } from '../../lib/results-v02';
-
-export function getStaticPaths() {
-  return [...models, ...mediaModels].map((model) => ({ params: { slug: model.slug }, props: { model } }));
-}
+import { modalityMeta, v03CasesByModality, v03Run, v03RunModelSlugs } from '../../data/v03-suite';
+export function getStaticPaths() { return [...models, ...mediaModels].map((model) => ({ params: { slug: model.slug }, props: { model } })); }
 const { model } = Astro.props;
-const result = resultBySlugV02(model.slug);
-const published = isPublishedV02(result);
-const modalitiesWithScore = (result?.trackScores ? Object.keys(result.trackScores) : []) as Modality[];
-const totalCases = result?.cases?.length ?? 0;
-const runCost = result?.cases?.reduce((a, c) => a + (c.estimatedCostUsd || 0), 0) ?? undefined;
-type ScoreRow = [string, number | undefined];
-function trackRows(modality: Modality, s: TrackScorePublic): ScoreRow[] {
-  const rows: ScoreRow[] = [
-    ['Overall', s.overall],
-    ['Speed', s.speed],
-    ['Cost efficiency', s.costEfficiency],
-    ['Reliability', s.reliability],
-  ];
-  if (modality === 'text') rows.push(['Output quality', s.outputQuality], ['Capability', s.capability]);
-  if (modality === 'image') rows.push(['Adherence', s.adherence], ['Aesthetic', s.aesthetic]);
-  if (modality === 'video') rows.push(['Quality', s.quality]);
-  if (modality === 'audio') rows.push(['TTS naturalness', s.ttsNatural], ['STT accuracy', s.sttAccuracy]);
-  return rows;
-}
-const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.toFixed(value < 1 ? 2 : 0)} / 1M`;
---- 
-<BaseLayout
-  title={`${model.displayName} test results`}
-  description={`Independent test profile for ${model.displayName} — route, privacy, context, cost, reviewed v0.2 baseline evidence, and v0.3 publication state.`}
-  noindex={!published}
-  type="article"
->
-  <header class="page-head">
-    <div class="shell">
-      <p class="kicker">Model profile / {model.providerId}</p>
-      <h1>{model.displayName}</h1>
-      <EvidenceBadge state={published ? 'live' : 'pending'} label={published ? 'Reviewed baseline · v0.2' : 'Awaiting v0.3 review'} />
-    </div>
-  </header>
-
-  <article class="section shell prose">
-    <Callout title={published ? 'Evidence status' : 'Evidence status'} warning={!published}>
-      {published ? (
-        <p>This profile contains a <strong>live, human-reviewed v0.2 baseline result</strong> from {result!.testedAt}. {totalCases} cases below carry that version’s audit trail. The active v{site.benchmarkVersion} protocol has not yet promoted a reviewed result for this model.</p>
-      ) : (
-        <p>This model has no published v0.2 baseline and is awaiting a reviewed v{site.benchmarkVersion} result. The E2EE Qwen route was previously excluded as <em>route-unbenchmarkable</em> because encrypted reasoning returned no usable output on 11/11 attempts.</p>
-      )}
-    </Callout>
-
-    <div class="facts">
-      <div class="fact"><span>Canonical model ID</span><strong><code>{model.canonicalId}</code></strong></div>
-      <div class="fact"><span>Creator</span><strong>{model.creator}</strong></div>
-      <div class="fact"><span>Context</span><strong>{model.contextTokens.toLocaleString('en-US')} tokens</strong></div>
-      <div class="fact"><span>Privacy route</span><strong>{model.privacy === 'unknown' ? 'Provider policy review pending' : model.privacy === 'e2ee' ? 'End-to-end encrypted route' : `${model.privacy} route`}</strong></div>
-      <div class="fact"><span>Input price</span><strong>{money(model.inputUsdPerMillion)}</strong></div>
-      <div class="fact"><span>Output price</span><strong>{money(model.outputUsdPerMillion)}</strong></div>
-      <div class="fact"><span>Weights</span><strong>{model.weights}</strong></div>
-      <div class="fact"><span>Status</span><strong>{model.status}</strong></div>
-    </div>
-
-    {published && result ? (
-      <>
-        <h2>Benchmark score</h2>
-        <p>
-          <strong>Run:</strong> <code>{result.runId}</code> · <strong>Benchmark:</strong> 0.2.0 ·
-          <strong> Cases:</strong> {totalCases} · <strong>Tested:</strong> {result.testedAt}
-          {runCost !== undefined ? <> · <strong>Paid spend:</strong> ${runCost.toFixed(4)}</> : null}
-        </p>
-        {modalitiesWithScore.map((modality) => {
-          const s = result.trackScores![modality]!;
-          const rows = trackRows(modality, s);
-          return (
-            <div>
-              <h3>{modality.charAt(0).toUpperCase() + modality.slice(1)} track</h3>
-              <div class="score-row">
-                {rows.map(([label, value]) => (
-                  <div class="score-pill"><span>{label}</span><strong>{value !== undefined ? value.toFixed(1) : '—'}</strong></div>
-                ))}
-              </div>
-              {model.modalities.includes('image') || model.modalities.includes('video') || model.modalities.includes('audio') ? (
-                <p class="micro">{MEDIA_PROVISIONAL_NOTE}</p>
-              ) : null}
-            </div>
-          );
-        })}
-
-        <h2>Raw per-case results</h2>
-        <V02CaseTable cases={result.cases || []} showTrack />
-        <p class="micro">Evidence is stored public-safe (text excerpts ≈360 chars; media shown as generation-confirmed flags). Full provider internals are never published.</p>
-      </>
-    ) : (
-      <div class="empty-state"><strong>Live benchmark pending.</strong><p>No provider output is presented as evidence for this model in v0.2.</p></div>
-    )}
-
-    <h2>What this v0.2 baseline measured</h2>
-    <ul>
-      <li>Text: prose voice &amp; coherence, character depth &amp; consistency, constrained writing, executable code, reasoning, knowledge, structured JSON.</li>
-      <li>Image: prompt adherence, aesthetics, text-in-image, style/negative-prompt control.</li>
-      <li>Video: text→video and image→video generation quality and motion.</li>
-      <li>Audio: TTS naturalness and STT word-error-rate.</li>
-      <li>Speed and cost are normalized relative to best-in-track; reliability counts real failures only.</li>
-    </ul>
-
-    <h2>Sources</h2>
-    <ul class="source-list">{model.sourceUrls.map((url) => <li><a href={url} rel="noreferrer">{url}</a></li>)}</ul>
-    <p class="micro">Prices and catalog facts are snapshots and must be revalidated during each live run.</p>
+const retained = v03RunModelSlugs.has(model.slug);
+const caseCount = model.modalities.reduce((sum, modality) => sum + (v03CasesByModality.get(modality)?.length || 0), 0);
+const money = (value?: number) => value === undefined ? 'Not quoted' : `$${value.toFixed(value < 1 ? 2 : 0)} / 1M`;
+---
+<BaseLayout title={`${model.displayName} — v0.3 run record`} description={`${model.displayName} route facts and v0.3 live-run coverage. Evidence remains pending human review.`} noindex={true} type="article">
+  <header class="model-head"><div class="shell"><p class="kicker">Model record / {model.providerId}</p><h1>{model.displayName}</h1><EvidenceBadge state={retained ? 'live-unreviewed' : 'pending'} label={retained ? 'Live run · review pending' : 'Excluded · transport timeout'} /></div></header>
+  <article class="section shell model-profile">
+    <div class="model-profile__lead"><div><p class="kicker">Route identity</p><h2>No score until the artifacts clear review.</h2></div><p>{retained ? `${caseCount} v0.3 case executions were requested for this route. The model record is retained privately, but automated outcome prefill is not a public quality finding.` : 'This E2EE route exhausted its bounded transport window before a complete v0.3 model record could be retained. It is excluded rather than assigned a synthetic penalty.'}</p></div>
+    <dl class="model-facts"><div><dt>Canonical ID</dt><dd><code>{model.canonicalId}</code></dd></div><div><dt>Creator</dt><dd>{model.creator}</dd></div><div><dt>Provider route</dt><dd>{model.providerId}</dd></div><div><dt>Modalities</dt><dd>{model.modalities.join(' · ')}</dd></div><div><dt>Context</dt><dd>{model.contextTokens.toLocaleString('en-US')} tokens</dd></div><div><dt>Privacy</dt><dd>{model.privacy}</dd></div><div><dt>Input</dt><dd>{money(model.inputUsdPerMillion)}</dd></div><div><dt>Output</dt><dd>{money(model.outputUsdPerMillion)}</dd></div></dl>
+    <h2>v0.3 test coverage</h2>
+    <div class="coverage-grid coverage-grid--profile">{model.modalities.map((modality) => { const meta = modalityMeta[modality]; const tests = v03CasesByModality.get(modality) || []; return <article data-modality={modality}><span>{meta.code}</span><h3>{meta.label}</h3><strong>{retained ? tests.length : 0} / {tests.length}</strong><p>{retained ? 'executed · review pending' : 'no retained run'}</p><a href={`/rankings/${modality}/`}>Track evidence →</a></article>; })}</div>
+    <div class="review-banner"><span class="state-dot state-dot--pending"></span><div><strong>{retained ? 'Publication gate closed' : 'Route excluded'}</strong><p>{retained ? `Run ${v03Run.runId} remains live-unreviewed. This page intentionally contains no raw output, rank, or classifier claim.` : 'No result is inferred from transport failure.'}</p></div></div>
+    <h2>Sources</h2><ul class="source-list">{model.sourceUrls.map((url) => <li><a href={url} rel="noreferrer">{url}</a></li>)}</ul>
+    <p class="archive-note">Historical v0.2 evidence, where available, now lives in the <a href="/archive/v02/">retired benchmark archive</a>.</p>
   </article>
 </BaseLayout>
-<style>
-  .score-row { display: grid; gap: 1px; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--line); border: 1px solid var(--line); margin-bottom: 1.25rem; }
-  .score-row:last-child { margin-bottom: 0; }
-  .score-pill { background: var(--paper); padding: 0.75rem 1rem; }
-  .score-pill span { color: var(--muted); display: block; font-family: var(--mono); font-size: 0.66rem; margin-bottom: 0.25rem; text-transform: uppercase; }
-  .score-pill strong { font-size: 1.25rem; }
-</style>

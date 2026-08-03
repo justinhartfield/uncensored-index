@@ -12,11 +12,12 @@ import TextPage from '../../components/TextPage.astro';
     <li><strong>Exact provenance:</strong> catalog definitions and executed payloads receive separate SHA-256 hashes.</li>
     <li><strong>Fail-closed review:</strong> automated classification only prefills pending evidence; it never approves publication.</li>
   </ul>
-  <p><strong>Results state:</strong> fresh v0.3 provider execution and artifact review are not yet complete. Ranking pages therefore retain the human-reviewed v0.2 corpus under an explicit v0.2 baseline label.</p>
+  <p><strong>Results state:</strong> live provider execution completed on 2026-08-03: 18 retained model records, 163 case executions, 160 artifacts, and two repeatable technical failures. All 163 reviews remain pending, so rankings stay closed.</p>
+  <p><strong>Site release:</strong> v0.3 is now the primary public suite and run ledger. v0.2 moved to a versioned archive and no longer appears as current evidence.</p>
 
-  <h2>Benchmark 0.2.0 (reviewed baseline)</h2>
+  <h2>Benchmark 0.2.0 (retired archive)</h2>
   <p><strong>Released:</strong> 2026-08-01</p>
-  <p>The v0.2 benchmark is the first public release. It covers:</p>
+  <p>The v0.2 benchmark was the first public release. It is preserved at <a href="/archive/v02/">the v0.2 archive</a> and is not comparable to v0.3. It covered:</p>
   <ul>
     <li><strong>20 test cases</strong> across four modalities: text (11), image (3), video (3), audio (3).</li>
     <li><strong>14 text models</strong> tested via OpenRouter and Venice providers.</li>

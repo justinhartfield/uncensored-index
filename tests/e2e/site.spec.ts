@@ -1,18 +1,79 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('homepage presents the live v0.3 protocol and reviewed v0.2 baseline', async ({ page }) => {
+test('homepage leads with the v0.3 suite and a review-gated live run', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Controlled tests');
-  await expect(page.getByText('Independent model testing / benchmark 0.3.0 · protocol live')).toBeVisible();
-  await expect(page.getByText('v0.3 reviewed results')).toBeVisible();
-  await expect(page.getByText('Awaiting execution')).toBeVisible();
-  await expect(page.getByText('Reviewed baseline · v0.2').first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('33 tests.');
+  await expect(page.locator('.matrix-cell')).toHaveCount(33);
+  await expect(page.getByText('163', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('review pending', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('Published ranks').first()).toBeVisible();
+  await expect(page.getByText('The old benchmark moved out of the way.')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
-  await expect(page.getByRole('link', { name: 'Manual review' }).first()).toBeVisible();
+  await expect(page.getByText('v0.2 reviewed baseline')).toHaveCount(0);
 });
 
-test('model directory filters without losing server-rendered content', async ({ page }) => {
+test('suite catalog exposes all 33 frozen definitions in four tracks', async ({ page }) => {
+  await page.goto('/suite/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('The suite, test by test.');
+  await expect(page.locator('.matrix-track')).toHaveCount(4);
+  await expect(page.locator('.matrix-cell')).toHaveCount(33);
+  await expect(page.locator('.case-row')).toHaveCount(33);
+  await expect(page.getByText('28', { exact: true })).toBeVisible();
+  await expect(page.getByText('5', { exact: true })).toBeVisible();
+});
+
+test('lawful case details publish prompts while private controls stay withheld', async ({ page }) => {
+  await page.goto('/suite/u2/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('U2');
+  await expect(page.getByText('Exact public test prompt')).toBeVisible();
+  await expect(page.getByText('A man looks in the bathroom mirror', { exact: false })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
+
+  await page.goto('/suite/ut6/');
+  await expect(page.getByText('Exact control withheld.')).toBeVisible();
+  await expect(page.getByText('[PRIVATE CONTROL:', { exact: false })).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+});
+
+test('adult case definitions remain noindex and collapsed by default', async ({ page }) => {
+  await page.goto('/suite/u1/');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+  const definition = page.locator('.prompt-card');
+  await expect(definition).not.toHaveAttribute('open', '');
+  await expect(definition.getByText('18+ test prompt — open definition')).toBeVisible();
+});
+
+test('run ledger reports coverage and failures without publishing scores', async ({ page }) => {
+  await page.goto('/results/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Zero published ranks.');
+  await expect(page.locator('.ledger-row')).toHaveCount(19);
+  await expect(page.locator('.failure-list article')).toHaveCount(2);
+  await expect(page.getByText('$5.49', { exact: true })).toBeVisible();
+  await expect(page.getByText('72.8', { exact: true })).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+});
+
+test('current track routes are closed evidence ledgers, not leaderboards', async ({ page }) => {
+  for (const modality of ['text', 'image', 'video', 'audio']) {
+    await page.goto(`/rankings/${modality}/`);
+    await expect(page.getByText('Live run complete. Rankings closed.')).toBeVisible();
+    await expect(page.getByText('Looking for the old scores?')).toBeVisible();
+    await expect(page.locator('.ranking-table-wrap')).toHaveCount(0);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+  }
+});
+
+test('v0.2 scores survive only inside the versioned archive', async ({ page }) => {
+  await page.goto('/archive/v02/');
+  await expect(page.getByText('RETIRED / 0.2.0')).toBeVisible();
+  await page.getByRole('link', { name: /Text scores/ }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Archived v0.2 text leaderboard');
+  await expect(page.locator('tbody tr')).toHaveCount(14);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+});
+
+test('model directory filters retain 19 server-rendered route records', async ({ page }) => {
   await page.goto('/models/');
   await expect(page.locator('.model-card')).toHaveCount(19);
   await page.locator('#provider-filter').selectOption('venice');
@@ -22,122 +83,53 @@ test('model directory filters without losing server-rendered content', async ({ 
   await expect(page.getByText('Qwen3.6 35B A3B Uncensored E2EE')).toBeVisible();
 });
 
-test('pending (excluded E2EE) profile is noindex and source-backed', async ({ page }) => {
-  await page.goto('/models/qwen3-6-35b-uncensored-e2ee/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Qwen3.6 35B A3B Uncensored E2EE');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-  await expect(page.getByText('Live benchmark pending.')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Sources' })).toBeVisible();
-});
-
-test('published model profile shows every question beside its answer', async ({ page }) => {
+test('model profiles expose run state but no unreviewed quality claims', async ({ page }) => {
   await page.goto('/models/venice-uncensored-1-2/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Venice Uncensored 1.2');
-  await expect(page.getByText('Reviewed baseline · v0.2')).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
-  await expect(page.getByRole('heading', { name: 'Raw per-case results' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Text track' })).toBeVisible();
-  await expect(page.locator('tbody tr')).toHaveCount(11);
-  await expect(page.locator('thead').getByText('Question')).toBeVisible();
-  await expect(page.locator('thead').getByText('Answer / evidence')).toBeVisible();
-  await expect(page.getByText('Creative prose — noir rain alley')).toBeVisible();
-  await expect(page.getByText('Write the opening chapter (250–400 words)', { exact: false })).toBeVisible();
+  await expect(page.getByText('Live run · review pending')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'No score until the artifacts clear review.' })).toBeVisible();
+  await expect(page.getByText('Raw per-case results')).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+
+  await page.goto('/models/qwen3-6-35b-uncensored-e2ee/');
+  await expect(page.getByText('Excluded · transport timeout')).toBeVisible();
+  await expect(page.getByText('No result is inferred from transport failure.')).toBeVisible();
 });
 
-test('showcase groups all tests and eligible model answers for comparison', async ({ page }) => {
+test('review and methodology pages explain the two-human fail-closed gate', async ({ page }) => {
+  await page.goto('/review/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('163 decisions before one rank.');
+  await expect(page.locator('.review-steps li')).toHaveCount(4);
+  await expect(page.getByText('0%', { exact: true })).toBeVisible();
+
+  await page.goto('/methodology/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Capability and safety are different questions.');
+  await expect(page.getByRole('heading', { name: 'The gate fails closed.' })).toBeVisible();
+  await expect(page.getByText('two reviewers', { exact: false })).toBeVisible();
+});
+
+test('old showcase and answer comparison are unmistakably archived', async ({ page }) => {
   await page.goto('/showcase/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Model answer showcase');
-  await expect(page.locator('.case-showcase')).toHaveCount(20);
-  await expect(page.locator('#t1 .answer-card')).toHaveCount(13);
-  await expect(page.locator('#i1 .answer-card')).toHaveCount(1);
-  await expect(page.getByText('Write the opening chapter (250–400 words)', { exact: false }).first()).toBeVisible();
-  await expect(page.locator('#t1').getByText('Venice Uncensored 1.2')).toBeVisible();
-});
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Archived v0.2');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 
-test('compare presents one question across three selectable model columns', async ({ page }) => {
   await page.goto('/compare/?test=T1&models=aion-3-0,cydonia-24b-v4-1,venice-uncensored-1-2');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Compare model answers');
-  await expect(page.locator('#test-label')).toContainText('T1');
-  await expect(page.locator('#model-headings th')).toHaveCount(4);
-  await expect(page.getByRole('rowheader', { name: 'Answer / evidence' })).toBeVisible();
-  await expect(page.locator('#question')).toBeVisible();
-  await page.reload();
+  await expect(page.getByText('RETIRED / 0.2.0')).toBeVisible();
   await expect(page.locator('#model-headings th')).toHaveCount(4);
 });
 
-test('compare keeps adult evidence behind the age gate', async ({ page }) => {
-  await page.goto('/compare/?test=I5');
-  await expect(page.locator('#question')).toBeHidden();
-  await expect(page.getByText('This adult test is available only through the')).toBeVisible();
-  await expect(page.locator('#adult-boundary').getByRole('link', { name: '18+ showcase' })).toHaveAttribute('href', '/showcase/adult/');
-});
-
-test('text ranking preserves the reviewed v0.2 baseline under the active v0.3 protocol', async ({ page }) => {
-  await page.goto('/rankings/text/');
-  await expect(page.getByText(/Live, human-reviewed v0\.2 baseline results/)).toBeVisible();
-  await expect(page.getByText(/v0\.3 rankings remain closed/)).toBeVisible();
-  await expect(page.locator('tbody tr')).toHaveCount(14);
-  await expect(page.locator('tbody').getByText('PENDING')).toHaveCount(1);
-  await expect(page.locator('tbody').getByText('72.8')).toBeVisible(); // venice-uncensored-1-2 recomputed overall
-});
-
-test('manual review page lists every run and every case', async ({ page }) => {
-  await page.goto('/manual-review/');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
-  await expect(page.getByText(/16 live runs · 152 cases · \d+ human-scored/).first()).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
-  await expect(page.getByText('Venice Uncensored 1.2').first()).toBeVisible();
-  await expect(page.getByText('glm-5-2').first()).toBeVisible(); // run block slug appears
-});
-
-test('/review is a complete review dashboard, not a redirect or 404', async ({ page }) => {
-  const response = await page.goto('/review/');
-  expect(response?.status()).toBe(200);
-  await expect(page).toHaveURL(/\/review\/$/);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
-  await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
-  await expect(page.getByText('Venice Uncensored 1.2').first()).toBeVisible();
-});
-
-test('v0.1 legacy archive page explains non-comparability', async ({ page }) => {
-  await page.goto('/rankings/v01-legacy/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('legacy');
-  await expect(page.getByText('not comparable', { exact: false })).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-});
-
-test('adult showcase is noindex, age-gated, and blur-by-default', async ({ page }) => {
-  await page.goto('/showcase/adult/');
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-  await expect(page.getByRole('heading', { name: '18+ only' })).toBeVisible();
-  await page.getByRole('button', { name: /I am 18 or older/i }).click();
-  await expect(page.getByText('These three sources are uniformly blurred')).toBeVisible();
-  await expect(page.getByText('Live result: showcase')).toHaveCount(3);
-  await expect(page.locator('.adult-tile')).toHaveCount(3);
-  await expect(page.getByText('FLUX.2 Pro')).toBeVisible();
-  await expect(page.getByText('Qwen Image 2')).toBeVisible();
-  await expect(page.getByText('Three image models completed the same lawful-adult I5 prompt')).toBeVisible();
-  await expect(page.getByText('The site cannot reveal detail that is absent from the source file', { exact: false })).toHaveCount(3);
-  await expect(page.locator('[data-reveal]')).toHaveCount(0);
-  await expect(page.locator('.adult-tile__image')).toHaveCount(3);
-});
-
-test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
+test('mobile disclosure menu opens without client JavaScript', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'mobile project only');
   await page.goto('/');
-  const toggle = page.getByRole('button', { name: 'Menu' });
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
+  const menu = page.locator('.mobile-nav');
+  await expect(menu).not.toHaveAttribute('open', '');
+  await menu.locator('summary').click();
+  await expect(menu).toHaveAttribute('open', '');
+  await expect(menu.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible();
 });
 
-test('core pages have no serious accessibility violations', async ({ page }) => {
+test('core v0.3 pages have no serious accessibility violations', async ({ page }) => {
   test.setTimeout(90_000);
-  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/compare/', '/showcase/adult/', '/manual-review/', '/review/']) {
+  for (const route of ['/', '/suite/', '/suite/u2/', '/suite/ut6/', '/results/', '/models/', '/models/venice-uncensored-1-2/', '/methodology/', '/review/', '/rankings/text/', '/archive/v02/']) {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
@@ -145,13 +137,11 @@ test('core pages have no serious accessibility violations', async ({ page }) => 
   }
 });
 
-test('core pages emit no browser console or page errors', async ({ page }) => {
+test('core v0.3 pages emit no browser console or page errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('pageerror', (error) => errors.push(error.message));
-  for (const route of ['/', '/models/', '/methodology/', '/rankings/text/', '/showcase/', '/models/venice-uncensored-1-2/', '/manual-review/']) {
-    await page.goto(route);
-  }
+  for (const route of ['/', '/suite/', '/suite/u2/', '/results/', '/models/', '/methodology/', '/review/', '/rankings/text/', '/archive/v02/']) await page.goto(route);
   expect(errors).toEqual([]);
 });
 

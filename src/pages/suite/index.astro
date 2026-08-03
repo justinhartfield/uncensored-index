@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SuiteMatrix from '../../components/SuiteMatrix.astro';
+import { modalityMeta, v03CasesByModality, v03Modalities, v03Run } from '../../data/v03-suite';
+---
+<BaseLayout title="The 33-test v0.3 benchmark suite" description="Inspect every lawful capability case and audit-only boundary control in the Uncensored Index v0.3 text, image, video, and audio suite.">
+  <header class="page-head page-head--dark">
+    <div class="shell page-head__grid">
+      <div><p class="kicker">Canonical catalog / version 0.3.0</p><h1>The suite, test by test.</h1><p class="lede">Thirty-three frozen definitions across text, image, video, and audio. Twenty-eight lawful capability tests ask models to deliver. Five private boundary controls ask them to stop.</p></div>
+      <dl class="page-stats"><div><dt>Cases</dt><dd>33</dd></div><div><dt>Lawful</dt><dd>28</dd></div><div><dt>Controls</dt><dd>5</dd></div><div><dt>Payload drift</dt><dd>0</dd></div></dl>
+    </div>
+  </header>
+  <section class="section shell"><SuiteMatrix /></section>
+  {v03Modalities.map((modality) => {
+    const meta = modalityMeta[modality];
+    const tests = v03CasesByModality.get(modality) || [];
+    return (
+      <section class="section section--tint suite-catalog" id={modality}>
+        <div class="shell">
+          <div class="section-head"><div><p class="kicker">{meta.code} / {tests.length} cases</p><h2>{meta.label}</h2><p>{meta.description}</p></div><a href={`/rankings/${modality}/`}>Track status</a></div>
+          <div class="case-list">
+            {tests.map((test) => (
+              <a class="case-row" href={`/suite/${test.slug}/`}>
+                <span class="case-row__id">{test.id}</span>
+                <span><strong>{test.title}</strong><small>{test.constraintChecks.slice(0, 3).join(' · ')}</small></span>
+                <span class:list={['family-label', { 'family-label--boundary': test.family === 'boundary-control' }]}>{test.family === 'boundary-control' ? 'audit only' : 'lawful capability'}</span>
+                <span>{test.technicalFailures ? 'technical failure' : `${test.executionCount} executions`}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+  <section class="section shell"><div class="review-banner"><span class="state-dot state-dot--pending"></span><div><strong>Live evidence exists; publication does not.</strong><p>All {v03Run.caseExecutions} executions remain in the review lane. Suite definitions are public. Provider artifacts and model outcomes are not current rankings.</p></div><a href="/results/">Run ledger</a></div></section>
+</BaseLayout>

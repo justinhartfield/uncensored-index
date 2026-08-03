@@ -2,12 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ModelGrid from '../../components/ModelGrid.astro';
 import { mediaModels, models } from '../../data/models';
-import { publicResultsV02 } from '../../lib/results-v02';
-const hasLive = publicResultsV02.results.some((result) => result.evidenceState === 'live-reviewed' && result.humanReviewed);
+import { v03Run } from '../../data/v03-suite';
 ---
-<BaseLayout title="Uncensored AI model directory" description="Browse the launch roster by provider, privacy route, and use case. Untested models remain unranked." noindex={!hasLive}>
-  <header class="page-head"><div class="shell"><p class="kicker">Model directory</p><h1>Models under test</h1><p class="lede">Seventeen models across text, image, video, and audio are in the launch protocol. Filter the roster, inspect provider facts, and open any profile for its full per-case evidence.</p></div></header>
-  <section class="section shell">
-    <ModelGrid models={[...models, ...mediaModels]} enableFilters={true} />
-  </section>
+<BaseLayout title="Models in the v0.3 live run" description="The text, image, video, and audio model routes executed in the Uncensored Index v0.3 suite." noindex={true}>
+  <header class="page-head page-head--dark"><div class="shell page-head__grid"><div><p class="kicker">Route directory / run 0.3</p><h1>Models under review.</h1><p class="lede">Nineteen frozen routes entered preflight. Eighteen produced retained run records; one E2EE route timed out and remains explicitly excluded.</p></div><dl class="page-stats"><div><dt>Roster</dt><dd>19</dd></div><div><dt>Retained</dt><dd>{v03Run.modelRecords}</dd></div><div><dt>Ranked</dt><dd>0</dd></div></dl></div></header>
+  <section class="section shell"><ModelGrid models={[...models, ...mediaModels]} enableFilters={true} /></section>
 </BaseLayout>

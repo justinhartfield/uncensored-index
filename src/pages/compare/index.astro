@@ -31,15 +31,16 @@ const comparisonData = testCatalogV02.map((test) => ({
 }));
 const safeJson = JSON.stringify(comparisonData).replace(/</g, '\\u003c');
 ---
-<BaseLayout title="Compare model answers" description="Select one benchmark question and compare three or more reviewed AI model answers side by side." noindex={true}>
+<BaseLayout title="Archived v0.2 answer comparison" description="Archived v0.2 reviewed model-answer comparison. This retired evidence does not represent v0.3." noindex={true}>
   <header class="page-head"><div class="shell">
-    <p class="kicker">Reviewed baseline · v0.2.0 · Evidence-matched comparison</p>
-    <h1>Compare model answers</h1>
-    <p class="lede">Choose one test, then place three or more reviewed models in the same comparison table.</p>
+    <span class="archive-stamp">RETIRED / 0.2.0</span>
+    <p class="kicker">Archived evidence-matched comparison</p>
+    <h1>Old answers, kept for audit.</h1>
+    <p class="lede">This utility compares reviewed evidence from the retired twenty-test catalog. It is not a v0.3 result surface. <a href="/suite/">Open the current test suite →</a></p>
   </div></header>
 
   <main class="section shell">
-    <Callout title="Like-for-like evidence only">
+    <Callout title="Archived like-for-like evidence only" warning={true}>
       <p>Models appear only when they ran the selected test. Adult I5 evidence remains on the <a href="/showcase/adult/">18+ showcase</a>; this page does not expose its prompt or artifact.</p>
     </Callout>
 
@@ -72,7 +73,7 @@ const safeJson = JSON.stringify(comparisonData).replace(/</g, '\\u003c');
   </main>
 </BaseLayout>
 
-<script type="application/json" id="comparison-data" set:html={safeJson}></script>
+<script is:inline type="application/json" id="comparison-data" set:html={safeJson}></script>
 <script>
   type Entry = { slug:string; name:string; status:string; answer:string; autoScore?:number; humanScores:Record<string,number>; latencyMs:number; cost?:number; overall?:number };
   type Test = { id:string; title:string; modality:string; adultFlagged:boolean; question:string; models:Entry[] };

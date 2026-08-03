@@ -23,15 +23,16 @@ const rankOf = (modality: Modality) =>
 >
   <header class="page-head">
     <div class="shell">
-      <p class="kicker">Benchmark v{site.publishedResultsVersion} · Reviewed baseline</p>
-      <h1>Manual review — every run, every case</h1>
-      <p class="lede">The full v0.2 live batch open for inspection: one table per model, spanning text, image, video, and audio. Each line shows the case, its automated score, the human rubric scores, latency, cost, and the raw (public-safe) output.</p>
+      <span class="archive-stamp">RETIRED / {site.publishedResultsVersion}</span>
+      <p class="kicker">Archived one-reviewer evidence</p>
+      <h1>Old review tables.</h1>
+      <p class="lede">The full retired v0.2 batch remains open for inspection. Its one-reviewer process does not satisfy the v0.3 publication gate and none of these scores is current. <a href="/review/">Open the v0.3 review protocol →</a></p>
     </div>
   </header>
 
   <section class="section shell">
-    <div class="section-head"><div><p class="kicker">Publication state</p><h2>Live, human-reviewed evidence</h2></div></div>
-    <Callout title="What this page is">
+    <div class="section-head"><div><p class="kicker">Archive state</p><h2>Preserved, not promoted.</h2></div></div>
+    <Callout title="What this archive contains" warning={true}>
       <p><strong>{published.length} live runs · {totalCases} cases · {humanScored} human-scored.</strong> This batch was measured with real paid API calls (Venice + OpenRouter, ≈$1.33 of the $25 capped budget). Every run is marked <em>live-reviewed</em>; nothing on this page is fixture or synthetic.</p>
       <p>One model — Qwen3.6 35B A3B Uncensored E2EE — is excluded from ranking because its encrypted-reasoning route returned no usable output (11/11 attempts errored; evidence documented separately). If a model appears here without a result, that is the honest state.</p>
     </Callout>
@@ -45,7 +46,7 @@ const rankOf = (modality: Modality) =>
   </section>
 
   <section class="section shell">
-    <div class="section-head"><div><p class="kicker">Leaderboards</p><h2>Scored tracks</h2></div></div>
+    <div class="section-head"><div><p class="kicker">Retired leaderboards</p><h2>Historical scored tracks</h2></div></div>
     {modalityOrder.map((modality) => {
       const ranked = rankOf(modality);
       if (!ranked.length) return null;
