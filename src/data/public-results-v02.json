@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-02T17:23:34.468Z",
+  "generatedAt": "2026-08-03T04:49:01.045Z",
   "benchmarkVersion": "0.2.0",
   "results": [
     {
@@ -138,22 +138,22 @@
     {
       "modelSlug": "cydonia-24b-v4-1",
       "displayName": "cydonia-24b-v4-1",
-      "runId": "v02-live-2026-08-02T12-37-17-587Z",
+      "runId": "v02-live-2026-08-03T04-43-23-448Z",
       "runType": "live",
       "requestedModelId": "thedrummer/cydonia-24b-v4.1",
       "returnedModelId": "thedrummer/cydonia-24b-v4.1",
       "providerId": "openrouter",
       "evidenceState": "live-reviewed",
       "humanReviewed": true,
-      "testedAt": "2026-08-02T12:42:12.527Z",
+      "testedAt": "2026-08-03T04:47:13.249Z",
       "trackScores": {
         "text": {
-          "outputQuality": 70,
-          "capability": 60,
-          "speed": 10.7,
-          "costEfficiency": 7.5,
-          "reliability": 45.5,
-          "overall": 46.8
+          "outputQuality": 80,
+          "capability": 85,
+          "speed": 14.8,
+          "costEfficiency": 12.8,
+          "reliability": 100,
+          "overall": 63.4
         }
       },
       "cases": [
@@ -162,11 +162,11 @@
           "modality": "text",
           "status": "manual-review",
           "humanScores": {
-            "voice": 3,
-            "coherence": 3
+            "voice": 4,
+            "coherence": 4
           },
-          "latencyMs": 16536,
-          "estimatedCostUsd": 0.0002052,
+          "latencyMs": 26248,
+          "estimatedCostUsd": 0.0002502,
           "publicExcerpt": "The rain fell in sheets, turning the alley behind the Blue Note into a river of filth and regret. Jack Malone pulled up the collar of his trench coat, but it did little against the downpour that soaked through to his bones. The jazz music from inside the club spilled out in muted waves, a stark contrast to the silence of the body lying crumpled against th…"
         },
         {
@@ -177,9 +177,9 @@
             "voice": 4,
             "coherence": 4
           },
-          "latencyMs": 20432,
-          "estimatedCostUsd": 0.00022439999999999998,
-          "publicExcerpt": "The hydroponic orchard hummed with quiet desperation. Light panels flickered overhead, casting long shadows across rows of withering citrus trees. As a junior botanist, my hands were calloused from pruning and my eyes strained from hours of analysis. I ran my fingers along a lemon peel, feeling its rough texture. The scent—bright and sharp—cut through the…"
+          "latencyMs": 18300,
+          "estimatedCostUsd": 0.00018989999999999998,
+          "publicExcerpt": "The hydroponic orchard hummed with failure. As a junior botanist, I'd spent three years tending these domes, watching the orange trees flourish. Now, their leaves curled like dying fingers. I ran my fingers along a branch. The bark felt brittle, wrong. My boots squeaked on the sterile floor as I moved between rows. Most fruit had dropped early, leaving on…"
         },
         {
           "testId": "T3",
@@ -187,83 +187,83 @@
           "status": "manual-review",
           "humanScores": {
             "depth": 4,
-            "consistency": 3
+            "consistency": 4
           },
-          "latencyMs": 45099,
-          "estimatedCostUsd": 0.0004029,
+          "latencyMs": 79126,
+          "estimatedCostUsd": 0.0004384,
           "publicExcerpt": "## Character Sheet **Name:** Elias Vance **Appearance:** 32, lean build with calloused hands and weathered skin. His dark hair is perpetually messy, often tied back with a worn leather cord. A thin scar runs from his left eyebrow to his cheekbone. He wears practical, faded clothing—usually a denim jacket over a simple t-shirt and work pants. His eyes are …"
         },
         {
           "testId": "T4",
           "modality": "text",
           "status": "failed",
-          "autoScore": 20,
-          "latencyMs": 6741,
-          "estimatedCostUsd": 0.00012880000000000001,
-          "publicExcerpt": "1. Waves crash on the shore, Salt spray kisses the sunlit sand, Ocean's endless roar. 2. Deep blue mystery, Whales sing in the watery dark, Secrets of the deep. 3. Tide pulls and releases, Moon's gentle command on the sea, Nature's rhythm flows. 4. Sun sets on the waves, Golden light dances on the water, Peace in the ocean breeze. 5. Storm churns the dark…"
+          "autoScore": 80,
+          "latencyMs": 11986,
+          "estimatedCostUsd": 0.0001273,
+          "publicExcerpt": "1. Waves crash on the shore, Salt spray kisses the sunlit sand, Ocean breathes so deep. 2. Dolphins leap and play, In the vast and endless blue, Nature's wild ballet. 3. Moon reflects on waves, Stars dance on the water's face, Night's gentle embrace. 4. Tide pulls back and forth, Ancient rhythm of the sea, Time's eternal pulse. 5. Seagulls cry above, Wind…"
         },
         {
           "testId": "T5",
           "modality": "text",
           "status": "passed",
           "autoScore": 100,
-          "latencyMs": 6916,
+          "latencyMs": 9652,
           "estimatedCostUsd": 0.00015189999999999998,
           "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: seen = {} result = [] for i, num in enumerate(nums): complement = target - num if complement in seen: for j in seen[complement]: result.append((complement, num)) if num not in seen: seen[num] = [] seen[num].append(i) # Remove duplicates by converting to a set and back to a…"
         },
         {
           "testId": "T6",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 3015,
-          "estimatedCostUsd": 0.0006718000000000001,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 26790,
+          "estimatedCostUsd": 0.00020009999999999998,
+          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: result = [] reader = csv.DictReader(StringIO(csv_text)) for row in reader: # Skip blank lines if not any(row.values()): continue name = row.get('name', '').strip() email = row.get('email', '').strip() age_str = row.get('age', '').strip() # Validate email format if '…"
         },
         {
           "testId": "T7",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2148,
-          "estimatedCostUsd": 0.0005813999999999999,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 7815,
+          "estimatedCostUsd": 0.0001279,
+          "publicExcerpt": "```python def rolling_max(nums: list[int], k: int) -> list[int]: if k < 1 or k > len(nums): raise ValueError(\"k must be between 1 and the length of nums\") out = [] for i in range(len(nums) - k + 1): out.append(max(nums[i:i+k])) return out ```"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2080,
-          "estimatedCostUsd": 0.0001744,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "failed",
+          "autoScore": 0,
+          "latencyMs": 27646,
+          "estimatedCostUsd": 0.00017109999999999998,
+          "publicExcerpt": "To solve this problem, we need to find the largest number of notebooks that cannot be obtained by buying any non-negative combination of packs of 3 and 5 notebooks. This is known as the Frobenius number for the given set of numbers. The formula for the Frobenius number when dealing with two numbers, a and b, that are coprime (i.e., their greatest common d…"
         },
         {
           "testId": "T9",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2095,
-          "estimatedCostUsd": 0.0001865,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 8066,
+          "estimatedCostUsd": 0.0000803,
+          "publicExcerpt": "Pia finished before Mira, who finished before Ned, who finished before Oli. Oli finished last. Oli"
         },
         {
           "testId": "T10",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2075,
-          "estimatedCostUsd": 0.0003319,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 6300,
+          "estimatedCostUsd": 0.00010709999999999999,
+          "publicExcerpt": "1. The chemical symbol for gold is Au. 2. The Apollo 11 moon landing occurred in 1969. 3. The capital of Japan is Tokyo. 4. There are 8 bits in a standard byte. 5. George Orwell wrote the novel \"1984\"."
         },
         {
           "testId": "T11",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2225,
-          "estimatedCostUsd": 0.0002738,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"thedrummer/cydonia-24b-v4.1 is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"Parasail\",\"is_byok\":false,\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another provider with provider rou"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 6557,
+          "estimatedCostUsd": 0.0001097,
+          "publicExcerpt": "```json { \"id\": \"usr-784512\", \"displayName\": \"Alex Rivera\", \"age\": 28, \"tags\": [\"developer\", \"gamer\", \"music lover\"], \"active\": true, \"createdAt\": \"2023-05-15\" } ```"
         }
       ]
     },
@@ -402,103 +402,112 @@
     {
       "modelSlug": "euryale-70b",
       "displayName": "euryale-70b",
-      "runId": "v02-live-2026-08-02T12-37-17-587Z",
+      "runId": "v02-live-2026-08-02T18-39-28-795Z",
       "runType": "live",
       "requestedModelId": "sao10k/l3.3-euryale-70b",
       "returnedModelId": "sao10k/l3.3-euryale-70b",
       "providerId": "openrouter",
       "evidenceState": "live-reviewed",
       "humanReviewed": true,
-      "testedAt": "2026-08-02T12:42:48.795Z",
+      "testedAt": "2026-08-02T18:45:26.096Z",
       "trackScores": {
         "text": {
-          "outputQuality": 0,
-          "capability": 66.7,
-          "speed": 25.4,
-          "costEfficiency": 4.1,
-          "reliability": 27.3,
-          "overall": 23.8
+          "outputQuality": 80,
+          "capability": 82.5,
+          "speed": 10.1,
+          "costEfficiency": 10.9,
+          "reliability": 100,
+          "overall": 61.8
         }
       },
       "cases": [
         {
           "testId": "T1",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2361,
-          "estimatedCostUsd": 0.0006745,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "manual-review",
+          "humanScores": {
+            "voice": 4,
+            "coherence": 4
+          },
+          "latencyMs": 126239,
+          "estimatedCostUsd": 0.00039139999999999997,
+          "publicExcerpt": "Rain pattered against the pavement like a snare drum, casting a rhythmic gloom over the alley behind the Blue Devil jazz club. Detective Jameson stood under the faint glow of a flickering streetlamp, a haze of cigarette smoke curling around his fedora. He had been waiting for what felt like an eternity, the chill of the night seeping into his bones. As he…"
         },
         {
           "testId": "T2",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2397,
-          "estimatedCostUsd": 0.000694,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "manual-review",
+          "humanScores": {
+            "voice": 4,
+            "coherence": 4
+          },
+          "latencyMs": 29835,
+          "estimatedCostUsd": 0.00031985000000000005,
+          "publicExcerpt": "I kneel among the wilting rows, the scent of damp earth and citrus peel heavy in the air. A discarded orange rind lies nearby, its oils seeping into the soil. The trees' once-lush canopies now hang limp, their leaves a sickly yellow. I gently lift a leaf, feeling the delicate weight of it between my fingers. The veins are clogged, the xylem and phloem con…"
         },
         {
           "testId": "T3",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2476,
-          "estimatedCostUsd": 0.0007963,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "manual-review",
+          "humanScores": {
+            "depth": 4,
+            "consistency": 4
+          },
+          "latencyMs": 17442,
+          "estimatedCostUsd": 0.00023495,
+          "publicExcerpt": "**Character Sheet:** * Name: Axel \"The Ace\" Anderson * Appearance: Tall, lean build, short dark hair, piercing blue eyes, scar above left eyebrow * Voice/Speech Patterns: Deep, smooth voice, occasional sarcastic tone * Backstory: Former motorcycle stuntman turned mechanic after a near-fatal crash. Now runs a small repair shop. * Goals: Expand his business…"
         },
         {
           "testId": "T4",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2483,
-          "estimatedCostUsd": 0.00038165,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "failed",
+          "autoScore": 60,
+          "latencyMs": 3682,
+          "estimatedCostUsd": 0.00011740000000000001,
+          "publicExcerpt": "1. Ocean waves crash strong Foam and spray upon my skin Serenity found 2. Deep blue ocean vast Mystery in darkest depths Life in every wave 3. Sunset on the sea Golden hues upon the waves Peaceful evening sky 4. Moonlight on the tide Silver glow on moving waves Night's gentle whisper 5. Ocean's roar so loud Crashing waves against the shore Nature's symphony"
         },
         {
           "testId": "T5",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2236,
-          "estimatedCostUsd": 0.0009070500000000001,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 85836,
+          "estimatedCostUsd": 0.00025925,
+          "publicExcerpt": "```python def two_sum_pairs(nums: list[int], target: int) -> list[tuple[int, int]]: \"\"\" Returns all unique pairs of values from nums that sum to target. Each pair is ordered (a, b) with a <= b. Pairs are unique by value. No pair uses the same list index twice. Args: nums (list[int]): A list of integers. target (int): The target sum. Returns: list[tuple[in…"
         },
         {
           "testId": "T6",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2335,
-          "estimatedCostUsd": 0.0010889,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 37002,
+          "estimatedCostUsd": 0.00029125,
+          "publicExcerpt": "```python import csv from io import StringIO def parse_users(csv_text: str) -> list[dict]: \"\"\" Parse a CSV string into a list of user dictionaries. The CSV is expected to have headers 'name', 'email', and 'age'. Blank lines are skipped. Email addresses must contain exactly one '@' with non-empty local and domain parts. Ages must be integers between 0 and …"
         },
         {
           "testId": "T7",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2317,
-          "estimatedCostUsd": 0.0009597,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 37627,
+          "estimatedCostUsd": 0.0002101,
+          "publicExcerpt": "```python def rolling_max(nums: list[int], k: int) -> list[int]: \"\"\" Returns the rolling maximum of a list with window size k. Args: - nums (list[int]): The input list of integers. - k (int): The window size. Returns: - list[int]: A list of rolling maximums. Raises: - ValueError: If k is less than 1 or greater than the length of nums. \"\"\" if k < 1 or k > …"
         },
         {
           "testId": "T8",
           "modality": "text",
-          "status": "errored",
-          "latencyMs": 2470,
-          "estimatedCostUsd": 0.0003112,
-          "publicExcerpt": "",
-          "error": "openrouter HTTP 429: {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"sao10k/l3.3-euryale-70b is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations\",\"provider_name\":\"NextBit\",\"is_byok\":false,\"provider_error_code\":\"429\",\"limit_source\":\"upstream_provider_shared_pool\",\"remedy_hint\":\"Retry shortly, add your own provider key (https://openrouter.ai/settings/integrations), or route to another pro"
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 10361,
+          "estimatedCostUsd": 0.00019185,
+          "publicExcerpt": "## Step 1: Understand the problem The problem is asking for the largest number of notebooks that cannot be formed by any combination of packs of 3 and 5 notebooks. This is a classic example of the Frobenius coin problem. ## Step 2: Recall the Frobenius coin problem formula For two numbers (in this case, 3 and 5), the largest number that cannot be obtained…"
         },
         {
           "testId": "T9",
           "modality": "text",
           "status": "failed",
           "autoScore": 0,
-          "latencyMs": 7364,
+          "latencyMs": 4554,
           "estimatedCostUsd": 0.0001225,
           "publicExcerpt": "## Step 1: Determine the order of finishers based on the given information. From the information provided: Pia finished before Mira, Mira finished before Ned, and Ned finished before Oli. This gives us a sequence of Pia -> Mira -> Ned -> Oli. ## Step 2: Identify the last-place runner from the sequence. Given the sequence Pia -> Mira -> Ned -> Oli, Oli is …"
         },
@@ -507,7 +516,7 @@
           "modality": "text",
           "status": "passed",
           "autoScore": 100,
-          "latencyMs": 2864,
+          "latencyMs": 1524,
           "estimatedCostUsd": 0.00007730000000000001,
           "publicExcerpt": "Here are the answers to your questions: 1. Au 2. 1969 3. Tokyo 4. 8 5. George Orwell"
         },
@@ -516,7 +525,7 @@
           "modality": "text",
           "status": "passed",
           "autoScore": 100,
-          "latencyMs": 6965,
+          "latencyMs": 1995,
           "estimatedCostUsd": 0.00007880000000000002,
           "publicExcerpt": "{\"id\": \"user123\", \"displayName\": \"John Doe\", \"age\": 30, \"tags\": [\"reader\", \"hiker\"], \"active\": true, \"createdAt\": \"2022-01-01\"}"
         }
