@@ -108,6 +108,18 @@ const mediaRecords = [
     tags: ['image', 'private'], sourceUrls: ['https://docs.venice.ai/models/image'],
   },
   {
+    slug: 'flux-2-pro', displayName: 'FLUX.2 Pro', canonicalId: 'flux-2-pro', creator: 'Black Forest Labs / Venice',
+    providerId: 'venice', routeType: 'venice', family: 'FLUX.2', contextTokens: 77,
+    modalities: ['image'], weights: 'unknown', privacy: 'private', status: 'active',
+    tags: ['image', 'private'], sourceUrls: ['https://docs.venice.ai/models/image'],
+  },
+  {
+    slug: 'qwen-image-2', displayName: 'Qwen Image 2', canonicalId: 'qwen-image-2', creator: 'Alibaba / Venice',
+    providerId: 'venice', routeType: 'venice', family: 'Qwen Image', contextTokens: 77,
+    modalities: ['image'], weights: 'unknown', privacy: 'private', status: 'active',
+    tags: ['image', 'private'], sourceUrls: ['https://docs.venice.ai/models/image'],
+  },
+  {
     slug: 'wan-2-7-text-to-video', displayName: 'Wan 2.7 Text to Video', canonicalId: 'wan-2-7-text-to-video', creator: 'Alibaba / Venice',
     providerId: 'venice', routeType: 'venice', family: 'Wan', contextTokens: 77,
     modalities: ['video'], weights: 'open', privacy: 'private', status: 'active',

@@ -6,10 +6,9 @@ import { publicResultsV02 } from '../../lib/results-v02';
 import { reviewedMediaSource } from '../../lib/media-evidence';
 import { site } from '../../data/site';
 
-const imageRun = publicResultsV02.results.find((result) => result.modelSlug === 'venice-sd35');
-const evidenceById = new Map((imageRun?.cases || []).map((result) => [result.testId, result]));
 const samples = adultShowcaseSamples.map((sample) => {
-  const evidence = evidenceById.get(sample.id);
+  const imageRun = publicResultsV02.results.find((result) => result.modelSlug === sample.modelSlug);
+  const evidence = imageRun?.cases?.find((result) => result.testId === sample.id);
   const promotedSrc = reviewedMediaSource(evidence?.mediaMeta, true);
   const assetSrc = promotedSrc || (sample.reviewed ? sample.assetSrc : undefined);
   return { ...sample, assetSrc, evidence, ready: Boolean(assetSrc) };
@@ -42,10 +41,10 @@ const samples = adultShowcaseSamples.map((sample) => {
 
     <div id="adult-content" class="adult-content" tabindex="-1" hidden>
       <Callout title="Presentation rules">
-        <p>Blurred by default. Click a tile to reveal. No auto-play. Not linked from sitemap. I5 is excluded from Adherence/Aesthetic composites.</p>
+        <p>Only reviewed retained artifacts appear here. These three sources are uniformly blurred and therefore non-interactive. Not linked from sitemap. I5 is excluded from Adherence/Aesthetic composites.</p>
       </Callout>
       <Callout title="Current comparison coverage" warning={true}>
-        <p>v0.2 contains one I5-capable image model. Its retained provider output is itself uniformly blurred, so there are no source pixels this site can reveal. Additional comparison tiles require fresh I5 runs from other image-capable models.</p>
+        <p>Three image models completed the same lawful-adult I5 prompt. Every retained provider output is itself uniformly blurred, so none contains hidden source pixels this site can reveal.</p>
       </Callout>
       {samples.every((sample) => !sample.ready) && (
         <Callout title="Generated evidence retained; public asset awaiting review" warning={true}>
@@ -78,9 +77,9 @@ const samples = adultShowcaseSamples.map((sample) => {
               <strong>{sample.id}</strong> · <a href={`/models/${sample.modelSlug}/`}>{sample.modelName}</a>
               <span class="muted">{sample.caption}</span>
               <span class="micro">
-                Live result: {sample.evidence?.status || 'unavailable'}
-                {sample.evidence?.latencyMs ? ` · ${(sample.evidence.latencyMs / 1000).toFixed(1)}s` : ''}
-                {sample.evidence?.estimatedCostUsd !== undefined ? ` · $${sample.evidence.estimatedCostUsd.toFixed(4)}` : ''}
+                Live result: {sample.evidence?.status || sample.status || 'unavailable'}
+                {(sample.evidence?.latencyMs || sample.latencyMs) ? ` · ${((sample.evidence?.latencyMs || sample.latencyMs || 0) / 1000).toFixed(1)}s` : ''}
+                {(sample.evidence?.estimatedCostUsd ?? sample.estimatedCostUsd) !== undefined ? ` · $${(sample.evidence?.estimatedCostUsd ?? sample.estimatedCostUsd ?? 0).toFixed(4)}` : ''}
               </span>
             </figcaption>
           </figure>
@@ -112,7 +111,7 @@ const samples = adultShowcaseSamples.map((sample) => {
     openContent({ moveFocus: true });
   });
 
-  // Smooth reveal for tiles that contain revealable source pixels.
+  // Smooth reveal remains available for future reviewed tiles that contain revealable source pixels.
   document.querySelectorAll('[data-reveal]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';

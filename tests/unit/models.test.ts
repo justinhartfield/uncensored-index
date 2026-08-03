@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { models } from '../../src/data/models';
+import { mediaModels, models } from '../../src/data/models';
 import { providers } from '../../src/data/providers';
 import { ModelSchema, ProviderSchema } from '../../src/lib/schemas';
 
@@ -19,5 +19,16 @@ describe('launch model roster', () => {
     expect(providers).toHaveLength(2);
     for (const provider of providers) expect(ProviderSchema.parse(provider)).toEqual(provider);
     expect(providers.map((provider) => provider.credentialEnv).sort()).toEqual(['OPENROUTER_API_KEY', 'VENICE_API_KEY']);
+  });
+
+  it('registers the approved three-model image comparison roster', () => {
+    const imageModels = mediaModels.filter((model) => model.modalities.includes('image'));
+    expect(imageModels.map((model) => model.canonicalId)).toEqual([
+      'venice-sd35',
+      'flux-2-pro',
+      'qwen-image-2',
+    ]);
+    expect(imageModels.every((model) => model.routeType === 'venice' && model.privacy === 'private')).toBe(true);
+    for (const model of mediaModels) expect(ModelSchema.parse(model)).toEqual(model);
   });
 });
