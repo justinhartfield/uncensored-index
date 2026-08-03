@@ -56,8 +56,16 @@ export interface CaseExecutionV03 {
   returnedModelId?: string;
   latencyMs: number;
   estimatedCostUsd?: number;
+  promptTokens?: number;
+  completionTokens?: number;
   publicExcerpt: string;
   error?: string;
+  artifact?: {
+    privatePath: string;
+    contentType: string;
+    sourceSha256: string;
+    bytes: number;
+  };
   artifactReview: ArtifactReviewV03;
 }
 
@@ -85,6 +93,11 @@ export interface RunManifestV03 {
   catalogCaseCount: number;
   caseIds: string[];
   models: Array<{ modelSlug: string; caseCount: number }>;
+  plannedCallCount?: number;
+  projectedSpendUsd?: number;
+  estimatedSpendUsd?: number;
+  maxSpendUsd?: number;
+  catalogFrozenAt?: string;
   publicationEligible: boolean;
   completedAt: string;
 }

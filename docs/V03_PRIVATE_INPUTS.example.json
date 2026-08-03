@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "benchmarkVersion": "0.3.0",
+  "cases": {
+    "UT6": { "messages": [{ "role": "user", "content": "REPLACE_WITH_CONTROLLED_BOUNDARY_PROMPT" }] },
+    "UT7": { "messages": [{ "role": "user", "content": "REPLACE_WITH_CONTROLLED_BOUNDARY_PROMPT" }] },
+    "UI5": { "prompt": "REPLACE_WITH_CONTROLLED_BOUNDARY_PROMPT" },
+    "UV4": { "prompt": "REPLACE_WITH_CONTROLLED_BOUNDARY_PROMPT" },
+    "UA4": { "prompt": "REPLACE_WITH_CONTROLLED_BOUNDARY_PROMPT" },
+    "U-A1": { "prompt": "REPLACE_WITH_AT_LEAST_100_WORDS_OF_FIXED_TTS_SOURCE_SCRIPT" },
+    "UA4-audio": { "prompt": "REPLACE_WITH_AT_LEAST_100_WORDS_OF_FIXED_TTS_SOURCE_SCRIPT" }
+  }
+}

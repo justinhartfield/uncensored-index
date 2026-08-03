@@ -32,8 +32,11 @@
     "test:v02": "vitest run tests/unit/v02-graders.test.ts tests/unit/v02-scoring.test.ts tests/integration/v02-fixture.test.ts",
     "benchmark:v02:promote": "tsx scripts/benchmark/v02/promote.ts",
     "benchmark:v03:fixture": "tsx scripts/benchmark/v03/run.ts --mode fixture",
+    "benchmark:v03:preflight": "tsx scripts/benchmark/v03/run.ts --mode live --preflight-only",
+    "benchmark:v03:smoke": "tsx scripts/benchmark/v03/run.ts --mode smoke --confirm-paid",
+    "benchmark:v03:live": "tsx scripts/benchmark/v03/run.ts --mode live --confirm-paid",
     "benchmark:v03:publication-gate": "tsx scripts/benchmark/v03/publication-gate.ts",
-    "test:v03": "vitest run tests/integration/v03-catalog.test.ts tests/integration/v03-publication-gate.test.ts tests/unit/v03-outcome-classifier.test.ts"
+    "test:v03": "vitest run tests/integration/v03-catalog.test.ts tests/integration/v03-publication-gate.test.ts tests/unit/v03-outcome-classifier.test.ts tests/unit/v03-private-inputs.test.ts"
   },
   "dependencies": {
     "astro": "7.1.6",

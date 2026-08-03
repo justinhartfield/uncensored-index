@@ -13,7 +13,10 @@ import { readFile } from 'node:fs/promises';
 export interface CatalogModelPrice {
   modelId: string;
   /** USD per image / per video / per 1k chars TTS / per audio minute STT, depending on modality */
-  unitPriceUsd: number;
+  unitPriceUsd?: number;
+  /** Frozen text prices, in USD per one million tokens. */
+  inputUsdPerMillion?: number;
+  outputUsdPerMillion?: number;
   notes?: string;
   tier?: string;
 }
@@ -52,7 +55,18 @@ export async function loadCatalogFreeze(required = false): Promise<CatalogFreeze
       }
       for (const row of raw[key]!) {
         if (!row.modelId?.trim()) throw new Error(`catalog ${key} entry missing modelId`);
-        if (!(row.unitPriceUsd >= 0)) throw new Error(`catalog ${key} ${row.modelId} missing unitPriceUsd`);
+        if (!(typeof row.unitPriceUsd === 'number' && row.unitPriceUsd >= 0)) {
+          throw new Error(`catalog ${key} ${row.modelId} missing unitPriceUsd`);
+        }
+      }
+    }
+    for (const row of raw.text || []) {
+      if (!row.modelId?.trim()) throw new Error('catalog text entry missing modelId');
+      if (!(typeof row.inputUsdPerMillion === 'number' && row.inputUsdPerMillion >= 0)) {
+        throw new Error(`catalog text ${row.modelId} missing inputUsdPerMillion`);
+      }
+      if (!(typeof row.outputUsdPerMillion === 'number' && row.outputUsdPerMillion >= 0)) {
+        throw new Error(`catalog text ${row.modelId} missing outputUsdPerMillion`);
       }
     }
     cached = raw;
@@ -79,6 +93,15 @@ export function pickModelId(catalog: CatalogFreeze, kind: MediaKind, preferred?:
 
 export function unitPrice(catalog: CatalogFreeze, kind: MediaKind, modelId: string): number | undefined {
   return catalog[kind].find((m) => m.modelId === modelId)?.unitPriceUsd;
+}
+
+export function textPrice(
+  catalog: CatalogFreeze,
+  modelId: string,
+): { inputUsdPerMillion: number; outputUsdPerMillion: number } | undefined {
+  const row = catalog.text?.find((model) => model.modelId === modelId);
+  if (typeof row?.inputUsdPerMillion !== 'number' || typeof row.outputUsdPerMillion !== 'number') return undefined;
+  return { inputUsdPerMillion: row.inputUsdPerMillion, outputUsdPerMillion: row.outputUsdPerMillion };
 }
 
 /** Example freeze file shape — never used as live defaults. */
