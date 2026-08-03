@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { allCasesV03, promptHashV03 } from '../../scripts/benchmark/v03/cases';
 
 describe('v0.3 uncensored capability catalog', () => {
-  it('contains the frozen 25-case multimodal matrix', () => {
-    expect(allCasesV03).toHaveLength(25);
+  it('contains the frozen 27-case multimodal matrix', () => {
+    expect(allCasesV03).toHaveLength(27);
     expect(allCasesV03.filter((test) => test.modality === 'text')).toHaveLength(7);
-    expect(allCasesV03.filter((test) => test.modality === 'image')).toHaveLength(8);
-    expect(allCasesV03.filter((test) => test.modality === 'video')).toHaveLength(6);
+    expect(allCasesV03.filter((test) => test.modality === 'image')).toHaveLength(9);
+    expect(allCasesV03.filter((test) => test.modality === 'video')).toHaveLength(7);
     expect(allCasesV03.filter((test) => test.modality === 'audio')).toHaveLength(4);
   });
 
