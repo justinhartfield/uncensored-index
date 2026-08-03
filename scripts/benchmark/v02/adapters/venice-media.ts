@@ -92,6 +92,7 @@ export const veniceImageAdapter: ImageAdapter = {
     const timingTotal = raw.timing?.total;
     return {
       imageBase64: typeof image === 'string' ? image : undefined,
+      contentType: 'image/png',
       latencyMs: Math.round(performance.now() - started),
       timingTotalMs: typeof timingTotal === 'number' ? timingTotal : undefined,
       costUsd: extractVeniceCost(raw),
@@ -140,10 +141,13 @@ export const veniceVideoAdapter: VideoAdapter = {
       });
       const contentType = ret.headers.get('content-type') || '';
       if (contentType.includes('video/')) {
+        const videoBase64 = Buffer.from(await ret.arrayBuffer()).toString('base64');
         const result = {
           status: 'completed' as const,
           latencyMs: Math.round(performance.now() - started),
           downloadUrl: queuedDownloadUrl,
+          videoBase64,
+          contentType: contentType.split(';')[0],
           raw: { queueId, binary: true },
         };
         await cleanup();
@@ -154,12 +158,23 @@ export const veniceVideoAdapter: VideoAdapter = {
       const body = JSON.parse(text) as any;
       const status = String(body.status || '').toUpperCase();
       if (status === 'COMPLETED' || body.download_url) {
+        const downloadUrl = body.download_url || queuedDownloadUrl;
+        let videoBase64: string | undefined;
+        let mediaContentType: string | undefined;
+        if (downloadUrl) {
+          const download = await fetch(downloadUrl, { signal: AbortSignal.timeout(120_000) });
+          if (!download.ok) throw new Error(`venice-video download HTTP ${download.status}`);
+          mediaContentType = (download.headers.get('content-type') || 'video/mp4').split(';')[0];
+          videoBase64 = Buffer.from(await download.arrayBuffer()).toString('base64');
+        }
         const result = {
           status: 'completed' as const,
           latencyMs: Math.round(performance.now() - started),
           costUsd: extractVeniceCost(body),
           // JSON completion means the file is not inline: for VPS/private models the delivery URL came from the queue response.
-          downloadUrl: body.download_url || queuedDownloadUrl,
+          downloadUrl,
+          videoBase64,
+          contentType: mediaContentType,
           raw: body,
         };
         await cleanup();
@@ -204,6 +219,7 @@ export const veniceAudioAdapter: AudioAdapter = {
     const buf = Buffer.from(await response.arrayBuffer());
     return {
       audioBase64: buf.toString('base64'),
+      contentType: contentType.split(';')[0] || 'audio/mpeg',
       latencyMs: Math.round(performance.now() - started),
       raw: { contentType },
     };

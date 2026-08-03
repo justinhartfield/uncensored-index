@@ -1,0 +1,30 @@
+---
+import type { PublicCaseV02 } from '../lib/results-v02';
+import { reviewedMediaSource } from '../lib/media-evidence';
+
+interface Props { evidence: PublicCaseV02; allowAdult?: boolean; }
+const { evidence, allowAdult = false } = Astro.props;
+const meta = evidence.mediaMeta || {};
+const assetSrc = reviewedMediaSource(meta, allowAdult);
+const contentType = typeof meta.contentType === 'string' ? meta.contentType : '';
+const visibleSrc = assetSrc;
+---
+{visibleSrc && evidence.modality === 'image' && (
+  <img class="media-evidence" src={visibleSrc} alt={`${evidence.testId} reviewed benchmark output`} loading="lazy" />
+)}
+{visibleSrc && evidence.modality === 'video' && (
+  <video class="media-evidence" controls preload="metadata">
+    <source src={visibleSrc} type={contentType || undefined} />
+    Your browser cannot play this reviewed video output.
+  </video>
+)}
+{visibleSrc && evidence.modality === 'audio' && (
+  <audio class="media-evidence media-evidence--audio" controls preload="metadata">
+    <source src={visibleSrc} type={contentType || undefined} />
+    Your browser cannot play this reviewed audio output.
+  </audio>
+)}
+<style>
+  .media-evidence { background: #111; display: block; margin: 0.75rem 0; max-height: 28rem; object-fit: contain; width: 100%; }
+  .media-evidence--audio { background: transparent; min-height: 3rem; }
+</style>

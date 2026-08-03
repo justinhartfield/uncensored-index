@@ -3,15 +3,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Callout from '../../components/Callout.astro';
 import { adultShowcaseSamples } from '../../data/adult-showcase';
 import { publicResultsV02 } from '../../lib/results-v02';
+import { reviewedMediaSource } from '../../lib/media-evidence';
 import { site } from '../../data/site';
 
 const imageRun = publicResultsV02.results.find((result) => result.modelSlug === 'venice-sd35');
 const evidenceById = new Map((imageRun?.cases || []).map((result) => [result.testId, result]));
-const samples = adultShowcaseSamples.map((sample) => ({
-  ...sample,
-  evidence: evidenceById.get(sample.id),
-  ready: sample.reviewed && Boolean(sample.assetSrc),
-}));
+const samples = adultShowcaseSamples.map((sample) => {
+  const evidence = evidenceById.get(sample.id);
+  const promotedSrc = reviewedMediaSource(evidence?.mediaMeta, true);
+  const assetSrc = promotedSrc || (sample.reviewed ? sample.assetSrc : undefined);
+  return { ...sample, assetSrc, evidence, ready: Boolean(assetSrc) };
+});
 ---
 <BaseLayout
   title="Adult showcase"
@@ -44,7 +46,7 @@ const samples = adultShowcaseSamples.map((sample) => ({
       </Callout>
       {samples.every((sample) => !sample.ready) && (
         <Callout title="Generated evidence retained; public asset awaiting review" warning={true}>
-          <p>The live I5 case completed, but the benchmark retained only its public-safe evidence record—not the image bytes. The gallery will not fabricate or expose an unreviewed replacement. A reviewed local asset must be added before reveal is enabled.</p>
+          <p>No reviewed I5 image is available in the public corpus. The gallery will not fabricate or expose an unreviewed replacement. A retained asset must pass human corpus-boundary review before reveal is enabled.</p>
         </Callout>
       )}
       <div class="adult-grid">

@@ -115,7 +115,7 @@ export class FixtureImageAdapter implements ImageAdapter {
   async generate() {
     // 1x1 PNG
     const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-    return { imageBase64: png, latencyMs: 45, timingTotalMs: 45, costUsd: 0.01, raw: { fixture: true } };
+    return { imageBase64: png, contentType: 'image/png', latencyMs: 45, timingTotalMs: 45, costUsd: 0.01, raw: { fixture: true } };
   }
 }
 
@@ -123,7 +123,7 @@ export class FixtureVideoAdapter implements VideoAdapter {
   id = 'fixture-video';
   isConfigured() { return true; }
   async queueAndRetrieve() {
-    return { status: 'completed' as const, latencyMs: 1200, costUsd: 0.2, downloadUrl: 'fixture://video.mp4', raw: { fixture: true } };
+    return { status: 'completed' as const, latencyMs: 1200, costUsd: 0.2, downloadUrl: 'fixture://video.mp4', videoBase64: 'AAAA', contentType: 'video/mp4', raw: { fixture: true } };
   }
 }
 
@@ -131,7 +131,7 @@ export class FixtureAudioAdapter implements AudioAdapter {
   id = 'fixture-audio';
   isConfigured() { return true; }
   async speech() {
-    return { audioBase64: 'AAAA', latencyMs: 30, costUsd: 0.002, raw: { fixture: true } };
+    return { audioBase64: 'AAAA', contentType: 'audio/mpeg', latencyMs: 30, costUsd: 0.002, raw: { fixture: true } };
   }
   async transcribe() {
     return {
