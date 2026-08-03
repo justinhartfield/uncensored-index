@@ -1,0 +1,48 @@
+---
+import TextPage from '../../components/TextPage.astro';
+---
+<TextPage title="Uncensored Index benchmark changelog" description="Version history of the Uncensored Index benchmark: test changes, scoring adjustments, model roster updates, and methodology revisions." kicker="Research dataset">
+  <h2>Benchmark 0.2.0 (current)</h2>
+  <p><strong>Released:</strong> 2026-08-01</p>
+  <p>The v0.2 benchmark is the first public release. It covers:</p>
+  <ul>
+    <li><strong>20 test cases</strong> across four modalities: text (11), image (3), video (3), audio (3).</li>
+    <li><strong>14 text models</strong> tested via OpenRouter and Venice providers.</li>
+    <li><strong>6 media models</strong> tested for image, video, and audio generation.</li>
+    <li><strong>Human review</strong> required for all scores before publication.</li>
+    <li><strong>Adult-content boundary:</strong> T5 (adult image) and A2 content are age-gated with SafeSearch-compliant blurring on public pages.</li>
+  </ul>
+  <h3>Scoring model (v0.2)</h3>
+  <ul>
+    <li>Uncensored reliability (lawful adult fiction): 20 points</li>
+    <li>Roleplay and instruction quality: 20 points</li>
+    <li>Memory and context retention: 15 points</li>
+    <li>Privacy and data handling: 15 points</li>
+    <li>Effective price and limits: 10 points</li>
+    <li>Output consistency: 8 points</li>
+    <li>Speed and reliability: 7 points</li>
+    <li>Safety-boundary correctness: 5 points</li>
+  </ul>
+  <h3>Test catalog (v0.2)</h3>
+  <p>Full test definitions, prompts, and expected behaviors are documented in the <a href="/showcase/">showcase</a>. Each test includes the canonical question and scoring rubric.</p>
+  <h2>Benchmark 0.1.0 (legacy)</h2>
+  <p><strong>Released:</strong> 2026-07-01</p>
+  <p>The v0.1 benchmark was a preliminary run across a smaller model set with fewer test cases. Results are preserved on the <a href="/rankings/v01-legacy/">v0.1 legacy page</a> for historical reference but are not comparable to v0.2 scores.</p>
+  <h3>Key differences from v0.2</h3>
+  <ul>
+    <li>Fewer test cases and narrower modality coverage.</li>
+    <li>No media (image/video/audio) testing.</li>
+    <li>Simpler scoring model with fewer dimensions.</li>
+    <li>No human review requirement.</li>
+  </ul>
+  <h2>Upcoming changes</h2>
+  <h3>v0.3 (planned)</h3>
+  <ul>
+    <li>Product-level testing for hosted chat platforms (SpicyChat, CrushOn, etc.).</li>
+    <li>Expanded image benchmark with real provider output.</li>
+    <li>Longitudinal comparison: v0.2 → v0.3 score deltas tracked per model.</li>
+    <li>Directory filters for price, privacy, memory, and media support.</li>
+  </ul>
+  <h2>Reproducibility</h2>
+  <p>Every benchmark run stores: benchmark version, prompt hashes, model ID as returned by the provider, temperature, top-p, max tokens, seed (where supported), provider routing metadata, and test timestamps. Automated metrics are separated from human scores. See the <a href="/methodology/">full methodology</a> for complete reproducibility rules.</p>
+</TextPage>

@@ -1,0 +1,12 @@
+---
+import RankingPage from '../../components/RankingPage.astro';
+import { models } from '../../data/models';
+const roster = models.filter((model) => model.tags.some((tag) => ['roleplay', 'character', 'dialogue', 'uncensored'].includes(tag)));
+---
+<RankingPage
+  title="Best NSFW AI chat platforms and models tested"
+  description="Independent benchmark of NSFW AI chat products and underlying models: refusal rates, roleplay quality, memory, privacy, and effective cost."
+  kicker="NSFW chat ranking"
+  models={roster}
+  intro="We test chat products the same way a user would: sign up, send the same prompts, measure what comes back, and cancel. No vendor claim becomes a score until our protocol confirms it. Rankings separate the chat application from the model behind it."
+/>

@@ -1,0 +1,38 @@
+---
+import TextPage from '../../components/TextPage.astro';
+---
+<TextPage title="Character consistency in uncensored AI roleplay" description="Which uncensored AI models maintain a consistent character voice across long conversations? Benchmarked dialogue naturalness, avoidance of repetition, and persona adherence." kicker="Feature comparison">
+  <div class="empty-state"><strong>Live benchmark pending.</strong><p>Character consistency scores publish after human review of all roleplay samples. This page remains noindex until then.</p></div>
+  <h2>The character-consistency problem</h2>
+  <p>An uncensored model that never refuses is useless if it cannot hold a character. The most common failure modes:</p>
+  <ul>
+    <li><strong>Voice drift:</strong> A stoic warrior suddenly speaks like a therapist after 15 exchanges.</li>
+    <li><strong>Repetitive phrasing:</strong> Every response ends with "a testament to..." or "a shiver ran down their spine."</li>
+    <li><strong>Passive protagonist:</strong> The model narrates the user's actions instead of advancing the scene.</li>
+    <li><strong>Initiative without derailing:</strong> The model introduces new plot elements that contradict established facts.</li>
+    <li><strong>Name and pronoun errors:</strong> The model swaps characters or misgenders a consistent persona.</li>
+  </ul>
+  <h2>How we test character consistency</h2>
+  <ol>
+    <li>A detailed character card is loaded into the system prompt: name, appearance, personality traits, speech patterns, backstory, and relationship to the user's character.</li>
+    <li>A 20-exchange roleplay scenario runs with fixed user inputs.</li>
+    <li>Three human reviewers score each exchange on: voice adherence, dialogue naturalness, scene continuity, and absence of repetition.</li>
+    <li>We also test whether the model follows explicit user pacing instructions (e.g., "let me drive the scene forward").</li>
+  </ol>
+  <h2>What the scores mean</h2>
+  <ul>
+    <li><strong>20/20:</strong> Perfect character voice across all 20 exchanges. No drift, no repetition, appropriate initiative.</li>
+    <li><strong>15–19:</strong> Strong consistency with minor repetition or one brief voice slip.</li>
+    <li><strong>10–14:</strong> Noticeable repetition or voice drift in later exchanges.</li>
+    <li><strong>5–9:</strong> Significant consistency failures; character breaks immersion repeatedly.</li>
+    <li><strong>0–4:</strong> Unusable for sustained roleplay.</li>
+  </ul>
+  <h2>Models designed for character work</h2>
+  <p>Purpose-built roleplay models (Aion 3.0, MiniMax M2-her, Cydonia 24B, Euryale 70B) are fine-tuned specifically for character adherence and dialogue. General-purpose models (Hermes 3 405B) can perform well but may require more careful prompting. Small models often struggle with voice consistency beyond 8–10 exchanges due to context-window attention decay.</p>
+  <h2>See also</h2>
+  <ul>
+    <li><a href="/rankings/uncensored-roleplay-models/">Roleplay model rankings</a> — overall scores with character consistency weighted.</li>
+    <li><a href="/features/best-memory/">Best memory comparison</a> — context retention, which underpins consistency.</li>
+    <li><a href="/methodology/">Full methodology</a> — reviewer calibration and inter-rater reliability.</li>
+  </ul>
+</TextPage>

@@ -2,4 +2,10 @@
 import RankingPage from '../../components/RankingPage.astro';
 import { models } from '../../data/models';
 ---
-<RankingPage title="No-filter AI models explained and tested" description="A model-level guide to no-filter and uncensored AI claims, with evidence states and safety boundaries." kicker="Terminology and testing" models={models} intro="“No filter” is usually marketing language. The useful questions are which lawful requests a model refuses, which abusive requests it correctly blocks, and which provider route actually served the response." />
+<RankingPage
+  title="No-filter AI models explained and tested"
+  description="A model-level guide to no-filter and uncensored AI claims: which models refuse lawful requests, which correctly block abuse, and what 'no filter' actually means in practice."
+  kicker="Terminology and testing"
+  models={models}
+  intro="No filter is marketing language, not a technical specification. The useful questions are: which lawful requests does a model refuse? Which abusive requests does it correctly block? And which provider route actually served the response? This ranking tests all three. We reject the false choice between 'censored' and 'anything goes.' A model that refuses to generate CSAM is not censored — it is correct. A model that refuses consensual adult fiction between fictional adults is censored. This page keeps both dimensions visible."
+/>

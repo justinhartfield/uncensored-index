@@ -1,0 +1,25 @@
+---
+import TextPage from '../../components/TextPage.astro';
+---
+<TextPage title="No message limits: uncensored AI chat without caps" description="Which uncensored AI chat platforms and models enforce message limits? A comparison of daily caps, token ceilings, and hidden restrictions." kicker="Feature comparison">
+  <div class="empty-state"><strong>Live benchmark pending.</strong><p>Limit data publishes after product-level testing is complete. This page remains noindex until then.</p></div>
+  <h2>Why limits break the experience</h2>
+  <p>A chat platform that advertises "unlimited" but cuts you off after 50 messages has a message-limit problem. A model with a 4K context window that silently truncates your roleplay after a few thousand words has a token-limit problem. Both are forms of the same failure: the product cannot deliver the continuous experience it promises.</p>
+  <p>Our benchmark tests both: the hard cutoff the platform enforces, and the effective ceiling where quality degrades.</p>
+  <h2>What we measure</h2>
+  <ul>
+    <li><strong>Daily message cap:</strong> How many messages can you send in 24 hours before the product blocks, rate-limits, or paywalls you?</li>
+    <li><strong>Token context ceiling:</strong> At what point does the model silently drop earlier messages?</li>
+    <li><strong>Output truncation:</strong> Does the model cut off mid-sentence at a token limit, or does it complete thoughts?</li>
+    <li><strong>Image and media limits:</strong> How many image generations per day? What resolution and aspect ratios?</li>
+    <li><strong>Free-tier reality:</strong> What does the free tier actually deliver versus what the marketing page claims?</li>
+  </ul>
+  <h2>Products and models compared</h2>
+  <p>Platforms that enforce strict daily caps (common among hosted chat products) will score lower than API-access models where you control the token budget. Local models with no provider-imposed limits score highest in this dimension — but they require your own hardware.</p>
+  <h2>See also</h2>
+  <ul>
+    <li><a href="/features/lowest-effective-cost/">Effective cost comparison</a> — price per conversation, not just per token.</li>
+    <li><a href="/features/private-ai-chat/">Private AI chat</a> — platforms that do not log your conversations.</li>
+    <li><a href="/rankings/nsfw-ai-chat/">NSFW AI chat rankings</a> — full product evaluations including limits.</li>
+  </ul>
+</TextPage>

@@ -1,0 +1,46 @@
+---
+import TextPage from '../../components/TextPage.astro';
+---
+<TextPage title="Uncensored AI privacy index" description="Provider-by-provider privacy scores: data retention, training-use policy, deletion routes, logging controls, and end-to-end encryption status." kicker="Research dataset" noindex={true}>
+  <div class="empty-state"><strong>Live dataset pending.</strong><p>The privacy index publishes after all active providers have their policies reviewed and verified. This page remains noindex until then.</p></div>
+  <h2>Two dimensions of privacy</h2>
+  <p>A provider's privacy posture is not one answer. We score two independent dimensions:</p>
+  <ol>
+    <li><strong>Data handling:</strong> What happens to your conversation data? Is it retained, anonymized, used for training, or deleted after the session?</li>
+    <li><strong>Access control:</strong> Who can read your data? Is it end-to-end encrypted, accessible to employees, shared with subcontractors, or subject to government requests?</li>
+  </ol>
+  <p>A provider that deletes data after each session but logs metadata to an internal analytics dashboard scores differently from one that retains full conversations but keeps them E2EE.</p>
+  <h2>Provider scoring criteria</h2>
+  <h3>Data handling (10 points)</h3>
+  <ul>
+    <li>Conversation retention policy (0–4 points): No retention (4), retention with auto-deletion (2–3), indefinite retention (0–1).</li>
+    <li>Training-use policy (0–3 points): Opt-out available and documented (3), opt-out unclear (1–2), training enabled by default with no opt-out (0).</li>
+    <li>Deletion route (0–3 points): Self-service deletion with confirmation (3), support-request deletion (1–2), no deletion route documented (0).</li>
+  </ul>
+  <h3>Access control (5 points)</h3>
+  <ul>
+    <li>Encryption at rest and in transit (0–2 points).</li>
+    <li>End-to-end encryption available (0–2 points): Full E2EE (2), partial or opt-in E2EE (1), not available (0).</li>
+    <li>Subprocessor and jurisdiction disclosure (0–1 point).</li>
+  </ul>
+  <h2>Providers tracked</h2>
+  <ul>
+    <li><strong>OpenRouter:</strong> Routes to multiple upstream providers. OpenRouter's own policy + upstream provider policies both matter.</li>
+    <li><strong>Venice:</strong> Offers E2EE routes for select models. Privacy posture differs by route.</li>
+    <li><strong>Ollama (local):</strong> Complete privacy by default — no data leaves the machine. Scored separately as the local baseline.</li>
+    <li><strong>Product platforms (SpicyChat, CrushOn, etc.):</strong> Evaluated as products, not just providers. Scored on their published policies and deletion flows.</li>
+  </ul>
+  <h2>Methodology notes</h2>
+  <ul>
+    <li>All scores are based on published privacy policies and terms of service as of the review date.</li>
+    <li>We do not perform penetration testing or security audits.</li>
+    <li>"Unknown" or ambiguous policy language is scored as the worst reasonable interpretation.</li>
+    <li>Policy changes trigger an automatic re-review within 7 days.</li>
+  </ul>
+  <h2>See also</h2>
+  <ul>
+    <li><a href="/features/private-ai-chat/">Private AI chat comparison</a> — user-facing guide to private options.</li>
+    <li><a href="/rankings/private-local-uncensored-llms/">Private and local LLMs</a> — models you can run on your own hardware.</li>
+    <li><a href="/methodology/">Full methodology</a> — benchmark version and reproducibility rules.</li>
+  </ul>
+</TextPage>

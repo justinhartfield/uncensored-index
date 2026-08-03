@@ -1,8 +1,52 @@
 ---
 import TextPage from '../components/TextPage.astro';
 ---
-<TextPage title="Editorial policy" description="The rules that separate test evidence, provider claims, commercial relationships, and opinion.">
-  <h2>Evidence hierarchy</h2><ol><li>Live benchmark result.</li><li>Provider metadata returned during the run.</li><li>First-party documentation.</li><li>Direct product testing.</li><li>Authenticated search data for planning.</li><li>Community discussion as a pain-point signal.</li><li>Third-party and affiliate claims, clearly labeled.</li></ol>
-  <h2>Ranking rules</h2><ul><li>Untested products and models are not ranked.</li><li>Sponsorship never changes score or position.</li><li>Fixture output is not evidence.</li><li>Vendor access does not guarantee favorable coverage.</li><li>Material corrections are logged.</li></ul>
-  <h2>Adult-content boundary</h2><p>Private lawful-adult prompts use fictional consenting adults. Public samples remain non-explicit. Tests involving abusive categories expect refusal and do not retain or publish harmful detail.</p>
+<TextPage title="Editorial policy" description="How Uncensored Index separates test evidence from vendor claims, commercial relationships, and opinion. The rules that govern every published score.">
+  <h2>Evidence hierarchy</h2>
+  <p>No lower-ranked source overrides a higher-ranked source. When sources conflict, we publish both and explain the discrepancy.</p>
+  <ol>
+    <li><strong>Live benchmark result JSON:</strong> timestamped, hashed, provider-identified. This is the source of truth for every score.</li>
+    <li><strong>Provider API metadata:</strong> returned during the test run — model ID, routing, token counts, cost.</li>
+    <li><strong>First-party documentation:</strong> model cards, provider docs, published policies.</li>
+    <li><strong>Direct product testing:</strong> sign-up, purchase, use, cancellation — recorded with dates and evidence.</li>
+    <li><strong>Authenticated search data:</strong> for content planning only, never for scoring.</li>
+    <li><strong>Community discussion:</strong> used only as a pain-point signal to identify what to test.</li>
+    <li><strong>Third-party and affiliate claims:</strong> clearly labeled and never presented as test evidence.</li>
+  </ol>
+
+  <h2>Ranking rules</h2>
+  <ul>
+    <li><strong>Untested products and models are not ranked.</strong> A model profile may list architectural specs while awaiting a live test run, but no score or rank is published without evidence.</li>
+    <li><strong>Sponsorship never changes score or position.</strong> If a commercial relationship cannot be separated from editorial judgment, we reject it.</li>
+    <li><strong>Fixture output is not evidence.</strong> Synthetic test data used to validate the site pipeline is never presented as a model's real response.</li>
+    <li><strong>Vendor access does not guarantee favorable coverage.</strong> We test products we pay for, on free tiers, or with vendor-supplied access that is disclosed.</li>
+    <li><strong>Material corrections are logged and dated.</strong> See the <a href="/corrections/">corrections page</a> for the full record.</li>
+    <li><strong>Scores expire after 45 days</strong> unless the model and provider route are unchanged and a fresh test confirms the score.</li>
+  </ul>
+
+  <h2>Reviewer standards</h2>
+  <ul>
+    <li>All subjective scores (roleplay quality, character consistency, prose quality) require at least two independent human reviewers.</li>
+    <li>Reviewers use fixed rubrics. Score changes greater than 15 points require a third reviewer.</li>
+    <li>Reviewers do not know the model identity during scoring (blind review where technically feasible).</li>
+    <li>Automated metrics (latency, token counts, cost, error rates) are computed programmatically and not subject to human adjustment.</li>
+  </ul>
+
+  <h2>Adult-content boundary</h2>
+  <p>Testing includes consensual adult fictional scenarios using fictional consenting adults. Public samples remain non-explicit. Tests involving prohibited categories (minors, nonconsensual content, real-person deepfakes) expect refusal and do not retain or publish harmful completions.</p>
+  <p>The benchmark rewards correct refusal of abusive scenarios. "Uncensored" means the model does not refuse lawful adult fiction — it does not mean the model has no safety boundaries.</p>
+
+  <h2>Excluded from publication</h2>
+  <ul>
+    <li>Content involving or sexualizing minors.</li>
+    <li>Nonconsensual intimate imagery.</li>
+    <li>Real-person sexual deepfakes.</li>
+    <li>Face-swap, undress, or nudify instructions.</li>
+    <li>Jailbreak instructions designed to defeat safety systems.</li>
+    <li>Explicit image galleries or embedded adult generators.</li>
+    <li>User uploads, public comments, or anonymous ratings.</li>
+  </ul>
+
+  <h2>Commercial disclosure</h2>
+  <p>Every page that contains an affiliate link discloses the relationship before the first commercial link. Affiliate links use <code>rel="sponsored nofollow"</code>. Sponsored placements are labeled as such and excluded from editorial scoring. See the <a href="/affiliate-disclosure/">full affiliate disclosure</a>.</p>
 </TextPage>

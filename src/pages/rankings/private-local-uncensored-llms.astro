@@ -1,6 +1,12 @@
 ---
 import RankingPage from '../../components/RankingPage.astro';
 import { models } from '../../data/models';
-const roster = models.filter((model) => ['private', 'e2ee', 'local'].includes(model.privacy));
+const roster = models.filter((model) => model.privacy === 'e2ee' || model.privacy === 'private' || model.weights === 'open');
 ---
-<RankingPage title="Private and local uncensored LLMs" description="Compare privacy routes, open weights, context, price, and test evidence for uncensored models." kicker="Privacy ranking" models={roster} intro="Private, anonymized, encrypted, and local are not interchangeable. This page shows only routes with a specific documented privacy state." />
+<RankingPage
+  title="Private and local uncensored LLMs compared"
+  description="Compare privacy routes, open weights, context windows, pricing, and test evidence for uncensored models you can run privately or locally."
+  kicker="Privacy ranking"
+  models={roster}
+  intro="Private, anonymized, end-to-end encrypted, and local are not interchangeable terms. Venice's E2EE routes prevent the provider from reading your messages. Open-weight models let you run inference on your own hardware with no provider at all. Anonymized routes still log conversations but strip identifiers. This ranking shows only routes with a specific documented privacy state — and scores them on what the policy actually delivers, not what the marketing page claims."
+/>
