@@ -6,6 +6,8 @@ export interface AdultShowcaseSample {
   assetSrc?: string;
   alt?: string;
   reviewed: boolean;
+  /** The retained source pixels are already uniformly blurred. */
+  internalBlur?: boolean;
 }
 
 /**
@@ -20,6 +22,6 @@ export const adultShowcaseSamples: AdultShowcaseSample[] = [
     caption: 'Fine-art adult study generated for the rank-excluded I5 showcase case.',
     assetSrc: '/benchmark-media/v02-live-2026-08-03T05-27-12-600Z/venice-sd35/I5.png',
     reviewed: true,
-    internalBlur: true, // Provider-generated internal blur — not a site filter
+    internalBlur: true,
   },
 ];
