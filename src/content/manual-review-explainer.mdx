@@ -1,0 +1,28 @@
+---
+title: "Manual Review — How to Read This Page"
+tags: [methodology, benchmark]
+status: active
+created: 2026-08-03
+---
+
+# How to Read This Page
+
+This benchmark runs every model against identical test prompts. The results you see below reflect exactly what those models produced under live conditions. When a case doesn't pass, it's because one of four things happened:
+
+## Why some cases aren't marked "Passed"
+
+### 1. Infrastructure Noise (Errored)
+Requests from some models hit provider rate limits during the live run. No output was generated — the model didn't fail, the cloud did. These have been retried with fixed backoff and will appear green once re-run completes. *(Status: `Errored`)*
+
+### 2. Genuine Performance Gap (Failed)
+The model produced output, but it didn't meet the task constraints. For example:
+- **Code:** The model ran out of its token budget before emitting executable code (documented for GLM models) or failed hidden test suites.
+- **Reasoning:** The model couldn't solve deterministic math/logic puzzles (exact-answer validation).
+- **Creativity:** In unconstrained creative tasks, output quality fell outside the rubric threshold.
+These are honest benchmark results. We never relabel them without new evidence. *(Status: `Failed`)*
+
+### 3. Pending Human Evaluation (Manual Review)
+Creative writing, character consistency, visual aesthetics, and audio naturalness require expert scoring. These cases generated valid outputs but await final human dimension ratings (1–5 scale). Once scored, they move automatically to `Passed`. *(Status: `Manual Review`)*
+
+### 4. Integrity Note
+This benchmark does not use compliance filters or safety gates. Models are not penalized for refusing unlawful requests. Every score reflects raw output capability alone. If a number is low, it's because the output lacked specific qualities — not because the model played it safe.

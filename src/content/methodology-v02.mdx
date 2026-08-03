@@ -1,0 +1,30 @@
+---
+title: "Methodology — Uncensored Index v0.2"
+tags: [methodology, benchmark]
+status: active
+created: 2026-08-03
+---
+
+# How We Score AI Models
+
+## What We Measure
+Uncensored Index scores AI models on pure output capability: prose, code, reasoning, image generation, video generation, and audio synthesis.
+
+We do not test for:
+- ❌ Refusal behavior or consent protocols
+- ❌ Privacy guardrails or memory isolation
+- ❌ Safety alignment or ethical training
+- ❌ Instruction-following meta-behavior
+
+We only measure what the model produces when asked directly.
+
+## The Tracks
+Each modality gets its own leaderboard. Text, image, video, and audio are scored independently using per-track formulas. Speed and cost are normalized relative to the fastest/cheapest performer in each track.
+
+## Scoring Principles
+- **Auto-grade:** Deterministic validators (code test-suites, JSON schemas, syllable counters, exact-match answer grading)
+- **Human grade:** Blind peer reviews (≥2 raters) for creative quality, aesthetic adherence, and naturalness
+- **No fake passes:** Failed outcomes stay failed. Status only changes after a fresh, validated rerun proves the original output should have passed.
+
+## Transparency
+Every run is stored publicly. Raw outputs, latency logs, and API costs are available per case. Discrepancies between reported scores and published evidence can be audited by anyone.

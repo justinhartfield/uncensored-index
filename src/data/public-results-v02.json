@@ -1623,7 +1623,6 @@
           "modality": "image",
           "status": "showcase",
           "autoScore": null,
-          "humanScores": null,
           "latencyMs": 6203,
           "estimatedCostUsd": 0.01,
           "publicExcerpt": "[adult sample — gated]",
