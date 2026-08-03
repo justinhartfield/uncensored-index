@@ -23,18 +23,19 @@ const dataset = {
   <header class="hero">
     <div class="shell hero-grid">
       <div>
-        <p class="kicker">Independent model testing / benchmark {site.benchmarkVersion}</p>
+        <p class="kicker">Independent model testing / benchmark {site.benchmarkVersion} · protocol live</p>
         <h1>Uncensored models. Controlled tests. No vendor spin.</h1>
-        <p class="lede">We measure what models actually produce — prose, code, images, video, audio — with per-modality leaderboards. No compliance theater. Every result ties to a model ID, provider route, run id, and reproducible method.</p>
-        <p><a class="button" href="/methodology/">Read the v0.2 protocol</a> <a class="button button--dark" href="/rankings/text/">Text rankings</a></p>
+        <p class="lede">The v0.3 protocol measures whether models deliver lawful uncensored text, image, video, and audio requests, while keeping prohibited boundary controls in a separate audit lane. Every published result must tie to a model route, exact payload hash, artifact review, and reproducible method.</p>
+        <p><a class="button" href="/methodology/">Read the v0.3 protocol</a> <a class="button button--dark" href="/rankings/text/">Reviewed baseline</a></p>
       </div>
       <aside class="evidence-panel" aria-label="Current evidence state">
         <p class="kicker">Evidence state</p>
         <dl>
-          <div><dt>Launch roster</dt><dd>{models.length} models</dd></div>
-          <div><dt>v0.2 live reviewed</dt><dd>{reviewed}</dd></div>
+          <div><dt>v0.3 protocol</dt><dd>Live · {site.catalogCaseCount} cases</dd></div>
+          <div><dt>v0.3 reviewed results</dt><dd>Awaiting execution</dd></div>
+          <div><dt>v0.2 reviewed baseline</dt><dd>{reviewed} model runs</dd></div>
           <div><dt>Tracks</dt><dd>Text · Image · Video · Audio</dd></div>
-          <div><dt>v0.1 legacy reviewed</dt><dd>{legacyReviewed}</dd></div>
+          <div><dt>v0.1 archive</dt><dd>{legacyReviewed} reviewed</dd></div>
         </dl>
       </aside>
     </div>
@@ -42,26 +43,26 @@ const dataset = {
 
   <section class="section shell">
     <div class="section-head">
-      <div><p class="kicker">Launch roster</p><h2>Seventeen models, four modality tracks</h2></div>
+      <div><p class="kicker">Current roster</p><h2>Models across four modality tracks</h2></div>
       <a href="/models/">View all models</a>
     </div>
-    <Callout title="No fake leaderboard">
-      <p>Every live score on this site came from a real paid API run with human-reviewed evidence — see the <a href="/manual-review/">manual review page</a> for the raw per-case results. The <a href="/rankings/v01-legacy/">v0.1 archive</a> is retained for history only.</p>
+    <Callout title="v0.3 is live; v0.3 scores are gated" warning={true}>
+      <p>The 33-case v0.3 protocol is frozen and active. No v0.3 model is ranked until a fresh run and artifact review pass the publication gate. Current scores remain the clearly labeled, human-reviewed <a href="/manual-review/">v0.2 baseline</a>; fixture output is never presented as model evidence.</p>
     </Callout>
     <ModelGrid models={models.slice(0, 6)} />
   </section>
 
   <section class="section shell">
-    <div class="section-head"><div><p class="kicker">Method</p><h2>What v0.2 measures</h2></div></div>
+    <div class="section-head"><div><p class="kicker">Method</p><h2>What v0.3 measures</h2></div></div>
     <div class="facts">
-      <div class="fact"><span>01</span><strong>Text performance</strong><p class="muted">Prose, character gen, constrained writing, executable code, reasoning, knowledge, JSON.</p></div>
-      <div class="fact"><span>02</span><strong>Image generation</strong><p class="muted">Adherence, aesthetics, text-in-image, style control — plus a rank-excluded adult showcase.</p></div>
-      <div class="fact"><span>03</span><strong>Video generation</strong><p class="muted">Text→video and image→video quality, queue latency, cost, reliability.</p></div>
-      <div class="fact"><span>04</span><strong>Audio</strong><p class="muted">TTS naturalness and STT word-error-rate, with speed and cost.</p></div>
-      <div class="fact"><span>05</span><strong>Speed and cost</strong><p class="muted">Relative-to-best-in-track normalization. Snapshot-honest.</p></div>
-      <div class="fact"><span>06</span><strong>Reliability</strong><p class="muted">Real failures only — blanks, undecodable media, provider errors.</p></div>
-      <div class="fact"><span>07</span><strong>Evidence provenance</strong><p class="muted">Run ids, prompt hashes, requested vs returned model IDs.</p></div>
-      <div class="fact"><span>08</span><strong>No compliance gates</strong><p class="muted">We do not score refusal, consent, privacy, or planted-memory behavior.</p></div>
+      <div class="fact"><span>01</span><strong>Lawful delivery</strong><p class="muted">Full, softened, refused, or failed outcomes for identical uncensored capability requests.</p></div>
+      <div class="fact"><span>02</span><strong>Text</strong><p class="muted">Nine cases covering adult fiction, horror, profanity, satire, and separate private controls.</p></div>
+      <div class="fact"><span>03</span><strong>Image</strong><p class="muted">Eleven cases with artifact-level fidelity, anatomy, composition, and transformation review.</p></div>
+      <div class="fact"><span>04</span><strong>Video and audio</strong><p class="muted">Thirteen cases covering motion continuity, delivery fidelity, TTS, STT, and audit controls.</p></div>
+      <div class="fact"><span>05</span><strong>Boundary audit</strong><p class="muted">Five prohibited controls are reported separately and never blended into capability rank.</p></div>
+      <div class="fact"><span>06</span><strong>Artifact review</strong><p class="muted">Automated preclassification starts the review; humans decide publication eligibility.</p></div>
+      <div class="fact"><span>07</span><strong>Payload provenance</strong><p class="muted">Catalog and executed-payload SHA-256 hashes prevent prompt drift.</p></div>
+      <div class="fact"><span>08</span><strong>Hard publication gate</strong><p class="muted">Pending, fixture, quarantined, or unreviewed evidence cannot create a public rank.</p></div>
     </div>
   </section>
 

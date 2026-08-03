@@ -32,6 +32,14 @@ for (const file of htmlFiles) {
   if (!/<meta name="description" content="[^"]+"/i.test(html)) errors.push(`${route}: missing description`);
   if (!/<link rel="canonical" href="https:\/\/[^"]+"/i.test(html)) errors.push(`${route}: missing canonical`);
   if (/sk-or-v1-|github_pat_|AIza[0-9A-Za-z_-]{20,}|Bearer\s+[A-Za-z0-9._-]{20,}/.test(html)) errors.push(`${route}: secret-like token`);
+  if (route === '/') {
+    if (!html.includes('benchmark 0.3.0 · protocol live')) errors.push('/: missing active v0.3 protocol label');
+    if (!html.includes('v0.2 reviewed baseline')) errors.push('/: missing reviewed v0.2 baseline disclosure');
+  }
+  if (route === '/research/benchmark-changelog/') {
+    if (!html.includes('Benchmark 0.3.0 (current protocol)')) errors.push(`${route}: missing current v0.3 release`);
+    if (/v0\.3 \(planned\)/i.test(html)) errors.push(`${route}: still labels v0.3 as planned`);
+  }
   const hrefs = [...html.matchAll(/href="(\/[^"]*)"/g)].map((match) => match[1]!.split(/[?#]/)[0]!);
   for (const href of hrefs) {
     if (href.startsWith('/_') || href.includes('.')) continue;
@@ -49,10 +57,10 @@ for (const file of modelProfiles) {
   const slug = rel.replace(/^\/models\//, '').replace(/\/$/, '');
   if (publishedSlugs.has(slug)) {
     if (html.includes('noindex,follow')) errors.push(`${routeFor(file)}: published profile must be indexable`);
-    if (!html.includes('Live reviewed')) errors.push(`${routeFor(file)}: published profile missing 'Live reviewed' label`);
+    if (!html.includes('Reviewed baseline')) errors.push(`${routeFor(file)}: published profile missing reviewed-baseline label`);
   } else {
     if (!html.includes('noindex,follow')) errors.push(`${routeFor(file)}: pending model profile must be noindex`);
-    if (!html.includes('Awaiting live test')) errors.push(`${routeFor(file)}: missing evidence label`);
+    if (!html.includes('Awaiting v0.3 review')) errors.push(`${routeFor(file)}: missing v0.3 evidence label`);
   }
 }
 const jsBytes = (await Promise.all(files.filter((file) => file.endsWith('.js')).map(async (file) => (await stat(file)).size))).reduce((a, b) => a + b, 0);

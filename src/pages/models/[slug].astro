@@ -4,6 +4,7 @@ import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import Callout from '../../components/Callout.astro';
 import V02CaseTable from '../../components/V02CaseTable.astro';
 import { mediaModels, models } from '../../data/models';
+import { site } from '../../data/site';
 import { isPublishedV02, MEDIA_PROVISIONAL_NOTE, resultBySlugV02, type Modality, type TrackScorePublic } from '../../lib/results-v02';
 
 export function getStaticPaths() {
@@ -33,7 +34,7 @@ const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.to
 --- 
 <BaseLayout
   title={`${model.displayName} test results`}
-  description={`Independent test profile for ${model.displayName} — route, privacy, context, cost, v0.2 scores and per-case benchmark evidence.`}
+  description={`Independent test profile for ${model.displayName} — route, privacy, context, cost, reviewed v0.2 baseline evidence, and v0.3 publication state.`}
   noindex={!published}
   type="article"
 >
@@ -41,16 +42,16 @@ const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.to
     <div class="shell">
       <p class="kicker">Model profile / {model.providerId}</p>
       <h1>{model.displayName}</h1>
-      <EvidenceBadge state={published ? 'live' : 'pending'} label={published ? 'Live reviewed · v0.2' : 'Awaiting live test'} />
+      <EvidenceBadge state={published ? 'live' : 'pending'} label={published ? 'Reviewed baseline · v0.2' : 'Awaiting v0.3 review'} />
     </div>
   </header>
 
   <article class="section shell prose">
     <Callout title={published ? 'Evidence status' : 'Evidence status'} warning={!published}>
       {published ? (
-        <p>This profile contains a <strong>live, human-reviewed v0.2 result</strong> from {result!.testedAt}. {totalCases} cases below carry the full audit trail — automated and human scores, latency, cost, and public-safe output excerpts.</p>
+        <p>This profile contains a <strong>live, human-reviewed v0.2 baseline result</strong> from {result!.testedAt}. {totalCases} cases below carry that version’s audit trail. The active v{site.benchmarkVersion} protocol has not yet promoted a reviewed result for this model.</p>
       ) : (
-        <p>This model is not in the published v0.2 ranked roster. The E2EE Qwen route was excluded as <em>route-unbenchmarkable</em> (encrypted reasoning returned no usable output on 11/11 attempts); this profile stays indexed-pending until a benchmarkable result exists.</p>
+        <p>This model has no published v0.2 baseline and is awaiting a reviewed v{site.benchmarkVersion} result. The E2EE Qwen route was previously excluded as <em>route-unbenchmarkable</em> because encrypted reasoning returned no usable output on 11/11 attempts.</p>
       )}
     </Callout>
 
@@ -99,7 +100,7 @@ const money = (value?: number) => value === undefined ? 'Unknown' : `$${value.to
       <div class="empty-state"><strong>Live benchmark pending.</strong><p>No provider output is presented as evidence for this model in v0.2.</p></div>
     )}
 
-    <h2>What v0.2 measures</h2>
+    <h2>What this v0.2 baseline measured</h2>
     <ul>
       <li>Text: prose voice &amp; coherence, character depth &amp; consistency, constrained writing, executable code, reasoning, knowledge, structured JSON.</li>
       <li>Image: prompt adherence, aesthetics, text-in-image, style/negative-prompt control.</li>

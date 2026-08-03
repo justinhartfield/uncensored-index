@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('homepage is live: indexable, reviewed count, manual-review link', async ({ page }) => {
+test('homepage presents the live v0.3 protocol and reviewed v0.2 baseline', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Controlled tests');
-  await expect(page.getByText('v0.2 live reviewed')).toBeVisible();
-  await expect(page.getByText('Live reviewed · v0.2').first()).toBeVisible();
+  await expect(page.getByText('Independent model testing / benchmark 0.3.0 · protocol live')).toBeVisible();
+  await expect(page.getByText('v0.3 reviewed results')).toBeVisible();
+  await expect(page.getByText('Awaiting execution')).toBeVisible();
+  await expect(page.getByText('Reviewed baseline · v0.2').first()).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
   await expect(page.getByRole('link', { name: 'Manual review' }).first()).toBeVisible();
 });
@@ -31,7 +33,7 @@ test('pending (excluded E2EE) profile is noindex and source-backed', async ({ pa
 test('published model profile shows every question beside its answer', async ({ page }) => {
   await page.goto('/models/venice-uncensored-1-2/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Venice Uncensored 1.2');
-  await expect(page.getByText('Live reviewed · v0.2')).toBeVisible();
+  await expect(page.getByText('Reviewed baseline · v0.2')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
   await expect(page.getByRole('heading', { name: 'Raw per-case results' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Text track' })).toBeVisible();
@@ -71,9 +73,10 @@ test('compare keeps adult evidence behind the age gate', async ({ page }) => {
   await expect(page.locator('#adult-boundary').getByRole('link', { name: '18+ showcase' })).toHaveAttribute('href', '/showcase/adult/');
 });
 
-test('v0.2 text ranking shows the lived leaderboard with one pending row', async ({ page }) => {
+test('text ranking preserves the reviewed v0.2 baseline under the active v0.3 protocol', async ({ page }) => {
   await page.goto('/rankings/text/');
-  await expect(page.getByText('Live, human-reviewed v0.2 results for this modality.')).toBeVisible();
+  await expect(page.getByText(/Live, human-reviewed v0\.2 baseline results/)).toBeVisible();
+  await expect(page.getByText(/v0\.3 rankings remain closed/)).toBeVisible();
   await expect(page.locator('tbody tr')).toHaveCount(14);
   await expect(page.locator('tbody').getByText('PENDING')).toHaveCount(1);
   await expect(page.locator('tbody').getByText('72.8')).toBeVisible(); // venice-uncensored-1-2 recomputed overall

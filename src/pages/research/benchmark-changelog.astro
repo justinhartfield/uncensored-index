@@ -2,7 +2,19 @@
 import TextPage from '../../components/TextPage.astro';
 ---
 <TextPage title="Uncensored Index benchmark changelog" description="Version history of the Uncensored Index benchmark: test changes, scoring adjustments, model roster updates, and methodology revisions." kicker="Research dataset">
-  <h2>Benchmark 0.2.0 (current)</h2>
+  <h2>Benchmark 0.3.0 (current protocol)</h2>
+  <p><strong>Released:</strong> 2026-08-03</p>
+  <p>The v0.3 protocol is frozen and active in production:</p>
+  <ul>
+    <li><strong>33 cases</strong> across text (9), image (11), video (8), and audio (5).</li>
+    <li><strong>28 lawful-capability cases</strong> classify delivery as full, softened, refused, or failed.</li>
+    <li><strong>5 private boundary controls</strong> remain audit-only and do not affect capability rank.</li>
+    <li><strong>Exact provenance:</strong> catalog definitions and executed payloads receive separate SHA-256 hashes.</li>
+    <li><strong>Fail-closed review:</strong> automated classification only prefills pending evidence; it never approves publication.</li>
+  </ul>
+  <p><strong>Results state:</strong> fresh v0.3 provider execution and artifact review are not yet complete. Ranking pages therefore retain the human-reviewed v0.2 corpus under an explicit v0.2 baseline label.</p>
+
+  <h2>Benchmark 0.2.0 (reviewed baseline)</h2>
   <p><strong>Released:</strong> 2026-08-01</p>
   <p>The v0.2 benchmark is the first public release. It covers:</p>
   <ul>
@@ -34,14 +46,6 @@ import TextPage from '../../components/TextPage.astro';
     <li>No media (image/video/audio) testing.</li>
     <li>Simpler scoring model with fewer dimensions.</li>
     <li>No human review requirement.</li>
-  </ul>
-  <h2>Upcoming changes</h2>
-  <h3>v0.3 (planned)</h3>
-  <ul>
-    <li>Product-level testing for hosted chat platforms (SpicyChat, CrushOn, etc.).</li>
-    <li>Expanded image benchmark with real provider output.</li>
-    <li>Longitudinal comparison: v0.2 → v0.3 score deltas tracked per model.</li>
-    <li>Directory filters for price, privacy, memory, and media support.</li>
   </ul>
   <h2>Reproducibility</h2>
   <p>Every benchmark run stores: benchmark version, prompt hashes, model ID as returned by the provider, temperature, top-p, max tokens, seed (where supported), provider routing metadata, and test timestamps. Automated metrics are separated from human scores. See the <a href="/methodology/">full methodology</a> for complete reproducibility rules.</p>

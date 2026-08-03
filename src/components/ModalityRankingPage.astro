@@ -27,7 +27,7 @@ const hasReviewed = ranked.length > 0;
 <BaseLayout title={title} description={description} noindex={!hasReviewed}>
   <header class="page-head">
     <div class="shell">
-      <p class="kicker">Benchmark {site.benchmarkVersion} · {modality} track</p>
+      <p class="kicker">Reviewed results · v{site.publishedResultsVersion} baseline · {modality} track</p>
       <h1>{title}</h1>
       <p class="lede">{intro}</p>
       <p class="muted">{weightLine}</p>
@@ -43,8 +43,8 @@ const hasReviewed = ranked.length > 0;
     <Callout title="Publication state" warning={!hasReviewed}>
       <p>
         {hasReviewed
-          ? 'Live, human-reviewed v0.2 results for this modality.'
-          : 'No v0.2 ranking is published yet for this modality. Roster is listed; scores stay blank until a fresh live run and human review pass the QA gate.'}
+          ? 'Live, human-reviewed v0.2 baseline results. The v0.3 protocol is active, but v0.3 rankings remain closed until fresh execution and artifact review pass the publication gate.'
+          : 'No reviewed baseline is published for this modality. The v0.3 roster stays unranked until fresh execution and artifact review pass the QA gate.'}
       </p>
     </Callout>
     <div class="table-wrap">
@@ -69,7 +69,7 @@ const hasReviewed = ranked.length > 0;
               <td>{row.score?.speed?.toFixed(1) ?? '—'}</td>
               <td>{row.score?.costEfficiency?.toFixed(1) ?? '—'}</td>
               <td>{row.score?.reliability?.toFixed(1) ?? '—'}</td>
-              <td><span class="status status--live">Live reviewed</span></td>
+              <td><span class="status status--live">Live reviewed · v0.2</span></td>
             </tr>
           ))}
           {pending.map((row) => (
@@ -80,7 +80,7 @@ const hasReviewed = ranked.length > 0;
               <td>—</td>
               <td>—</td>
               <td>—</td>
-              <td><span class="status">Awaiting live test</span></td>
+              <td><span class="status">Awaiting v0.3 review</span></td>
             </tr>
           ))}
         </tbody>

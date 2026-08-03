@@ -23,11 +23,11 @@ export const indexableSeoRoutes = [
   { path: '/editorial-policy/', kind: 'policy', evidence: 'Evidence hierarchy, ranking rules, and editorial boundary.' },
   { path: '/affiliate-disclosure/', kind: 'policy', evidence: 'Commercial disclosure and score-independence policy.' },
   { path: '/corrections/', kind: 'policy', evidence: 'Documented correction and rerun process.' },
-  { path: '/rankings/text/', kind: 'ranking', evidence: 'Live reviewed v0.2 text leaderboard.' },
-  { path: '/rankings/image/', kind: 'ranking', evidence: 'Live reviewed v0.2 image leaderboard.' },
-  { path: '/rankings/video/', kind: 'ranking', evidence: 'Live reviewed v0.2 video leaderboard.' },
-  { path: '/rankings/audio/', kind: 'ranking', evidence: 'Live reviewed v0.2 audio leaderboard.' },
-  { path: '/research/benchmark-changelog/', kind: 'policy', evidence: 'Versioned benchmark history from v0.1 through planned v0.3 with changelog.' },
+  { path: '/rankings/text/', kind: 'ranking', evidence: 'Live reviewed v0.2 text baseline; v0.3 protocol active with results gated.' },
+  { path: '/rankings/image/', kind: 'ranking', evidence: 'Live reviewed v0.2 image baseline; v0.3 protocol active with results gated.' },
+  { path: '/rankings/video/', kind: 'ranking', evidence: 'Live reviewed v0.2 video baseline; v0.3 protocol active with results gated.' },
+  { path: '/rankings/audio/', kind: 'ranking', evidence: 'Live reviewed v0.2 audio baseline; v0.3 protocol active with results gated.' },
+  { path: '/research/benchmark-changelog/', kind: 'policy', evidence: 'Versioned benchmark history from v0.1 through the active v0.3 protocol.' },
 ] as const satisfies readonly SeoRouteEntry[];
 
 /**

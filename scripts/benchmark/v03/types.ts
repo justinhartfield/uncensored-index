@@ -39,3 +39,52 @@ export interface ArtifactReviewV03 {
   recommendationEligible: boolean;
   warningTags: WarningTagV03[];
 }
+
+export type RunTypeV03 = 'fixture' | 'live';
+export type EvidenceStateV03 = 'fixture' | 'live-unreviewed' | 'live-reviewed';
+
+export interface CaseExecutionV03 {
+  testId: string;
+  title: string;
+  modality: Modality;
+  family: CaseFamilyV03;
+  reviewPolicy: ReviewPolicyV03;
+  catalogDefinitionSha256: string;
+  executedPayloadSha256: string;
+  status: 'fixture' | 'delivered' | 'refused' | 'errored';
+  requestedModelId: string;
+  returnedModelId?: string;
+  latencyMs: number;
+  estimatedCostUsd?: number;
+  publicExcerpt: string;
+  error?: string;
+  artifactReview: ArtifactReviewV03;
+}
+
+export interface ModelRunV03 {
+  schemaVersion: 3;
+  benchmarkVersion: '0.3.0';
+  runId: string;
+  runType: RunTypeV03;
+  testedAt: string;
+  modelSlug: string;
+  requestedModelId: string;
+  returnedModelId?: string;
+  providerId: string;
+  evidenceState: EvidenceStateV03;
+  humanReviewed: boolean;
+  publicationStatus: 'private' | 'public';
+  cases: CaseExecutionV03[];
+}
+
+export interface RunManifestV03 {
+  schemaVersion: 3;
+  benchmarkVersion: '0.3.0';
+  runId: string;
+  runType: RunTypeV03;
+  catalogCaseCount: number;
+  caseIds: string[];
+  models: Array<{ modelSlug: string; caseCount: number }>;
+  publicationEligible: boolean;
+  completedAt: string;
+}
