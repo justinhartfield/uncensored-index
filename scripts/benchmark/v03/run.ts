@@ -7,7 +7,7 @@
  * are validated before the first provider request.
  */
 import { createHash } from 'node:crypto';
-import { chmod, mkdir, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { loadEnvFile } from 'node:process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -137,7 +137,10 @@ function textReservation(catalog: CatalogFreeze, modelId: string, test: TestCase
 
 function modelSelection(): ModelRecord[] {
   const selectedSlug = arg('--model');
-  const roster = [...models, ...mediaModels];
+  const excluded = new Set((arg('--exclude-model') || '').split(',').map((value) => value.trim()).filter(Boolean));
+  const roster = [...models, ...mediaModels].filter((model) => !excluded.has(model.slug));
+  const unknownExcluded = [...excluded].filter((slug) => ![...models, ...mediaModels].some((model) => model.slug === slug));
+  if (unknownExcluded.length) throw new Error(`Unknown excluded model(s): ${unknownExcluded.join(', ')}`);
   if (!selectedSlug) return roster;
   const selected = roster.filter((model) => model.slug === selectedSlug);
   if (!selected.length) throw new Error(`Unknown model ${selectedSlug}`);
@@ -533,27 +536,41 @@ async function runFixture(): Promise<void> {
 
 async function runPaid(mode: Exclude<Mode, 'fixture'>): Promise<void> {
   const preflight = await paidPreflightV03(mode);
-  const executionProjection = preflight.executionPlan.reduce((sum, entry) => sum + entry.reservationUsd, 0);
   console.log(`v03_preflight: passed; full_calls=${preflight.fullPlan.filter((entry) => entry.kind !== 'not-applicable').length}; full_projection_usd=${preflight.projectedSpendUsd.toFixed(4)}; hard_cap_usd=${preflight.hardCapUsd.toFixed(2)}`);
-  console.log(`v03_${mode}_plan: calls=${preflight.executionPlan.filter((entry) => entry.kind !== 'not-applicable').length}; projection_usd=${executionProjection.toFixed(4)}`);
   if (hasFlag('--preflight-only')) return;
   if (!hasFlag('--confirm-paid')) throw new Error('Paid execution requires explicit --confirm-paid after a passing preflight');
 
-  const runId = `v03-${mode}-${new Date().toISOString().replace(/[:.]/g, '-')}`;
-  const root = path.resolve(arg('--output') || path.join('benchmark-results', runId));
+  const resumeDir = arg('--resume-dir');
+  const root = path.resolve(resumeDir || arg('--output') || path.join('benchmark-results', `v03-${mode}-${new Date().toISOString().replace(/[:.]/g, '-')}`));
   await mkdir(root, { recursive: true, mode: 0o700 });
   await chmod(root, 0o700);
 
+  const existingRuns: ModelRunV03[] = [];
+  if (resumeDir) {
+    const files = (await readdir(root)).filter((file) => file.endsWith('.json') && file !== 'manifest.json');
+    for (const file of files) existingRuns.push(JSON.parse(await readFile(path.join(root, file), 'utf8')) as ModelRunV03);
+    if (!existingRuns.length) throw new Error(`--resume-dir has no completed model runs: ${root}`);
+  }
+  const runId = existingRuns[0]?.runId || path.basename(root);
+  const completedSlugs = new Set(existingRuns.map((run) => run.modelSlug));
+  const executionPlan = preflight.executionPlan.filter((entry) => !completedSlugs.has(entry.model.slug));
+  const executionProjection = executionPlan.reduce((sum, entry) => sum + entry.reservationUsd, 0);
+  console.log(`v03_${mode}_plan: calls=${executionPlan.filter((entry) => entry.kind !== 'not-applicable').length}; projection_usd=${executionProjection.toFixed(4)}`);
+  if (resumeDir) console.log(`v03_resume: preserved_models=${existingRuns.length}; remaining_models=${new Set(executionPlan.map((entry) => entry.model.slug)).size}`);
+
   const grouped = new Map<string, { model: ModelRecord; entries: PaidPlanEntry[] }>();
-  for (const entry of preflight.executionPlan) {
+  for (const entry of executionPlan) {
     const current = grouped.get(entry.model.slug) || { model: entry.model, entries: [] };
     current.entries.push(entry);
     grouped.set(entry.model.slug, current);
   }
 
-  const runs: ModelRunV03[] = [];
-  let estimatedSpendUsd = 0;
+  const runs: ModelRunV03[] = [...existingRuns];
+  let estimatedSpendUsd = existingRuns.flatMap((run) => run.cases).reduce((sum, result) => sum + (result.estimatedCostUsd || 0), 0);
   let remainingReservation = executionProjection;
+  if (estimatedSpendUsd + remainingReservation > preflight.hardCapUsd) {
+    throw new Error(`resume would exceed hard cap: recorded $${estimatedSpendUsd.toFixed(4)} + remaining reservation $${remainingReservation.toFixed(4)} > $${preflight.hardCapUsd.toFixed(2)}`);
+  }
   for (const { model, entries } of grouped.values()) {
     const cases: CaseExecutionV03[] = [];
     for (const entry of entries) {
@@ -579,10 +596,11 @@ async function runPaid(mode: Exclude<Mode, 'fixture'>): Promise<void> {
 
   const manifest: RunManifestV03 = {
     schemaVersion: 3, benchmarkVersion: benchmarkVersionV03, runId, runType: 'live', catalogCaseCount: allCasesV03.length,
-    caseIds: [...new Set(preflight.executionPlan.map((entry) => entry.test.id))],
+    caseIds: [...new Set(runs.flatMap((run) => run.cases.map((result) => result.testId)))],
     models: runs.map((run) => ({ modelSlug: run.modelSlug, caseCount: run.cases.length })),
-    plannedCallCount: preflight.executionPlan.filter((entry) => entry.kind !== 'not-applicable').length,
-    projectedSpendUsd: executionProjection, estimatedSpendUsd, maxSpendUsd: preflight.hardCapUsd,
+    plannedCallCount: preflight.fullPlan.filter((entry) => entry.kind !== 'not-applicable').length,
+    projectedSpendUsd: preflight.projectedSpendUsd, estimatedSpendUsd, maxSpendUsd: preflight.hardCapUsd,
+    excludedModels: (arg('--exclude-model') || '').split(',').map((value) => value.trim()).filter(Boolean),
     catalogFrozenAt: preflight.catalog.frozenAt, publicationEligible: false, completedAt: new Date().toISOString(),
   };
   await writeFile(path.join(root, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o600 });

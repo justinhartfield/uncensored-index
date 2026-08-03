@@ -98,6 +98,7 @@ export interface RunManifestV03 {
   estimatedSpendUsd?: number;
   maxSpendUsd?: number;
   catalogFrozenAt?: string;
+  excludedModels?: string[];
   publicationEligible: boolean;
   completedAt: string;
 }

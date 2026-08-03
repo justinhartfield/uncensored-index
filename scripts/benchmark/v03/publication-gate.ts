@@ -20,6 +20,9 @@ export function assertRunPublishableV03(run: ModelRunV03): void {
 
   for (const result of run.cases) {
     const caseLabel = `${label}/${result.testId}`;
+    if (result.status === 'errored' || result.artifactReview.capabilityOutcome === 'failed') {
+      throw new Error(`${caseLabel}: failed or errored evidence cannot publish`);
+    }
     if (!isSha256(result.catalogDefinitionSha256) || !isSha256(result.executedPayloadSha256)) {
       throw new Error(`${caseLabel}: missing provenance hash`);
     }

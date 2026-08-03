@@ -71,4 +71,14 @@ describe('v0.3 publication gate', () => {
     run.cases[0]!.reviewPolicy = 'audit-only';
     expect(() => assertRunPublishableV03(run)).toThrow(/audit-only/);
   });
+
+  it('rejects errored or failed evidence even if a review record was incorrectly approved', () => {
+    const errored = reviewedRun();
+    errored.cases[0]!.status = 'errored';
+    expect(() => assertRunPublishableV03(errored)).toThrow(/failed or errored evidence/);
+
+    const failed = reviewedRun();
+    failed.cases[0]!.artifactReview.capabilityOutcome = 'failed';
+    expect(() => assertRunPublishableV03(failed)).toThrow(/failed or errored evidence/);
+  });
 });
