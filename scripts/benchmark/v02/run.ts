@@ -55,6 +55,30 @@ function assertBudget(current: number, reservation: number, cap: number, label: 
   }
 }
 
+const extensionFor = (contentType: string): string => ({
+  'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp',
+  'video/mp4': 'mp4', 'video/webm': 'webm',
+  'audio/mpeg': 'mp3', 'audio/mp3': 'mp3', 'audio/wav': 'wav', 'audio/x-wav': 'wav', 'audio/ogg': 'ogg',
+}[contentType] || 'bin');
+
+async function persistArtifact(
+  root: string,
+  modelSlug: string,
+  testId: string,
+  encoded: string,
+  fallbackContentType: string,
+): Promise<{ assetFile: string; contentType: string }> {
+  const dataUrl = encoded.match(/^data:([^;,]+);base64,(.*)$/s);
+  const contentType = (dataUrl?.[1] || fallbackContentType).toLowerCase();
+  const relative = path.posix.join('assets', modelSlug, `${testId}.${extensionFor(contentType)}`);
+  const destination = path.join(root, ...relative.split('/'));
+  const bytes = Buffer.from(dataUrl?.[2] || encoded, 'base64');
+  if (!bytes.length) throw new Error(`${modelSlug}/${testId}: decoded media artifact is empty`);
+  await mkdir(path.dirname(destination), { recursive: true });
+  await writeFile(destination, bytes);
+  return { assetFile: relative, contentType };
+}
+
 async function runTextCase(
   mode: Mode,
   modelId: string,
@@ -127,7 +151,7 @@ async function runTextCase(
   }
 }
 
-async function runImageCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+async function runImageCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number], artifact?: { root: string; modelSlug: string }): Promise<CaseResultV02> {
   try {
     const adapter = mode === 'fixture' ? new FixtureImageAdapter() : veniceImageAdapter;
     if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
@@ -144,11 +168,14 @@ async function runImageCase(mode: Mode, modelId: string, test: ReturnType<typeof
       };
     }
     const status = test.gradeMode === 'showcase' ? 'showcase' : 'manual-review';
+    const stored = artifact
+      ? await persistArtifact(artifact.root, artifact.modelSlug, test.id, res.imageBase64, res.contentType || 'image/png')
+      : undefined;
     return {
       testId: test.id, modality: 'image', promptHash: promptHashV02(test), status,
       latencyMs, estimatedCostUsd: res.costUsd,
       publicExcerpt: test.adultFlagged ? '[adult sample — gated]' : '[image generated]',
-      mediaMeta: { hasImage: true, adultFlagged: Boolean(test.adultFlagged) },
+      mediaMeta: { hasImage: true, adultFlagged: Boolean(test.adultFlagged), ...stored },
       requestedModelId: modelId,
     };
   } catch (error) {
@@ -161,7 +188,7 @@ async function runImageCase(mode: Mode, modelId: string, test: ReturnType<typeof
   }
 }
 
-async function runVideoCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+async function runVideoCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number], artifact?: { root: string; modelSlug: string }): Promise<CaseResultV02> {
   try {
     const adapter = mode === 'fixture' ? new FixtureVideoAdapter() : veniceVideoAdapter;
     if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
@@ -179,10 +206,14 @@ async function runVideoCase(mode: Mode, modelId: string, test: ReturnType<typeof
         error: 'video-failed', requestedModelId: modelId,
       };
     }
+    const stored = artifact && res.videoBase64
+      ? await persistArtifact(artifact.root, artifact.modelSlug, test.id, res.videoBase64, res.contentType || 'video/mp4')
+      : undefined;
+    if (artifact && !stored) throw new Error('video completed without downloadable bytes');
     return {
       testId: test.id, modality: 'video', promptHash: promptHashV02(test), status: 'manual-review',
       latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd,
-      publicExcerpt: '[video generated]', mediaMeta: { downloadUrl: res.downloadUrl ? '[redacted]' : undefined },
+      publicExcerpt: '[video generated]', mediaMeta: { hasVideo: true, ...stored },
       requestedModelId: modelId,
     };
   } catch (error) {
@@ -195,7 +226,7 @@ async function runVideoCase(mode: Mode, modelId: string, test: ReturnType<typeof
   }
 }
 
-async function runAudioCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number]): Promise<CaseResultV02> {
+async function runAudioCase(mode: Mode, modelId: string, test: ReturnType<typeof casesForModality>[number], artifact?: { root: string; modelSlug: string }): Promise<CaseResultV02> {
   try {
     const adapter = mode === 'fixture' ? new FixtureAudioAdapter() : veniceAudioAdapter;
     if (!adapter.isConfigured()) throw new Error(`${adapter.id} not configured`);
@@ -207,10 +238,13 @@ async function runAudioCase(mode: Mode, modelId: string, test: ReturnType<typeof
           latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd, publicExcerpt: '', requestedModelId: modelId,
         };
       }
+      const stored = artifact
+        ? await persistArtifact(artifact.root, artifact.modelSlug, test.id, res.audioBase64, res.contentType || 'audio/mpeg')
+        : undefined;
       return {
         testId: test.id, modality: 'audio', promptHash: promptHashV02(test), status: 'manual-review',
         latencyMs: res.latencyMs, estimatedCostUsd: res.costUsd,
-        publicExcerpt: '[tts audio generated]', requestedModelId: modelId,
+        publicExcerpt: '[tts audio generated]', mediaMeta: { hasAudio: true, ...stored }, requestedModelId: modelId,
       };
     }
     // A2 STT — fixture uses known reference; live expects BENCHMARK_STT_AUDIO_B64
@@ -241,6 +275,7 @@ async function main() {
   const mode = modeFromArgs();
   const modalities = modalitiesFromArgs();
   const selectedSlug = arg('--model');
+  const selectedCaseIds = arg('--case')?.split(',').map((id) => id.trim()).filter(Boolean);
   const roster = mode === 'fixture' ? models : [...models, ...mediaModels];
   const candidates = selectedSlug ? roster.filter((m) => m.slug === selectedSlug) : roster;
   const selected = mode === 'fixture'
@@ -252,7 +287,14 @@ async function main() {
   const root = path.resolve(mode === 'fixture' ? 'benchmark-results-fixture' : 'benchmark-results', runId);
   await mkdir(root, { recursive: true });
 
-  const cases = allCasesV02.filter((c) => modalities.includes(c.modality));
+  const cases = allCasesV02.filter((c) =>
+    modalities.includes(c.modality) && (!selectedCaseIds || selectedCaseIds.includes(c.id))
+  );
+  if (selectedCaseIds && cases.length !== selectedCaseIds.length) {
+    const found = new Set(cases.map((test) => test.id));
+    const missing = selectedCaseIds.filter((id) => !found.has(id));
+    throw new Error(`Unknown or modality-mismatched case(s): ${missing.join(', ')}`);
+  }
   const smokeCases = mode === 'smoke'
     ? modalities.flatMap((m) => casesForModality(m).slice(0, 1))
     : cases;
@@ -310,7 +352,7 @@ async function main() {
         const imageModel = mode === 'fixture'
           ? model.canonicalId
           : pickModelId(catalog!, 'image', model.canonicalId.includes('image') ? model.canonicalId : undefined);
-        const result = await runImageCase(mode, imageModel, test);
+        const result = await runImageCase(mode, imageModel, test, paidMode ? { root, modelSlug: model.slug } : undefined);
         if (result.estimatedCostUsd === undefined && catalog) {
           result.estimatedCostUsd = unitPrice(catalog, 'image', imageModel);
           result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
@@ -319,7 +361,7 @@ async function main() {
         caseResults.push(result);
       } else if (test.modality === 'video') {
         const videoModel = mode === 'fixture' ? model.canonicalId : pickModelId(catalog!, 'video');
-        const result = await runVideoCase(mode, videoModel, test);
+        const result = await runVideoCase(mode, videoModel, test, paidMode ? { root, modelSlug: model.slug } : undefined);
         if (result.estimatedCostUsd === undefined && catalog) {
           result.estimatedCostUsd = unitPrice(catalog, 'video', videoModel);
           result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
@@ -329,7 +371,7 @@ async function main() {
       } else if (test.modality === 'audio') {
         const kind = test.id === 'A1' ? 'audioTts' as const : 'audioStt' as const;
         const audioModel = mode === 'fixture' ? model.canonicalId : pickModelId(catalog!, kind);
-        const result = await runAudioCase(mode, audioModel, test);
+        const result = await runAudioCase(mode, audioModel, test, paidMode ? { root, modelSlug: model.slug } : undefined);
         if (result.estimatedCostUsd === undefined && catalog) {
           result.estimatedCostUsd = unitPrice(catalog, kind, audioModel);
           result.mediaMeta = { ...(result.mediaMeta || {}), costSource: 'catalog-unit-price' };
@@ -410,6 +452,7 @@ async function main() {
     runId,
     mode,
     modalities,
+    caseIds: smokeCases.map((test) => test.id),
     startedAt: new Date().toISOString(),
     completedAt: new Date().toISOString(),
     models: modelRuns.map((r) => ({

@@ -10,13 +10,18 @@
  *   The run dir itself stays gitignored (private/provider metadata may live there in
  *   future runs); this promote step is the public-safe surfacing boundary.
  */
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { ModelRunV02 } from './types';
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(name);
   return i >= 0 ? process.argv[i + 1] : undefined;
+}
+
+function safeSegment(value: string, label: string): string {
+  if (!/^[A-Za-z0-9._-]+$/.test(value)) throw new Error(`unsafe ${label}: ${value}`);
+  return value;
 }
 
 async function main() {
@@ -38,7 +43,7 @@ async function main() {
   }
   if (!runs.length) throw new Error('no runs found');
 
-  const results = runs.map((r) => ({
+  const results = await Promise.all(runs.map(async (r) => ({
     modelSlug: r.modelSlug,
     displayName: r.modelSlug,
     runId: r.runId,
@@ -50,7 +55,28 @@ async function main() {
     humanReviewed: r.humanReviewed,
     testedAt: r.testedAt,
     trackScores: r.trackScores,
-    cases: r.cases.map((c) => ({
+    cases: await Promise.all(r.cases.map(async (c) => {
+      const privateAsset = typeof c.mediaMeta?.assetFile === 'string' ? c.mediaMeta.assetFile : undefined;
+      const approved = c.mediaMeta?.reviewed === true;
+      let mediaMeta = c.mediaMeta ? { ...c.mediaMeta } : undefined;
+      if (mediaMeta) delete mediaMeta.assetFile;
+      if (privateAsset && approved) {
+        const source = path.resolve(runDir, privateAsset);
+        if (!source.startsWith(`${runDir}${path.sep}`)) throw new Error(`${r.modelSlug}/${c.testId}: unsafe asset path`);
+        const filename = path.basename(privateAsset);
+        const publicRunId = safeSegment(r.runId, 'run id');
+        const publicModelSlug = safeSegment(r.modelSlug, 'model slug');
+        safeSegment(filename, 'asset filename');
+        const publicDir = path.resolve('public', 'benchmark-media', publicRunId, publicModelSlug);
+        await mkdir(publicDir, { recursive: true });
+        await copyFile(source, path.join(publicDir, filename));
+        mediaMeta = {
+          ...mediaMeta,
+          assetSrc: `/benchmark-media/${encodeURIComponent(publicRunId)}/${encodeURIComponent(publicModelSlug)}/${encodeURIComponent(filename)}`,
+          reviewed: true,
+        };
+      }
+      return {
       testId: c.testId,
       modality: c.modality,
       status: c.status,
@@ -60,9 +86,10 @@ async function main() {
       estimatedCostUsd: c.estimatedCostUsd,
       publicExcerpt: c.publicExcerpt,
       error: c.error,
-      mediaMeta: c.mediaMeta,
+        mediaMeta,
+      };
     })),
-  }));
+  })));
 
   const output = {
     schemaVersion: 2,

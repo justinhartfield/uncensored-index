@@ -128,6 +128,7 @@ export interface ImageAdapter {
     height?: number;
   }): Promise<{
     imageBase64?: string;
+    contentType?: string;
     latencyMs: number;
     timingTotalMs?: number;
     costUsd?: number;
@@ -150,6 +151,8 @@ export interface VideoAdapter {
     latencyMs: number;
     costUsd?: number;
     downloadUrl?: string;
+    videoBase64?: string;
+    contentType?: string;
     raw: unknown;
   }>;
 }
@@ -159,6 +162,7 @@ export interface AudioAdapter {
   isConfigured(): boolean;
   speech(input: { model: string; input: string; voice?: string }): Promise<{
     audioBase64?: string;
+    contentType?: string;
     latencyMs: number;
     costUsd?: number;
     raw: unknown;

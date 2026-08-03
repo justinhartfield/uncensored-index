@@ -69,7 +69,7 @@ export function isPublishedV02(result?: PublicResultV02): boolean {
 
 /** Score label incl. provisional marker for media tracks scored on generation evidence only. */
 export const MEDIA_PROVISIONAL_NOTE =
-  'Image/video/audio cases in v0.2 are scored on generation evidence only (the provider returned a valid media object for the requested prompt). Media files were not persisted in this batch, so visual human review is pending; these scores are provisional placeholders to be replaced by a visual-review pass in a future run.';
+  'Media scores are final only when a retained artifact has completed human review. Cases without a playable reviewed asset remain generation-confirmed provisional evidence.';
 
 export function statusLabelV02(status: CaseStatusV02): string {
   switch (status) {

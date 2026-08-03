@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Callout from '../../components/Callout.astro';
+import MediaEvidence from '../../components/MediaEvidence.astro';
 import { mediaModels, models } from '../../data/models';
 import { publicResultsV02, statusLabelV02 } from '../../lib/results-v02';
 import { testCatalogV02 } from '../../lib/test-catalog-v02';
@@ -33,7 +34,7 @@ const score = (values?: Record<string, number>) => values
 
   <main class="section shell">
     <Callout title="Evidence boundary">
-      <p>Text answers are retained as public-safe excerpts. The first media batch retained generation confirmation and scores, but not playable image, video, or audio files. Missing artifacts are labelled—not reconstructed. The I5 adult prompt remains behind the <a href="/showcase/adult/">18+ gate</a>.</p>
+      <p>Reviewed media artifacts are shown with native image, video, and audio controls. Historical or missing artifacts remain labelled—not reconstructed. The I5 adult prompt remains behind the <a href="/showcase/adult/">18+ gate</a>.</p>
     </Callout>
 
     <nav class="test-index" aria-label="Benchmark test index">
@@ -61,6 +62,7 @@ const score = (values?: Record<string, number>) => values
                   <h3><a href={`/models/${result.modelSlug}/`}>{modelNameBySlug.get(result.modelSlug) || result.displayName || result.modelSlug}</a></h3>
                   <span class:list={['status', { 'status--live': evidence.status === 'passed' }, { 'status--warning': evidence.status === 'failed' || evidence.status === 'errored' }]}>{statusLabelV02(evidence.status)}</span>
                 </div>
+                <MediaEvidence evidence={evidence} />
                 <p class="answer">{evidence.status === 'errored' ? evidence.error || 'Provider error' : evidence.publicExcerpt || 'No public answer retained.'}</p>
                 <p class="micro">
                   {evidence.autoScore !== undefined ? `Auto ${evidence.autoScore}/100 · ` : ''}

@@ -2,6 +2,7 @@
 import type { PublicCaseV02 } from '../lib/results-v02';
 import { statusLabelV02 } from '../lib/results-v02';
 import { testDefinitionByIdV02 } from '../lib/test-catalog-v02';
+import MediaEvidence from './MediaEvidence.astro';
 
 interface Props { cases: PublicCaseV02[]; showTrack?: boolean; }
 const { cases, showTrack = false } = Astro.props;
@@ -44,6 +45,7 @@ const ms = (value: number) => (value === undefined ? '—' : `${value.toLocaleSt
           <td>{ms(c.latencyMs)}</td>
           <td>{money(c.estimatedCostUsd)}</td>
           <td class="case-evidence">
+            <MediaEvidence evidence={c} />
             {c.status === 'errored'
               ? <span class="muted">{c.error || 'Provider error'}</span>
               : <span>{c.publicExcerpt}</span>}
