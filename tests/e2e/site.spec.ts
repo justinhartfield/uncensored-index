@@ -52,6 +52,25 @@ test('showcase groups all tests and eligible model answers for comparison', asyn
   await expect(page.locator('#t1').getByText('Venice Uncensored 1.2')).toBeVisible();
 });
 
+test('compare presents one question across three selectable model columns', async ({ page }) => {
+  await page.goto('/compare/?test=T1&models=aion-3-0,cydonia-24b-v4-1,venice-uncensored-1-2');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Compare model answers');
+  await expect(page.locator('#test-label')).toContainText('T1');
+  await expect(page.locator('#model-headings th')).toHaveCount(4);
+  await expect(page.getByRole('rowheader', { name: 'Answer / evidence' })).toBeVisible();
+  await expect(page.locator('#question')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('#model-headings th')).toHaveCount(4);
+});
+
+test('compare keeps adult evidence behind the age gate', async ({ page }) => {
+  await page.goto('/compare/?test=I5');
+  await expect(page.locator('#question')).toBeHidden();
+  await expect(page.getByText('This adult test is available only through the')).toBeVisible();
+  await expect(page.locator('#adult-boundary').getByRole('link', { name: '18+ showcase' })).toHaveAttribute('href', '/showcase/adult/');
+});
+
 test('v0.2 text ranking shows the lived leaderboard with one pending row', async ({ page }) => {
   await page.goto('/rankings/text/');
   await expect(page.getByText('Live, human-reviewed v0.2 results for this modality.')).toBeVisible();
@@ -113,7 +132,7 @@ test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
 
 test('core pages have no serious accessibility violations', async ({ page }) => {
   test.setTimeout(90_000);
-  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/showcase/adult/', '/manual-review/', '/review/']) {
+  for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/compare/', '/showcase/adult/', '/manual-review/', '/review/']) {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).analyze();
     const serious = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''));
