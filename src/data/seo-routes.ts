@@ -27,6 +27,7 @@ export const indexableSeoRoutes = [
   { path: '/rankings/image/', kind: 'ranking', evidence: 'Live reviewed v0.2 image leaderboard.' },
   { path: '/rankings/video/', kind: 'ranking', evidence: 'Live reviewed v0.2 video leaderboard.' },
   { path: '/rankings/audio/', kind: 'ranking', evidence: 'Live reviewed v0.2 audio leaderboard.' },
+  { path: '/research/benchmark-changelog/', kind: 'policy', evidence: 'Versioned benchmark history from v0.1 through planned v0.3 with changelog.' },
 ] as const satisfies readonly SeoRouteEntry[];
 
 /**
@@ -50,6 +51,17 @@ export const excludedSeoRoutes = [
   { path: '/privacy/', kind: 'utility', evidence: 'Provisional legal copy.' },
   { path: '/terms/', kind: 'utility', evidence: 'Provisional legal copy.' },
   { path: '/404/', kind: 'utility', evidence: 'Error route.' },
+  { path: '/rankings/nsfw-ai-chat/', kind: 'utility', evidence: 'Product-facing ranking; exclude until live product testing exists.' },
+  { path: '/rankings/uncensored-ai-chat/', kind: 'utility', evidence: 'Product-facing ranking; exclude until live product testing exists.' },
+  { path: '/features/best-memory/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live benchmark data populates scores.' },
+  { path: '/features/cancellation-and-refunds/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live product testing exists.' },
+  { path: '/features/character-consistency/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live benchmark data populates scores.' },
+  { path: '/features/fastest-uncensored-models/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live benchmark data populates scores.' },
+  { path: '/features/lowest-effective-cost/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live benchmark data populates scores.' },
+  { path: '/features/no-message-limits/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live product testing exists.' },
+  { path: '/features/private-ai-chat/', kind: 'utility', evidence: 'Feature comparison shell; exclude until live provider policy review exists.' },
+  { path: '/research/privacy-index/', kind: 'utility', evidence: 'Dataset shell remains thin until provider policy review data exists.' },
+  { path: '/research/pricing-history/', kind: 'utility', evidence: 'Dataset shell remains thin until longitudinal pricing data exists.' },
 ] as const satisfies readonly SeoRouteEntry[];
 
 export function sitemapPaths(profilePaths: readonly string[]): string[] {
