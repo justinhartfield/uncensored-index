@@ -31,11 +31,11 @@ const rankOf = (modality: Modality) =>
   <section class="section shell">
     <div class="section-head"><div><p class="kicker">Publication state</p><h2>Live, human-reviewed evidence</h2></div></div>
     <Callout title="What this page is">
-      <p><strong>{published.length} live runs · {totalCases} cases · {humanScored} human-scored.</strong> This batch was measured with real paid API calls (Venice + OpenRouter, ≈$1.28 of the $25 capped budget). Every run is marked <em>live-reviewed</em>; nothing on this page is fixture or synthetic.</p>
+      <p><strong>{published.length} live runs · {totalCases} cases · {humanScored} human-scored.</strong> This batch was measured with real paid API calls (Venice + OpenRouter, ≈$1.33 of the $25 capped budget). Every run is marked <em>live-reviewed</em>; nothing on this page is fixture or synthetic.</p>
       <p>One model — Qwen3.6 35B A3B Uncensored E2EE — is excluded from ranking because its encrypted-reasoning route returned no usable output (11/11 attempts errored; evidence documented separately). If a model appears here without a result, that is the honest state.</p>
     </Callout>
     <Callout title="How the human scores were produced" warning={false}>
-      <p>The 43 <em>manual-review</em> cases were scored 1–5 by a single delegated reviewer (Bumble, on Tang's explicit approval) against fixed rubric dims: text <code>voice</code>+<code>coherence</code> (T1–T2) and <code>depth</code>+<code>consistency</code> (T3); image/video/audio per generation evidence. Scores are auditable and overridable — reply changes and I regenerate.</p>
+      <p>The {humanScored} <em>manual-review</em> cases were scored 1–5 by a single delegated reviewer (Bumble, on Tang's explicit approval) against fixed rubric dims: text <code>voice</code>+<code>coherence</code> (T1–T2) and <code>depth</code>+<code>consistency</code> (T3); image/video/audio per generation evidence. Scores are auditable and overridable — reply changes and I regenerate.</p>
       <p><strong>Evidence limit:</strong> text cases store only a public excerpt (≈360 characters), not the full output. Full raw outputs were not persisted for this batch.</p>
     </Callout>
     <Callout title="Media-tracks caveat — provisional quality scores" warning={true}>

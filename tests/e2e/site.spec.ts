@@ -63,7 +63,7 @@ test('v0.2 text ranking shows the lived leaderboard with one pending row', async
 test('manual review page lists every run and every case', async ({ page }) => {
   await page.goto('/manual-review/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Manual review');
-  await expect(page.getByText('16 live runs · 152 cases · 43 human-scored').first()).toBeVisible();
+  await expect(page.getByText('16 live runs · 152 cases · 46 human-scored').first()).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Every run, open' })).toBeVisible();
   await expect(page.getByText('Venice Uncensored 1.2').first()).toBeVisible();
   await expect(page.getByText('glm-5-2').first()).toBeVisible(); // run block slug appears
