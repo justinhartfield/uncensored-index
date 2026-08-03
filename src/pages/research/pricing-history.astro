@@ -1,0 +1,27 @@
+---
+import TextPage from '../../components/TextPage.astro';
+---
+<TextPage title="Uncensored AI model pricing history" description="Historical pricing data for uncensored AI models and chat platforms: per-token rates, subscription changes, and effective cost trends over time." kicker="Research dataset" noindex={true}>
+  <div class="empty-state"><strong>Live dataset pending.</strong><p>Pricing history publishes after at least two benchmark cycles produce comparable cost data. This page remains noindex until then.</p></div>
+  <h2>Pricing changes fast</h2>
+  <p>In the last 12 months, OpenRouter per-token pricing has dropped across multiple model families as competition increased. At the same time, several chat platforms raised subscription prices or introduced tighter message caps. The net effect on the user varies by product and use case.</p>
+  <p>This page tracks every price change we observe, with the date we observed it and the source (API metadata, pricing page, or billing test).</p>
+  <h2>What we track</h2>
+  <ul>
+    <li><strong>Per-token API pricing:</strong> Input and output price per million tokens, recorded from provider API metadata at test time.</li>
+    <li><strong>Subscription pricing:</strong> Monthly and annual plan prices for chat platforms, with effective message caps.</li>
+    <li><strong>Credit and top-up minimums:</strong> Minimum purchase amounts for API credits.</li>
+    <li><strong>Free-tier limits:</strong> What the free tier actually delivers in messages, tokens, and features.</li>
+    <li><strong>Price-change events:</strong> Date, old price, new price, and any accompanying policy or limit changes.</li>
+  </ul>
+  <h2>Why price history matters</h2>
+  <p>A model that cost $15 per million tokens six months ago and now costs $3 tells a story about commoditization. A platform that raised its price while cutting its message cap tells a different story. Price history gives users the context to judge whether today's price is a deal or a markup.</p>
+  <h2>Data freshness</h2>
+  <p>API prices are verified weekly against provider metadata. Subscription prices are checked weekly against published pricing pages and confirmed through test purchases every 30 days.</p>
+  <h2>See also</h2>
+  <ul>
+    <li><a href="/features/lowest-effective-cost/">Effective cost comparison</a> — what a typical session actually costs.</li>
+    <li><a href="/rankings/uncensored-ai-models/">Best uncensored AI models</a> — rankings with current pricing.</li>
+    <li><a href="/research/benchmark-changelog/">Benchmark changelog</a> — when methodology changes affect score comparability.</li>
+  </ul>
+</TextPage>

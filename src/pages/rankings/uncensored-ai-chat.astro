@@ -1,0 +1,12 @@
+---
+import RankingPage from '../../components/RankingPage.astro';
+import { models } from '../../data/models';
+const roster = models.filter((model) => model.tags.some((tag) => ['roleplay', 'uncensored', 'creative-writing', 'dialogue'].includes(tag)));
+---
+<RankingPage
+  title="Best uncensored AI chat models"
+  description="Evidence-gated comparison of uncensored AI chat models: refusal behavior, roleplay consistency, memory, privacy, and cost per conversation."
+  kicker="Uncensored chat ranking"
+  models={roster}
+  intro="Uncensored chat means the model does not refuse lawful adult fiction. It also means the model correctly refuses abusive scenarios. This ranking scores both dimensions independently and never publishes a rank without live test evidence."
+/>
