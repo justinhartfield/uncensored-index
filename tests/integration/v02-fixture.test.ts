@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { allCasesV02, promptHashV02, textCases, imageCases, videoCases, audioCases } from '../../scripts/benchmark/v02/cases';
 
 describe('v0.2 case inventory', () => {
-  it('matches approved track counts (T11 / I5 / V2 / A2)', () => {
-    expect(textCases.map((c) => c.id)).toEqual(['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11']);
-    expect(imageCases.map((c) => c.id)).toEqual(['I1','I2','I3','I4','I5']);
-    expect(videoCases.map((c) => c.id)).toEqual(['V1','V2']);
-    expect(audioCases.map((c) => c.id)).toEqual(['A1','A2']);
-    expect(allCasesV02).toHaveLength(20);
+  it('matches approved track counts (T11+U7 / I5+U-I6 / V2+U-V3 / A2+U-A1)', () => {
+    expect(textCases.map((c) => c.id)).toEqual(['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','U1','U2','U3','U4','U5','U6','U7']);
+    expect(imageCases.map((c) => c.id)).toEqual(['I1','I2','I3','I4','I5','U-I1','U-I2','U-I3','U-I4','U-I5','U-I6']);
+    expect(videoCases.map((c) => c.id)).toEqual(['V1','V2','U-V1','U-V2','U-V3']);
+    expect(audioCases.map((c) => c.id)).toEqual(['A1','A2','U-A1']);
+    expect(allCasesV02).toHaveLength(37);
   });
 
   it('I5 is showcase + adult-flagged and not a ranked grader', () => {
