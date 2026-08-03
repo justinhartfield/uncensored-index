@@ -38,7 +38,7 @@ for (const file of htmlFiles) {
   if (/sk-or-v1-|VENICE_INFERENCE_KEY_|github_pat_|AIza[0-9A-Za-z_-]{20,}|Bearer\s+[A-Za-z0-9._-]{20,}/.test(html)) errors.push(`${route}: secret-like token`);
   const hrefs = [...html.matchAll(/href="(\/[^\"]*)"/g)].map((match) => match[1]!.split(/[?#]/)[0]!);
   for (const href of hrefs) {
-    if (href.startsWith('/_') || href.includes('.')) continue;
+    if (href.startsWith('/_') || href.startsWith('/raw/') || href.includes('.')) continue;
     const normalized = href.endsWith('/') ? href : `${href}/`;
     if (!routes.has(normalized) && !routes.has(href)) errors.push(`${route}: unresolved internal href ${href}`);
   }
@@ -47,8 +47,8 @@ for (const file of htmlFiles) {
 const home = htmlByRoute.get('/') || '';
 if (!home.includes('33 tests.')) errors.push('/: missing v0.3 suite thesis');
 if (!home.includes('163')) errors.push('/: missing live-run execution count');
-if (!home.includes('review pending')) errors.push('/: missing review-pending state');
-if (!home.includes('Published ranks</dt><dd>0')) errors.push('/: current published-rank count must be zero');
+if (!home.includes('published')) errors.push('/: missing published state');
+if (!home.includes('Published ranks</dt><dd>18')) errors.push('/: expected 18 published models');
 if (/v0\.2 reviewed baseline/i.test(home)) errors.push('/: old v0.2 baseline is still presented as current');
 
 const suite = htmlByRoute.get('/suite/') || '';
@@ -72,7 +72,7 @@ for (const route of ['/results/', '/models/', '/review/', '/rankings/text/', '/r
 }
 for (const route of ['/rankings/text/', '/rankings/image/', '/rankings/video/', '/rankings/audio/']) {
   const html = htmlByRoute.get(route) || '';
-  if (!html.includes('Rankings closed')) errors.push(`${route}: missing closed-ranking state`);
+  if (!html.includes('Evidence published')) errors.push(`${route}: missing published evidence state`);
   if (/<td[^>]*>\s*\d+(?:\.\d+)?\s*<\/td>/.test(html)) errors.push(`${route}: current track leaks a score table`);
 }
 if (!(htmlByRoute.get('/archive/v02/text/') || '').includes('Archived v0.2 text leaderboard')) errors.push('/archive/v02/text/: missing retired leaderboard');
@@ -84,7 +84,7 @@ for (const model of roster) {
   const route = `/models/${model.slug}/`;
   const html = htmlByRoute.get(route) || '';
   if (!html.includes('noindex,follow')) errors.push(`${route}: v0.3 model record must remain noindex`);
-  const label = v03RunModelSlugs.has(model.slug) ? 'Live run · review pending' : 'Excluded · transport timeout';
+  const label = v03RunModelSlugs.has(model.slug) ? 'Live run · published' : 'Excluded · transport timeout';
   if (!html.includes(label)) errors.push(`${route}: missing ${label} state`);
   if (/Reviewed baseline · v0\.2/i.test(html)) errors.push(`${route}: old baseline leaked into current profile`);
 }

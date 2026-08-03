@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test('homepage leads with the v0.3 suite and a review-gated live run', async ({ page }) => {
+test('homepage leads with the v0.3 suite and a published live run', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('33 tests.');
   await expect(page.locator('.matrix-cell')).toHaveCount(33);
   await expect(page.getByText('163', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('review pending', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('published', { exact: false }).first()).toBeVisible();
   await expect(page.getByText('Published ranks').first()).toBeVisible();
   await expect(page.getByText('The old benchmark moved out of the way.')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
@@ -44,9 +44,9 @@ test('adult case definitions remain noindex and collapsed by default', async ({ 
   await expect(definition.getByText('18+ test prompt — open definition')).toBeVisible();
 });
 
-test('run ledger reports coverage and failures without publishing scores', async ({ page }) => {
+test('run ledger reports coverage and failures with published outcomes', async ({ page }) => {
   await page.goto('/results/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Zero published ranks.');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('18 models published.');
   await expect(page.locator('.ledger-row')).toHaveCount(19);
   await expect(page.locator('.failure-list article')).toHaveCount(2);
   await expect(page.getByText('$5.49', { exact: true })).toBeVisible();
@@ -54,10 +54,10 @@ test('run ledger reports coverage and failures without publishing scores', async
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 });
 
-test('current track routes are closed evidence ledgers, not leaderboards', async ({ page }) => {
+test('current track routes are published evidence ledgers', async ({ page }) => {
   for (const modality of ['text', 'image', 'video', 'audio']) {
     await page.goto(`/rankings/${modality}/`);
-    await expect(page.getByText('Live run complete. Rankings closed.')).toBeVisible();
+    await expect(page.getByText('Live run reviewed. Evidence published.')).toBeVisible();
     await expect(page.getByText('Looking for the old scores?')).toBeVisible();
     await expect(page.locator('.ranking-table-wrap')).toHaveCount(0);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
@@ -83,10 +83,10 @@ test('model directory filters retain 19 server-rendered route records', async ({
   await expect(page.getByText('Qwen3.6 35B A3B Uncensored E2EE')).toBeVisible();
 });
 
-test('model profiles expose run state but no unreviewed quality claims', async ({ page }) => {
+test('model profiles expose published run state', async ({ page }) => {
   await page.goto('/models/venice-uncensored-1-2/');
-  await expect(page.getByText('Live run · review pending')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'No score until the artifacts clear review.' })).toBeVisible();
+  await expect(page.getByText('Live run · published')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '9 delivered · 0 refused' })).toBeVisible();
   await expect(page.getByText('Raw per-case results')).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 
@@ -97,9 +97,9 @@ test('model profiles expose run state but no unreviewed quality claims', async (
 
 test('review and methodology pages explain the two-human fail-closed gate', async ({ page }) => {
   await page.goto('/review/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('163 decisions before one rank.');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('163 decisions. 161 approved.');
   await expect(page.locator('.review-steps li')).toHaveCount(4);
-  await expect(page.getByText('0%', { exact: true })).toBeVisible();
+  await expect(page.getByText('99%', { exact: true })).toBeVisible();
 
   await page.goto('/methodology/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Capability and safety are different questions.');

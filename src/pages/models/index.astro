@@ -5,6 +5,6 @@ import { mediaModels, models } from '../../data/models';
 import { v03Run } from '../../data/v03-suite';
 ---
 <BaseLayout title="Models in the v0.3 live run" description="The text, image, video, and audio model routes executed in the Uncensored Index v0.3 suite." noindex={true}>
-  <header class="page-head page-head--dark"><div class="shell page-head__grid"><div><p class="kicker">Route directory / run 0.3</p><h1>Models under review.</h1><p class="lede">Nineteen frozen routes entered preflight. Eighteen produced retained run records; one E2EE route timed out and remains explicitly excluded.</p></div><dl class="page-stats"><div><dt>Roster</dt><dd>19</dd></div><div><dt>Retained</dt><dd>{v03Run.modelRecords}</dd></div><div><dt>Ranked</dt><dd>0</dd></div></dl></div></header>
+  <header class="page-head page-head--dark"><div class="shell page-head__grid"><div><p class="kicker">Route directory / run 0.3</p><h1>Models published.</h1><p class="lede">Nineteen frozen routes entered preflight. Eighteen produced retained run records with published outcomes; one E2EE route timed out and remains explicitly excluded.</p></div><dl class="page-stats"><div><dt>Roster</dt><dd>19</dd></div><div><dt>Retained</dt><dd>{v03Run.modelRecords}</dd></div><div><dt>Ranked</dt><dd>{v03Run.modelRecords}</dd></div></dl></div></header>
   <section class="section shell"><ModelGrid models={[...models, ...mediaModels]} enableFilters={true} /></section>
 </BaseLayout>

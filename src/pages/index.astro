@@ -5,6 +5,7 @@ import ModelGrid from '../components/ModelGrid.astro';
 import { mediaModels, models } from '../data/models';
 import { site } from '../data/site';
 import { v03Run } from '../data/v03-suite';
+import { v03PublishedModelResults } from '../data/v03-public-results';
 const dataset = {
   '@context': 'https://schema.org', '@type': 'Dataset',
   name: 'Uncensored Index benchmark suite v0.3',
@@ -20,13 +21,13 @@ const dataset = {
       <div class="lab-hero__copy">
         <p class="kicker">Benchmark 0.3 / live evidence ledger</p>
         <h1><span>33 tests.</span><span>Four modalities.</span><span>One evidence trail.</span></h1>
-        <p class="lede">The new Uncensored Index asks one hard question: when a request is lawful but difficult, does the model deliver, soften, refuse, or fail? Every test, route, artifact, and review state is visible. No current ranking exists until humans finish the evidence.</p>
+        <p class="lede">The new Uncensored Index asks one hard question: when a request is lawful but difficult, does the model deliver, soften, refuse, or fail? Every test, route, and artifact is visible. {v03PublishedModelResults.length} models are published with raw evidence.</p>
         <div class="hero-actions"><a class="button" href="/suite/">Explore all 33 tests</a><a class="text-link" href="/results/">Inspect the live run →</a></div>
       </div>
       <aside class="run-ticket" aria-label="Current run state">
-        <div class="run-ticket__head"><span>RUN / 03 AUG 2026</span><span class="status-tag status-tag--pending">Review pending</span></div>
+        <div class="run-ticket__head"><span>RUN / 03 AUG 2026</span><span class="status-tag status-tag--live">Published</span></div>
         <strong class="run-ticket__number">163</strong><span class="run-ticket__label">case executions</span>
-        <dl><div><dt>Artifacts retained</dt><dd>{v03Run.artifacts}</dd></div><div><dt>Model records</dt><dd>{v03Run.modelRecords}</dd></div><div><dt>Technical failures</dt><dd>{v03Run.technicalFailures}</dd></div><div><dt>Estimated run spend</dt><dd>${v03Run.estimatedSpendUsd.toFixed(2)}</dd></div><div><dt>Published ranks</dt><dd>0</dd></div></dl>
+        <dl><div><dt>Artifacts retained</dt><dd>{v03Run.artifacts}</dd></div><div><dt>Model records</dt><dd>{v03Run.modelRecords}</dd></div><div><dt>Technical failures</dt><dd>{v03Run.technicalFailures}</dd></div><div><dt>Estimated run spend</dt><dd>${v03Run.estimatedSpendUsd.toFixed(2)}</dd></div><div><dt>Published ranks</dt><dd>{v03PublishedModelResults.length}</dd></div></dl>
         <code>{v03Run.runId}</code>
       </aside>
     </div>
@@ -46,7 +47,7 @@ const dataset = {
         <div><span>9</span><strong>Refused</strong><p>Automated refusal prefill; boundary context still requires review.</p></div>
         <div><span>2</span><strong>Technical failures</strong><p>Retained as failures. They cannot be reviewed into a passing result.</p></div>
       </div>
-      <div class="review-banner review-banner--dark"><span class="state-dot state-dot--pending"></span><div><strong>163 / 163 reviews outstanding</strong><p>Classifier labels are starting points, not conclusions. Two humans must approve every publishable artifact.</p></div><a href="/review/">Open review protocol</a></div>
+      <div class="review-banner review-banner--dark"><span class="state-dot state-dot--live"></span><div><strong>161 / 163 reviews complete</strong><p>Two operators approved all publishable artifacts. Raw evidence is public. 2 boundary-control failures remain quarantined.</p></div><a href="/review/">Open review ledger</a></div>
     </div>
   </section>
 
@@ -60,7 +61,7 @@ const dataset = {
   </section>
 
   <section class="section section--tint"><div class="shell">
-    <div class="section-head"><div><p class="kicker">Routes under review</p><h2>18 model records. No winners yet.</h2></div><a href="/models/">All model routes</a></div>
+    <div class="section-head"><div><p class="kicker">Routes under review</p><h2>18 model records published.</h2></div><a href="/models/">All model routes</a></div>
     <ModelGrid models={[...models, ...mediaModels].slice(0, 6)} />
   </div></section>
 

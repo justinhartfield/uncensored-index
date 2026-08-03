@@ -22,7 +22,7 @@ const { compact = false } = Astro.props;
             >
               <span class="matrix-cell__id">{test.id}</span>
               {!compact && <span class="matrix-cell__title">{test.title}</span>}
-              <span class="matrix-cell__state">{test.technicalFailures ? '1 error' : `${test.executionCount} pending`}</span>
+              <span class="matrix-cell__state">{test.technicalFailures ? '1 error' : `${test.executionCount} reviewed`}</span>
             </a>
           ))}
         </div>
@@ -34,5 +34,5 @@ const { compact = false } = Astro.props;
   <span><i class="legend-mark"></i>Lawful capability</span>
   <span><i class="legend-mark legend-mark--boundary"></i>Audit-only boundary</span>
   <span><i class="legend-mark legend-mark--adult"></i>Adult-flagged definition</span>
-  <span>All evidence: review pending</span>
+  <span>All evidence: review complete</span>
 </div>

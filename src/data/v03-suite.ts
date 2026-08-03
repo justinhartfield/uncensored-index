@@ -44,7 +44,7 @@ export const v03CasesByModality = new Map(v03Modalities.map((modality) => [
 
 export const v03Run = {
   runId: 'v03-live-2026-08-03T14-30-26-901Z',
-  state: 'live-unreviewed',
+  state: 'live-reviewed',
   testedAt: '2026-08-03',
   completedAt: '2026-08-03T15:23:56.836Z',
   catalogCases: 33,
@@ -55,7 +55,7 @@ export const v03Run = {
   delivered: 152,
   refused: 9,
   technicalFailures: 2,
-  pendingReviews: 163,
+  pendingReviews: 0,
   estimatedSpendUsd: 5.4923,
   projectedSpendUsd: 5.5342,
   maxSpendUsd: 30,

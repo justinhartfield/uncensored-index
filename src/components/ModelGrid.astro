@@ -23,7 +23,7 @@ const privacyValues = [...new Set(models.map((model) => model.privacy))];
 <div class="model-grid" id="model-grid">
   {models.map((model) => (
     <a class="model-card" href={`/models/${model.slug}/`} data-provider={model.providerId} data-privacy={model.privacy} data-tags={model.tags.join(' ')}>
-      {v03RunModelSlugs.has(model.slug) ? <EvidenceBadge state="live-unreviewed" label="Live run · review pending" /> : <EvidenceBadge label="Excluded · transport timeout" />}
+      {v03RunModelSlugs.has(model.slug) ? <EvidenceBadge state="live-reviewed" label="Live run · published" /> : <EvidenceBadge label="Excluded · transport timeout" />}
       <h3>{model.displayName}</h3>
       <p>{model.creator} · {model.contextTokens.toLocaleString('en-US')} token context</p>
       <div class="model-meta">
