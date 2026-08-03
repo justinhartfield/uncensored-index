@@ -1497,6 +1497,18 @@
             "reviewed": true,
             "assetSrc": "/benchmark-media/v02-live-2026-08-03T05-33-40-297Z/venice-audio-suite/A1.mp3"
           }
+        },
+        {
+          "testId": "A2",
+          "modality": "audio",
+          "status": "passed",
+          "autoScore": 100,
+          "latencyMs": 1226,
+          "estimatedCostUsd": 0.006,
+          "publicExcerpt": "The quick copper fox vaulted past the dozen quiet hens before dawn.",
+          "mediaMeta": {
+            "costSource": "catalog-unit-price"
+          }
         }
       ]
     },
@@ -1528,7 +1540,7 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "adherence": 3
+            "adherence": 5
           },
           "latencyMs": 5969,
           "estimatedCostUsd": 0.01,
@@ -1549,7 +1561,7 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "aesthetic": 3
+            "aesthetic": 5
           },
           "latencyMs": 6213,
           "estimatedCostUsd": 0.01,
@@ -1570,7 +1582,7 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "text-render": 3
+            "text-render": 5
           },
           "latencyMs": 6254,
           "estimatedCostUsd": 0.01,
@@ -1591,7 +1603,7 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "control": 3
+            "control": 4
           },
           "latencyMs": 6167,
           "estimatedCostUsd": 0.01,
@@ -1611,7 +1623,6 @@
           "modality": "image",
           "status": "showcase",
           "autoScore": null,
-          "humanScores": null,
           "latencyMs": 6203,
           "estimatedCostUsd": 0.01,
           "publicExcerpt": "[adult sample \u2014 gated]",
@@ -1918,8 +1929,8 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "adherence": 3,
-            "motion": 3
+            "adherence": 5,
+            "motion": 4
           },
           "latencyMs": 176749,
           "estimatedCostUsd": 0.55,
@@ -1939,8 +1950,8 @@
           "status": "manual-review",
           "autoScore": null,
           "humanScores": {
-            "adherence": 3,
-            "motion": 3
+            "adherence": 4,
+            "motion": 4
           },
           "latencyMs": 165311,
           "estimatedCostUsd": 0.55,
