@@ -4,6 +4,7 @@ import path from 'node:path';
 import { mediaModels, models } from '../../../src/data/models';
 import { allCasesV02, benchmarkVersionV02, casesForModality, promptHashV02 } from './cases';
 import { gradeAuto } from './graders/index';
+import { resolveSttSource } from './stt-source';
 import { estimatedCost, scoreTrack, trackMins } from './score';
 import { loadCatalogFreeze, pickModelId, unitPrice, type CatalogFreeze } from './catalog';
 import {
@@ -247,11 +248,12 @@ async function runAudioCase(mode: Mode, modelId: string, test: ReturnType<typeof
         publicExcerpt: '[tts audio generated]', mediaMeta: { hasAudio: true, ...stored }, requestedModelId: modelId,
       };
     }
-    // A2 STT — fixture uses known reference; live expects BENCHMARK_STT_AUDIO_B64
-    let audioB64 = process.env.BENCHMARK_STT_AUDIO_B64;
-    if (mode === 'fixture') audioB64 = 'AAAA';
-    if (!audioB64) throw new Error('BENCHMARK_STT_AUDIO_B64 required for live STT');
-    const res = await adapter.transcribe({ model: modelId, audioBase64: audioB64 });
+    // A2 STT — fixture uses a synthetic payload; live reads real source audio via
+    // resolveSttSource (BENCHMARK_STT_AUDIO_B64, BENCHMARK_STT_AUDIO_FILE, or
+    // --stt-audio). A missing source throws here and becomes an errored A2 case,
+    // never a batch abort.
+    const source = await resolveSttSource(mode);
+    const res = await adapter.transcribe({ model: modelId, audioBase64: source.audioB64, filename: source.filename });
     const grade = await gradeAuto('wer', res.text, test.graderConfig || {});
     return {
       testId: test.id, modality: 'audio', promptHash: promptHashV02(test),
@@ -332,10 +334,14 @@ async function main() {
         }
         if (test.modality === 'audio' && test.id === 'A2') {
           const minutes = Number(process.env.BENCHMARK_STT_AUDIO_DURATION_MINUTES);
-          if (!(minutes > 0)) {
-            throw new Error('BENCHMARK_STT_AUDIO_DURATION_MINUTES must be set to the source audio duration before live STT');
+          if (minutes > 0) {
+            reservationUsd = (unitPrice(catalog, 'audioStt', pickModelId(catalog, 'audioStt')) || 0) * minutes;
           }
-          reservationUsd = (unitPrice(catalog, 'audioStt', pickModelId(catalog, 'audioStt')) || 0) * minutes;
+          // Optional duration: without it we make no STT reservation — A2 still
+          // resolves its own source inside runAudioCase and degrades to an errored
+          // case if it can't, so a missing STT input/duration can never abort the
+          // paid batch after image/video spend. Real spend is still guarded by the
+          // post-case maxSpendUsd check.
         }
         assertBudget(estimatedSpendUsd, reservationUsd, catalog.maxSpendUsd, `${model.slug}/${test.id}`);
       }
