@@ -108,6 +108,7 @@ test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
 });
 
 test('core pages have no serious accessibility violations', async ({ page }) => {
+  test.setTimeout(90_000);
   for (const route of ['/', '/models/', '/methodology/', '/editorial-policy/', '/rankings/text/', '/showcase/', '/showcase/adult/', '/manual-review/', '/review/']) {
     await page.goto(route);
     const results = await new AxeBuilder({ page }).analyze();

@@ -275,6 +275,7 @@ async function main() {
   const mode = modeFromArgs();
   const modalities = modalitiesFromArgs();
   const selectedSlug = arg('--model');
+  const selectedCaseIds = arg('--case')?.split(',').map((id) => id.trim()).filter(Boolean);
   const roster = mode === 'fixture' ? models : [...models, ...mediaModels];
   const candidates = selectedSlug ? roster.filter((m) => m.slug === selectedSlug) : roster;
   const selected = mode === 'fixture'
@@ -286,7 +287,14 @@ async function main() {
   const root = path.resolve(mode === 'fixture' ? 'benchmark-results-fixture' : 'benchmark-results', runId);
   await mkdir(root, { recursive: true });
 
-  const cases = allCasesV02.filter((c) => modalities.includes(c.modality));
+  const cases = allCasesV02.filter((c) =>
+    modalities.includes(c.modality) && (!selectedCaseIds || selectedCaseIds.includes(c.id))
+  );
+  if (selectedCaseIds && cases.length !== selectedCaseIds.length) {
+    const found = new Set(cases.map((test) => test.id));
+    const missing = selectedCaseIds.filter((id) => !found.has(id));
+    throw new Error(`Unknown or modality-mismatched case(s): ${missing.join(', ')}`);
+  }
   const smokeCases = mode === 'smoke'
     ? modalities.flatMap((m) => casesForModality(m).slice(0, 1))
     : cases;
@@ -444,6 +452,7 @@ async function main() {
     runId,
     mode,
     modalities,
+    caseIds: smokeCases.map((test) => test.id),
     startedAt: new Date().toISOString(),
     completedAt: new Date().toISOString(),
     models: modelRuns.map((r) => ({
