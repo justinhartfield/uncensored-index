@@ -96,6 +96,9 @@ test('adult showcase is noindex, age-gated, and blur-by-default', async ({ page 
   await expect(page.locator('[data-reveal]')).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('.adult-tile__image')).toHaveCount(1);
   await expect(page.locator('.adult-tile__reveal')).not.toHaveClass(/is-revealed/);
+  await page.locator('[data-reveal]').click();
+  await expect(page.locator('[data-reveal]')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('.adult-tile')).toHaveClass(/is-revealed/);
 });
 
 test('mobile menu opens with accessible state', async ({ page, isMobile }) => {
