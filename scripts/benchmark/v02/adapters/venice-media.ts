@@ -32,6 +32,17 @@ function redact(value: string): string {
     .slice(0, 500);
 }
 
+/** Venice may return raw WebP base64 even though the JSON examples use PNG. */
+export function detectImageContentType(encoded: string): string {
+  const dataUrl = encoded.match(/^data:([^;,]+);base64,(.*)$/s);
+  if (dataUrl?.[1]?.startsWith('image/')) return dataUrl[1].toLowerCase();
+  const bytes = Buffer.from(dataUrl?.[2] || encoded, 'base64');
+  if (bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+  if (bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP') return 'image/webp';
+  return 'application/octet-stream';
+}
+
 export function videoQueueBody(input: Parameters<VideoAdapter['queueAndRetrieve']>[0]): Record<string, unknown> {
   return {
     model: input.model,
@@ -92,7 +103,7 @@ export const veniceImageAdapter: ImageAdapter = {
     const timingTotal = raw.timing?.total;
     return {
       imageBase64: typeof image === 'string' ? image : undefined,
-      contentType: 'image/png',
+      contentType: typeof image === 'string' ? detectImageContentType(image) : undefined,
       latencyMs: Math.round(performance.now() - started),
       timingTotalMs: typeof timingTotal === 'number' ? timingTotal : undefined,
       costUsd: extractVeniceCost(raw),

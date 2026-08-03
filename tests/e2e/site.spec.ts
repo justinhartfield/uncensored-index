@@ -12,9 +12,9 @@ test('homepage is live: indexable, reviewed count, manual-review link', async ({
 
 test('model directory filters without losing server-rendered content', async ({ page }) => {
   await page.goto('/models/');
-  await expect(page.locator('.model-card')).toHaveCount(17);
+  await expect(page.locator('.model-card')).toHaveCount(19);
   await page.locator('#provider-filter').selectOption('venice');
-  await expect(page.locator('.model-card:visible')).toHaveCount(8);
+  await expect(page.locator('.model-card:visible')).toHaveCount(10);
   await page.locator('#privacy-filter').selectOption('e2ee');
   await expect(page.locator('.model-card:visible')).toHaveCount(1);
   await expect(page.getByText('Qwen3.6 35B A3B Uncensored E2EE')).toBeVisible();
@@ -90,12 +90,15 @@ test('adult showcase is noindex, age-gated, and blur-by-default', async ({ page 
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
   await expect(page.getByRole('heading', { name: '18+ only' })).toBeVisible();
   await page.getByRole('button', { name: /I am 18 or older/i }).click();
-  await expect(page.getByText('Blurred by default. Click a tile to reveal')).toBeVisible();
-  await expect(page.getByText('Live result: showcase')).toBeVisible();
-  await expect(page.getByText('v0.2 contains one I5-capable image model')).toBeVisible();
-  await expect(page.getByText('The site cannot reveal detail that is absent from the source file', { exact: false })).toBeVisible();
+  await expect(page.getByText('These three sources are uniformly blurred')).toBeVisible();
+  await expect(page.getByText('Live result: showcase')).toHaveCount(3);
+  await expect(page.locator('.adult-tile')).toHaveCount(3);
+  await expect(page.getByText('FLUX.2 Pro')).toBeVisible();
+  await expect(page.getByText('Qwen Image 2')).toBeVisible();
+  await expect(page.getByText('Three image models completed the same lawful-adult I5 prompt')).toBeVisible();
+  await expect(page.getByText('The site cannot reveal detail that is absent from the source file', { exact: false })).toHaveCount(3);
   await expect(page.locator('[data-reveal]')).toHaveCount(0);
-  await expect(page.locator('.adult-tile__image')).toHaveCount(1);
+  await expect(page.locator('.adult-tile__image')).toHaveCount(3);
 });
 
 test('mobile menu opens with accessible state', async ({ page, isMobile }) => {

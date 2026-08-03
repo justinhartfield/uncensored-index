@@ -362,10 +362,12 @@ async function main() {
         if (paidMode) estimatedSpendUsd += result.estimatedCostUsd || 0;
         caseResults.push(result);
       } else if (test.modality === 'image') {
-        // fixture: synthetic path; live: frozen catalog model IDs only — never hardcoded defaults.
+        // Fixture uses the record's synthetic model ID. Paid runs require the
+        // exact selected model ID to exist in the frozen catalog; never fall
+        // back to the first image model and silently bill a different model.
         const imageModel = mode === 'fixture'
           ? model.canonicalId
-          : pickModelId(catalog!, 'image', model.canonicalId.includes('image') ? model.canonicalId : undefined);
+          : pickModelId(catalog!, 'image', model.canonicalId);
         const result = await runImageCase(mode, imageModel, test, paidMode ? { root, modelSlug: model.slug } : undefined);
         if (result.estimatedCostUsd === undefined && catalog) {
           result.estimatedCostUsd = unitPrice(catalog, 'image', imageModel);

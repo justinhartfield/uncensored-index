@@ -40,8 +40,8 @@ for (const file of htmlFiles) {
   }
 }
 const modelProfiles = htmlFiles.filter((file) => file.includes(`${path.sep}models${path.sep}`) && !file.endsWith(`${path.sep}models${path.sep}index.html`));
-if (modelProfiles.length !== 17) errors.push(`Expected 17 model profiles, found ${modelProfiles.length}`);
 const roster = [...models, ...mediaModels];
+if (modelProfiles.length !== roster.length) errors.push(`Expected ${roster.length} model profiles, found ${modelProfiles.length}`);
 const publishedSlugs = new Set(roster.filter((m) => isPublishedV02(resultBySlugV02(m.slug))).map((m) => m.slug));
 for (const file of modelProfiles) {
   const html = await readFile(file, 'utf8');

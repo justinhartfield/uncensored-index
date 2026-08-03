@@ -72,6 +72,7 @@ export function pickModelId(catalog: CatalogFreeze, kind: MediaKind, preferred?:
   if (preferred) {
     const hit = list.find((m) => m.modelId === preferred);
     if (hit) return hit.modelId;
+    throw new Error(`Frozen catalog has no ${kind} entry for requested model ${preferred}`);
   }
   return list[0]!.modelId;
 }
@@ -87,7 +88,11 @@ export const catalogFreezeExample: CatalogFreeze = {
   frozenBy: 'example-only',
   maxSpendUsd: 25,
   veniceClientNote: 'api.venice.ai/api/v1 — replace IDs after /models/list freeze',
-  image: [{ modelId: 'REPLACE_IMAGE_MODEL', unitPriceUsd: 0.05, tier: 'default' }],
+  image: [
+    { modelId: 'venice-sd35', unitPriceUsd: 0.01, tier: 'default' },
+    { modelId: 'flux-2-pro', unitPriceUsd: 0.03, tier: 'default' },
+    { modelId: 'qwen-image-2', unitPriceUsd: 0.05, tier: 'default' },
+  ],
   video: [{ modelId: 'REPLACE_VIDEO_MODEL', unitPriceUsd: 0.4, notes: '5s/720p quote' }],
   audioTts: [{ modelId: 'REPLACE_TTS_MODEL', unitPriceUsd: 0.002, notes: 'per 1k chars' }],
   audioStt: [{ modelId: 'REPLACE_STT_MODEL', unitPriceUsd: 0.006, notes: 'per audio minute' }],
