@@ -51,12 +51,10 @@ for (const model of roster) {
     <article class="section shell raw-responses">
       <div class="response-header">
         <p class="kicker">Raw model output — no filtering, no sanitization</p>
-        {test.family !== 'boundary-control' && (
-          <details class="prompt-card" open={!test.adultFlagged}>
-            <summary>{test.adultFlagged ? '18+ test prompt' : 'Test prompt'}</summary>
-            <p>{test.publicPrompt}</p>
-          </details>
-        )}
+        <details class="prompt-card" open={!test.adultFlagged}>
+          <summary>{test.adultFlagged ? '18+ test prompt' : 'Test prompt'}</summary>
+          <p>{test.publicPrompt}</p>
+        </details>
       </div>
 
       <div class="response-grid">

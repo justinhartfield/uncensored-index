@@ -1,38 +1,34 @@
 ---
 import TextPage from '../components/TextPage.astro';
+import { v03Run } from '../data/v03-suite';
 ---
-<TextPage title="About Uncensored Index" description="Independent, reproducible performance benchmarks of uncensored AI models across text, image, video, and audio.">
+<TextPage title="About Uncensored Index" description="Uncensored Index runs the CLIMAX Benchmark — a frozen 33-case suite scoring uncensored AI models on what they actually produce. No compliance theater. Every score traces to a paid run with public evidence.">
   <h2>What Uncensored Index does</h2>
-  <p>We test AI models the same way a user would: sign up, send the same prompts, measure what comes back, and publish the evidence. Every score on this site is backed by a dated, reproducible test run. No vendor claim becomes a rank until our protocol confirms it.</p>
-  <p>The site separates three layers that most "best NSFW AI" lists conflate:</p>
-  <ol>
-    <li><strong>Model behavior:</strong> What the model actually produces — prose quality, refusal rates, memory, latency, cost.</li>
-    <li><strong>Provider behavior:</strong> Privacy, logging, data retention, deletion routes, and training-use policy.</li>
-    <li><strong>Product behavior:</strong> The chat application layer — message limits, cancellation flows, mobile behavior, effective pricing.</li>
-  </ol>
+  <p>We publish the CLIMAX Benchmark: a reproducible, evidence-backed comparison of uncensored AI models. Each model is tested against the same frozen 33-case suite of prompts across text, image, video, and audio. The same prompts. The same scoring rules. The same publication gate.</p>
+  <p>Every score on this site came from a dated, paid API run with human-reviewed evidence. No vendor claim becomes a rank until our protocol confirms it.</p>
 
   <h2>Why this exists</h2>
-  <p>Most pages in the uncensored AI market are affiliate lists that repeat vendor claims. A DR 13 site can rank first for "best NSFW AI chat" because nobody has published reproducible test evidence. Uncensored Index is the answer to that gap.</p>
-  <p>The defensible asset is not opinion — it is a dated longitudinal dataset covering refusal behavior, roleplay quality, memory, context retention, privacy, latency, cost, limits, and provider reliability across multiple benchmark cycles.</p>
+  <p>Most "best uncensored AI" lists are affiliate roundups that repeat vendor claims. A low-authority site can rank first for high-value keywords because nobody has published reproducible test evidence. Uncensored Index is the answer to that gap.</p>
+  <p>The defensible asset is the data: a frozen catalog of 33 prompts, executed against 18 models across 4 modalities, producing {v03Run.caseExecutions} scored artifacts with public raw evidence. Future runs extend the dataset without rewriting history.</p>
 
-  <h2>What we publish</h2>
-  <ul>
-    <li><strong>Model profiles</strong> with test dates, benchmark versions, scores, refusal matrices, and public-safe sample outputs.</li>
-    <li><strong>Rankings</strong> regenerated after every valid score change, with rank-change history.</li>
-    <li><strong>Comparisons</strong> between models and products, with human-written verdicts.</li>
-    <li><strong>Feature pages</strong> aggregating one dimension (memory, privacy, cost, speed) from the test database.</li>
-    <li><strong>Research datasets</strong>: censorship index, pricing history, privacy index, benchmark changelog.</li>
-    <li><strong>Product reviews</strong> (forthcoming) evaluating the full chat application experience.</li>
-  </ul>
+  <h2>How CLIMAX scoring works</h2>
+  <p>The CLIMAX Benchmark scores every model on four dimensions:</p>
+  <ol>
+    <li><strong>Instruction Following (50%):</strong> Did the model deliver exactly what was requested? Weighted by consistency across cases.</li>
+    <li><strong>Output Quality (30%):</strong> Is the output coherent, well-formed, and fit for purpose? Scored by two independent human reviewers.</li>
+    <li><strong>Speed (10%):</strong> Normalized latency relative to the fastest model in the track.</li>
+    <li><strong>Cost (10%):</strong> Normalized cost per execution relative to the cheapest model in the track.</li>
+  </ol>
+  <p>Technical failures earn zero. Refusals earn zero. Softened outputs earn partial credit. Boundary controls route human attention only — they do not affect scores. See the <a href="/methodology/">full methodology</a> for the complete protocol.</p>
+
+  <h2>What we do not do</h2>
+  <p>We do not test for "safety," compliance, consent behavior, or content moderation. We measure one thing: <strong>can this model complete the lawful request it was given?</strong> A model that refuses an adult-content prompt receives the same score as one that fails technically — zero for that case.</p>
 
   <h2>What we do not operate</h2>
   <p>We are a testing publication and affiliate publisher. We do not host an adult chatbot, image generator, public gallery, comment system, or user-upload service. We do not publish explicit imagery on indexable pages. Adult media samples are age-gated and blurred by default.</p>
 
   <h2>How we make money</h2>
-  <p>Uncensored Index earns through affiliate referrals when a reader clicks through to a reviewed product and makes a purchase. Sponsored placements are clearly labeled and never change editorial scores or rank. We do not run display advertising and do not sell user data. See our <a href="/affiliate-disclosure/">affiliate disclosure</a> for full details.</p>
-
-  <h2>The team</h2>
-  <p>Uncensored Index is built and maintained by a small team of testers, reviewers, and developers. Every test run, score, and published claim is attributable to a dated protocol run. No anonymous or unverifiable scores appear on the site.</p>
+  <p>Uncensored Index earns through affiliate referrals when a reader clicks through to a reviewed provider and makes a purchase. Sponsored placements are clearly labelled and never change editorial scores or rank. We do not run display advertising and do not sell user data. See the <a href="/affiliate-disclosure/">affiliate disclosure</a> for full details.</p>
 
   <h2>Contact</h2>
   <p>For corrections, methodology questions, or affiliate inquiries, see the <a href="/contact/">contact page</a>.</p>
