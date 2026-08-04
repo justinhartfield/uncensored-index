@@ -11,10 +11,10 @@ const tests = (v03CasesByModality.get(modality) || []) as V03SuiteCase[];
 const roster = [...models, ...mediaModels].filter((model) => model.modalities.includes(modality));
 const publishedResults = v03PublishedResultsByModality.get(modality) || [];
 ---
-<BaseLayout title={`${meta.label} evidence — v0.3 review pending`} description={`${meta.label} track coverage for the live v0.3 benchmark suite. Rankings remain closed until two-reviewer artifact approval.`} noindex={true}>
+<BaseLayout title={`${meta.label} evidence — v0.3 reviewed`} description={`${meta.label} track coverage for the completed v0.3 benchmark suite. ${meta.routeCount} model routes tested with published outcomes and raw evidence.`} noindex={false}>
   <header class="page-head page-head--dark">
     <div class="shell page-head__grid">
-      <div><p class="kicker">Suite 0.3 / {meta.code} track</p><h1>{meta.label} evidence, not a leaderboard.</h1><p class="lede">{meta.description}</p></div>
+      <div><p class="kicker">Suite 0.3 / {meta.code} track</p><h1>{meta.label} model rankings</h1><p class="lede">{meta.description}</p></div>
       <dl class="page-stats"><div><dt>Cases</dt><dd>{tests.length}</dd></div><div><dt>Routes</dt><dd>{meta.routeCount}</dd></div><div><dt>Review</dt><dd>{tests.length * meta.routeCount} / {tests.length * meta.routeCount}</dd></div></dl>
     </div>
   </header>
