@@ -1,166 +1,72 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Callout from '../../components/Callout.astro';
+import { v03SuiteCases, v03RunModelSlugs, modalityMeta } from '../../data/v03-suite';
 import { mediaModels, models } from '../../data/models';
-import { publicResultsV02, statusLabelV02 } from '../../lib/results-v02';
-import { testCatalogV02 } from '../../lib/test-catalog-v02';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 
-const names = new Map([...models, ...mediaModels].map((model) => [model.slug, model.displayName]));
-const reviewed = publicResultsV02.results.filter((result) => result.evidenceState === 'live-reviewed');
-const comparisonData = testCatalogV02.map((test) => ({
-  id: test.id,
-  title: test.title,
-  modality: test.modality,
-  adultFlagged: Boolean(test.adultFlagged),
-  question: test.adultFlagged ? '' : test.question,
-  models: reviewed.flatMap((result) => {
-    const evidence = result.cases?.find((item) => item.testId === test.id);
-    if (!evidence) return [];
-    return [{
-      slug: result.modelSlug,
-      name: names.get(result.modelSlug) || result.displayName || result.modelSlug,
-      status: statusLabelV02(evidence.status),
-      answer: evidence.status === 'errored' ? evidence.error || 'Provider error' : evidence.publicExcerpt || 'No public answer retained.',
-      autoScore: evidence.autoScore,
-      humanScores: evidence.humanScores || {},
-      latencyMs: evidence.latencyMs,
-      cost: evidence.estimatedCostUsd,
-      overall: result.trackScores?.[test.modality]?.overall,
-    }];
-  }),
-}));
-const safeJson = JSON.stringify(comparisonData).replace(/</g, '\\u003c');
----
-<BaseLayout title="Archived v0.2 answer comparison" description="Archived v0.2 reviewed model-answer comparison. This retired evidence does not represent v0.3." noindex={true}>
-  <header class="page-head"><div class="shell">
-    <span class="archive-stamp">RETIRED / 0.2.0</span>
-    <p class="kicker">Archived evidence-matched comparison</p>
-    <h1>Old answers, kept for audit.</h1>
-    <p class="lede">This utility compares reviewed evidence from the retired twenty-test catalog. It is not a v0.3 result surface. <a href="/suite/">Open the current test suite →</a></p>
-  </div></header>
+const roster = [...models, ...mediaModels].filter((m) => v03RunModelSlugs.has(m.slug));
+const testCases = v03SuiteCases.filter((t) => t.family === 'lawful-capability');
 
-  <main class="section shell">
-    <Callout title="Archived like-for-like evidence only" warning={true}>
-      <p>Models appear only when they ran the selected test. Adult I5 evidence remains on the <a href="/showcase/adult/">18+ showcase</a>; this page does not expose its prompt or artifact.</p>
-    </Callout>
+const matrix: Array<{ testId: string; title: string; modality: string; responses: Array<{ modelSlug: string; displayName: string; content?: string; isMedia: boolean; mediaUrl?: string; status: string }> }> = [];
 
-    <form id="compare-controls" class="controls">
-      <label for="test-select"><strong>Question or prompt</strong></label>
-      <select id="test-select" name="test">
-        {comparisonData.map((test) => <option value={test.id}>{test.id} · {test.title} ({test.models.length} models)</option>)}
-      </select>
-      <fieldset>
-        <legend>Models <span class="micro">Choose at least three</span></legend>
-        <div id="model-options" class="model-options"></div>
-      </fieldset>
-      <p id="selection-error" class="selection-error" role="alert" hidden>Select at least three models with evidence for this test.</p>
-    </form>
-
-    <section id="comparison" aria-live="polite">
-      <p class="kicker" id="test-label"></p>
-      <h2 id="test-title"></h2>
-      <p id="question" class="question"></p>
-      <p id="adult-boundary" hidden>This adult test is available only through the <a href="/showcase/adult/">18+ showcase</a>.</p>
-      <div class="table-scroll">
-        <table>
-          <caption class="sr-only">Selected models compared on one benchmark test</caption>
-          <thead><tr id="model-headings"><th scope="col">Evidence</th></tr></thead>
-          <tbody id="comparison-body"></tbody>
-        </table>
-      </div>
-    </section>
-    <noscript><p>This interactive comparison needs JavaScript. The complete static evidence remains available on the <a href="/showcase/">showcase page</a>.</p></noscript>
-  </main>
-</BaseLayout>
-
-<script is:inline type="application/json" id="comparison-data" set:html={safeJson}></script>
-<script>
-  type Entry = { slug:string; name:string; status:string; answer:string; autoScore?:number; humanScores:Record<string,number>; latencyMs:number; cost?:number; overall?:number };
-  type Test = { id:string; title:string; modality:string; adultFlagged:boolean; question:string; models:Entry[] };
-  const data = JSON.parse(document.querySelector<HTMLScriptElement>('#comparison-data')!.textContent || '[]') as Test[];
-  const select = document.querySelector<HTMLSelectElement>('#test-select')!;
-  const options = document.querySelector<HTMLDivElement>('#model-options')!;
-  const error = document.querySelector<HTMLParagraphElement>('#selection-error')!;
-  const params = new URLSearchParams(location.search);
-  const requestedTest = params.get('test');
-  if (requestedTest && data.some((test) => test.id === requestedTest)) select.value = requestedTest;
-
-  const selectedFromUrl = () => new Set((params.get('models') || '').split(',').filter(Boolean));
-  const currentTest = () => data.find((item) => item.id === select.value) || data[0]!;
-  const text = (value: unknown) => value === undefined ? '—' : String(value);
-  const score = (values: Record<string,number>) => Object.entries(values).map(([key, value]) => `${key} ${value}/5`).join(' · ') || '—';
-
-  function renderTable(test: Test, selected: Set<string>) {
-    document.querySelector('#test-label')!.textContent = `${test.id} · ${test.modality}`;
-    document.querySelector('#test-title')!.textContent = test.title;
-    const question = document.querySelector<HTMLParagraphElement>('#question')!;
-    const adult = document.querySelector<HTMLParagraphElement>('#adult-boundary')!;
-    question.textContent = test.question;
-    question.hidden = test.adultFlagged;
-    adult.hidden = !test.adultFlagged;
-    const entries = test.models.filter((entry) => selected.has(entry.slug));
-    error.hidden = entries.length >= 3 || test.models.length < 3;
-    const headings = document.querySelector<HTMLTableRowElement>('#model-headings')!;
-    headings.replaceChildren(Object.assign(document.createElement('th'), { scope: 'col', textContent: 'Evidence' }));
-    entries.forEach((entry) => {
-      const th = document.createElement('th'); th.scope = 'col';
-      const link = document.createElement('a'); link.href = `/models/${entry.slug}/`; link.textContent = entry.name;
-      th.append(link); headings.append(th);
-    });
-    const body = document.querySelector<HTMLTableSectionElement>('#comparison-body')!;
-    body.replaceChildren();
-    const rows:[string,(entry:Entry)=>string][] = [
-      ['Answer / evidence', (entry) => entry.answer], ['Status', (entry) => entry.status],
-      ['Auto score', (entry) => entry.autoScore === undefined ? '—' : `${entry.autoScore}/100`],
-      ['Human scores', (entry) => score(entry.humanScores)], ['Track overall', (entry) => entry.overall === undefined ? '—' : `${entry.overall}/100`],
-      ['Latency', (entry) => `${entry.latencyMs.toLocaleString()} ms`], ['Estimated cost', (entry) => entry.cost === undefined ? '—' : `$${entry.cost.toFixed(4)}`],
-    ];
-    rows.forEach(([label, value]) => {
-      const tr = document.createElement('tr'); const th = document.createElement('th'); th.scope = 'row'; th.textContent = label; tr.append(th);
-      entries.forEach((entry) => { const td = document.createElement('td'); td.textContent = text(value(entry)); if (label === 'Answer / evidence') td.className = 'answer'; tr.append(td); });
-      body.append(tr);
-    });
-  }
-
-  function renderModels(useUrl = false) {
-    const test = currentTest();
-    const requested = useUrl ? selectedFromUrl() : new Set<string>();
-    const defaults = requested.size ? requested : new Set(test.models.slice(0, 3).map((entry) => entry.slug));
-    options.replaceChildren();
-    test.models.forEach((entry) => {
-      const label = document.createElement('label'); const input = document.createElement('input'); input.type = 'checkbox'; input.value = entry.slug; input.checked = defaults.has(entry.slug);
-      label.append(input, document.createTextNode(` ${entry.name}`)); options.append(label);
-      input.addEventListener('change', update);
-    });
-    if (test.models.length < 3) {
-      const note = document.createElement('p'); note.className = 'coverage-note'; note.textContent = `Only ${test.models.length} reviewed model${test.models.length === 1 ? '' : 's'} ran this test; a three-model comparison is not yet available.`; options.append(note);
+for (const test of testCases) {
+  const responses: Array<{ modelSlug: string; displayName: string; content?: string; isMedia: boolean; mediaUrl?: string; status: string }> = [];
+  for (const model of roster.filter((m) => m.modalities.includes(test.modality))) {
+    const ext = test.modality === 'image' ? 'webp' : test.modality === 'video' ? 'mp4' : test.modality === 'audio' ? 'mp3' : 'txt';
+    const filePath = path.resolve('public/raw/v03', model.slug, `${test.id}.${ext}`);
+    try {
+      if (test.modality === 'text') {
+        const content = await readFile(filePath, 'utf8');
+        responses.push({ modelSlug: model.slug, displayName: model.displayName, content, isMedia: false, status: 'delivered' });
+      } else {
+        responses.push({ modelSlug: model.slug, displayName: model.displayName, isMedia: true, mediaUrl: `/raw/v03/${model.slug}/${test.id}.${ext}`, status: 'delivered' });
+      }
+    } catch {
+      responses.push({ modelSlug: model.slug, displayName: model.displayName, content: '', isMedia: false, status: 'missing' });
     }
-    update();
   }
-  function update() {
-    const test = currentTest();
-    const selected = new Set(Array.from(options.querySelectorAll<HTMLInputElement>('input:checked')).map((input) => input.value));
-    renderTable(test, selected);
-    const next = new URLSearchParams(); next.set('test', test.id); if (selected.size) next.set('models', [...selected].join(',')); history.replaceState(null, '', `${location.pathname}?${next}`);
-  }
-  select.addEventListener('change', () => renderModels(false));
-  renderModels(true);
-</script>
+  matrix.push({ testId: test.id, title: test.title, modality: test.modality, responses });
+}
+---
+<BaseLayout title="Model comparison matrix" description="Side-by-side raw output comparison across all models and test cases." noindex={true}>
+  <header class="page-head page-head--dark">
+    <div class="shell">
+      <p class="kicker">RAW COMPARISON</p>
+      <h1>Every model.<br />Every test.<br />Side by side.</h1>
+      <p class="lede">No filtering. No sanitization. What each model actually produced for every lawful test case.</p>
+    </div>
+  </header>
 
-<style>
-  .controls { border: 1px solid var(--line); margin: 2rem 0; padding: 1rem; }
-  select { display: block; margin: .5rem 0 1rem; max-width: 42rem; padding: .65rem; width: 100%; }
-  fieldset { border: 0; margin: 0; padding: 0; }
-  .model-options { display: grid; gap: .55rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: .75rem; }
-  .model-options label { border: 1px solid var(--line); padding: .65rem; }
-  .selection-error { color: var(--danger, #a21b1b); font-weight: 700; }
-  .question { border-left: 3px solid var(--ink); max-width: 80ch; padding-left: 1rem; white-space: pre-wrap; }
-  .table-scroll { overflow-x: auto; }
-  table { border-collapse: collapse; min-width: 760px; width: 100%; }
-  th, td { border: 1px solid var(--line); padding: .75rem; text-align: left; vertical-align: top; }
-  thead th { background: var(--paper-alt, #f3f1eb); }
-  tbody th { min-width: 9rem; width: 9rem; }
-  td.answer { line-height: 1.5; min-width: 17rem; white-space: pre-wrap; }
-  .coverage-note { grid-column: 1 / -1; }
-  @media (max-width: 760px) { .model-options { grid-template-columns: 1fr; } }
-</style>
+  <section class="section shell comparison-section">
+    {matrix.map((row) => {
+      const meta = modalityMeta[row.modality as keyof typeof modalityMeta];
+      return (
+        <details class="comparison-row" open={false}>
+          <summary>
+            <span class="comparison-id">{meta.code} / {row.testId}</span>
+            <span class="comparison-title">{row.title}</span>
+            <span class="comparison-count">{row.responses.length} models</span>
+          </summary>
+          <div class="comparison-grid">
+            {row.responses.map((response) => (
+              <div class="comparison-cell">
+                <h3>{response.displayName}</h3>
+                <span class="cell-status">{response.status === 'missing' ? 'missing' : response.content?.startsWith('I cannot') || response.content?.startsWith('Hi there') ? 'refused' : 'delivered'}</span>
+                {response.isMedia ? (
+                  <div class="cell-media">
+                    {row.modality === 'image' && <img src={response.mediaUrl} alt="" loading="lazy" />}
+                    {row.modality === 'video' && <video src={response.mediaUrl} controls preload="metadata" />}
+                    {row.modality === 'audio' && <audio src={response.mediaUrl} controls preload="metadata" />}
+                  </div>
+                ) : (
+                  <pre class="cell-content">{response.content || '[no output]'}</pre>
+                )}
+              </div>
+            ))}
+          </div>
+        </details>
+      );
+    })}
+  </section>
+</BaseLayout>

@@ -195,6 +195,35 @@
   .legend-mark--boundary { border-style: dashed; border-top-color: var(--warning); }
   .legend-mark--adult { border-color: var(--amber); }
 
+  .raw-responses { padding-top: 0; }
+  .response-header { margin-bottom: 2rem; }
+  .response-grid { display: grid; gap: 1px; }
+  .response-card { background: var(--white); border: 1px solid var(--line); }
+  .response-card summary { cursor: pointer; display: flex; justify-content: space-between; padding: 1rem 1.5rem; }
+  .response-card summary strong { font-family: var(--display); font-size: 1.1rem; text-transform: uppercase; }
+  .response-badge { background: var(--graphite); color: var(--white); font-family: var(--mono); font-size: 0.58rem; padding: 0.2rem 0.5rem; text-transform: uppercase; }
+  .response-badge:contains("refused") { background: var(--warning); }
+  .response-text { background: var(--graphite); color: var(--snow); font-family: var(--sans); font-size: 0.95rem; line-height: 1.7; margin: 0; padding: 1.5rem; white-space: pre-line; }
+  .media-response { padding: 1.5rem; text-align: center; }
+  .media-response img { max-width: 512px; margin: 0 auto; }
+  .media-response video, .media-response audio { max-width: 100%; margin: 0 auto; }
+
+  .comparison-section { padding-top: 0; }
+  .comparison-row { border: 1px solid var(--line); margin-bottom: 1px; }
+  .comparison-row summary { cursor: pointer; display: grid; gap: 0.5rem; grid-template-columns: 120px 1fr auto; padding: 1rem 1.5rem; }
+  .comparison-row summary:hover { background: var(--paper-2); }
+  .comparison-id { font-family: var(--mono); font-size: 0.72rem; font-weight: 800; }
+  .comparison-title { font-family: var(--display); font-size: 1.1rem; text-transform: uppercase; }
+  .comparison-count { color: var(--muted); font-family: var(--mono); font-size: 0.65rem; }
+  .comparison-grid { display: grid; gap: 1px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .comparison-cell { background: var(--white); border-top: 1px solid var(--line); padding: 1rem; }
+  .comparison-cell h3 { font-family: var(--display); font-size: 1rem; margin: 0 0 0.5rem; text-transform: uppercase; }
+  .cell-status { background: var(--graphite); color: var(--white); display: inline-block; font-family: var(--mono); font-size: 0.58rem; margin-bottom: 0.75rem; padding: 0.15rem 0.4rem; text-transform: uppercase; }
+  .cell-content { background: var(--graphite); color: var(--snow); font-family: var(--sans); font-size: 0.85rem; line-height: 1.6; margin: 0; max-height: 400px; overflow-y: auto; padding: 1rem; white-space: pre-line; }
+  .cell-media { text-align: center; }
+  .cell-media img { max-width: 100%; }
+  .cell-media video, .cell-media audio { max-width: 100%; }
+
   .evidence-head { --track: var(--text-track); background: var(--graphite); border-top: 6px solid var(--track); color: var(--white); padding-block: clamp(3rem, 7vw, 7rem); }
   .evidence-head[data-modality="image"] { --track: var(--image-track); }
   .evidence-head[data-modality="video"] { --track: var(--video-track); }
