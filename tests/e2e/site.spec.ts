@@ -47,7 +47,7 @@ test('adult case definitions remain noindex and collapsed by default', async ({ 
 test('run ledger reports coverage and failures with published outcomes', async ({ page }) => {
   await page.goto('/results/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('18 models published.');
-  await expect(page.locator('.ledger-row')).toHaveCount(19);
+  await expect(page.locator('.route-ledger .ledger-row')).toHaveCount(19);
   await expect(page.locator('.failure-list article')).toHaveCount(2);
   await expect(page.getByText('$5.49', { exact: true })).toBeVisible();
   await expect(page.getByText('72.8', { exact: true })).toHaveCount(0);
