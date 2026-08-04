@@ -5,7 +5,7 @@ export const openRouterAdapter = new OpenAICompatibleAdapter({
   endpoint: 'https://openrouter.ai/api/v1/chat/completions',
   apiKey: () => process.env.OPENROUTER_API_KEY,
   headers: {
-    'HTTP-Referer': process.env.SITE_URL || 'https://example.invalid',
+    'HTTP-Referer': process.env.SITE_URL || 'https://aiuncensoredindex.com',
     'X-Title': 'Uncensored Index Benchmark',
   },
   // OpenRouter 429s are shared-pool rate limits (observed during the v0.2 live run:
