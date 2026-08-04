@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ClimaxLeaderboard from '../components/ClimaxLeaderboard.astro';
 import ClimaxModalityTable from '../components/ClimaxModalityTable.astro';
 import { getClimaxRankings } from '../lib/climax-scores';
 import { v03Run } from '../data/v03-suite';
@@ -22,9 +21,9 @@ const audioEntry = audioRankings[0];
       <div>
         <p class="kicker">CLIMAX Benchmark / v0.3</p>
         <h1>CLIMAX Benchmark</h1>
-        <p class="lede">18 models. 4 modalities. 163 executions. Every model scored on instruction following, output quality, speed, and cost — ranked head to head.</p>
+        <p class="lede">18 models. 4 modalities. 163 executions. Every model scored on instruction following, output quality, speed, and cost — ranked per modality.</p>
         <div class="hero-actions">
-          <a class="button" href="#combined">See the leaderboard</a>
+          <a class="button" href="#text">See the rankings</a>
           <a class="text-link" href="/methodology/">How scores are calculated</a>
         </div>
       </div>
@@ -41,19 +40,6 @@ const audioEntry = audioRankings[0];
       </aside>
     </div>
   </header>
-
-  <section id="combined" class="section">
-    <div class="shell">
-      <div class="section-head">
-        <div>
-          <p class="kicker">Combined leaderboard</p>
-          <h2>Overall CLIMAX Rankings</h2>
-          <p class="lede">Average score across all modalities tested. Models with more modality coverage have an advantage.</p>
-        </div>
-      </div>
-      <ClimaxLeaderboard />
-    </div>
-  </section>
 
   <section id="text" class="section section--tint">
     <div class="shell">
