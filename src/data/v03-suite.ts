@@ -76,3 +76,33 @@ export const v03RunModelSlugs = new Set([
   'venice-sd35', 'flux-2-pro', 'qwen-image-2', 'wan-2-7-text-to-video',
   'venice-audio-suite',
 ]);
+
+export interface ClimaxRunRecord {
+  id: string;
+  version: string;
+  state: string;
+  testedAt: string;
+  completedAt: string;
+  catalogCases: number;
+  modelRecords: number;
+  caseExecutions: number;
+  maxSpendUsd: number;
+  estimatedSpendUsd: number;
+  technicalFailures: number;
+}
+
+export const v03Runs: readonly ClimaxRunRecord[] = [
+  {
+    id: v03Run.runId,
+    version: '0.3.0',
+    state: v03Run.state,
+    testedAt: v03Run.testedAt,
+    completedAt: v03Run.completedAt,
+    catalogCases: v03Run.catalogCases,
+    modelRecords: v03Run.modelRecords,
+    caseExecutions: v03Run.caseExecutions,
+    maxSpendUsd: v03Run.maxSpendUsd,
+    estimatedSpendUsd: v03Run.estimatedSpendUsd,
+    technicalFailures: v03Run.technicalFailureCases.length,
+  },
+] as const;
