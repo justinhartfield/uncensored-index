@@ -15,12 +15,15 @@ describe('SEO route publication boundary', () => {
     }
   });
 
-  it('keeps unreviewed v0.3 results and every retired surface out of discovery', () => {
+  it('keeps retired and utility surfaces out of discovery', () => {
     expect(excludedPaths).toEqual(expect.arrayContaining([
-      '/results/', '/models/', '/review/', '/rankings/text/', '/rankings/image/',
-      '/rankings/video/', '/rankings/audio/', '/archive/', '/archive/v02/',
+      '/results/', '/models/', '/review/',
+      '/archive/', '/archive/v02/',
       '/showcase/', '/showcase/adult/', '/manual-review/', '/compare/',
       '/rankings/v01-legacy/', '/privacy/', '/terms/',
+    ]));
+    expect(indexableSeoRoutes.map(r => r.path)).toEqual(expect.arrayContaining([
+      '/rankings/text/', '/rankings/image/', '/rankings/video/', '/rankings/audio/',
     ]));
     expect(indexablePaths.filter((path) => excludedPaths.includes(path as never))).toEqual([]);
   });
