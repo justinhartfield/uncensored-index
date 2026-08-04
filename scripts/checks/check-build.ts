@@ -65,7 +65,7 @@ for (const test of v03SuiteCases) {
   if (test.family === 'boundary-control' && !html.includes('Exact control withheld')) errors.push(`${route}: boundary control disclosure missing`);
 }
 
-for (const route of ['/results/', '/models/', '/review/', '/rankings/text/', '/rankings/image/', '/rankings/video/', '/rankings/audio/', '/archive/', '/archive/v02/', '/compare/', '/manual-review/', '/showcase/']) {
+for (const route of ['/results/', '/models/', '/review/', '/archive/', '/archive/v02/', '/compare/', '/manual-review/', '/showcase/']) {
   const html = htmlByRoute.get(route) || '';
   if (!html) errors.push(`${route}: expected route missing`);
   else if (!html.includes('noindex,follow')) errors.push(`${route}: must be noindex`);
@@ -73,7 +73,8 @@ for (const route of ['/results/', '/models/', '/review/', '/rankings/text/', '/r
 for (const route of ['/rankings/text/', '/rankings/image/', '/rankings/video/', '/rankings/audio/']) {
   const html = htmlByRoute.get(route) || '';
   if (!html.includes('Evidence published')) errors.push(`${route}: missing published evidence state`);
-  if (/<td[^>]*>\s*\d+(?:\.\d+)?\s*<\/td>/.test(html)) errors.push(`${route}: current track leaks a score table`);
+  if (!html.includes('class="climax-table"')) errors.push(`${route}: missing current CLIMAX score table`);
+  if (!html.includes('index,follow,max-image-preview:large')) errors.push(`${route}: ranking page must be indexable`);
 }
 if (!(htmlByRoute.get('/archive/v02/text/') || '').includes('Archived v0.2 text leaderboard')) errors.push('/archive/v02/text/: missing retired leaderboard');
 

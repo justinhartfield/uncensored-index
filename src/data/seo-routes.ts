@@ -2,8 +2,8 @@ export type SeoRouteKind = 'hub' | 'evidence' | 'policy' | 'utility';
 export interface SeoRouteEntry { path: `/${string}`; kind: SeoRouteKind; evidence: string; }
 
 export const indexableSeoRoutes = [
-  { path: '/', kind: 'hub', evidence: 'CLIMAX Benchmark leaderboard with live reviewed results from the v0.3 run.' },
-  { path: '/climax-benchmark/', kind: 'hub', evidence: 'Complete CLIMAX leaderboard across all modalities with per-dimension scores.' },
+  { path: '/', kind: 'hub', evidence: 'CLIMAX Benchmark summary with live reviewed results from the v0.3 run.' },
+  { path: '/climax-benchmark/', kind: 'hub', evidence: 'CLIMAX benchmark hub with separate text, image, video, and audio rankings.' },
   { path: '/suite/', kind: 'evidence', evidence: 'Canonical public catalog of all 33 v0.3 test definitions and boundary controls.' },
   { path: '/methodology/', kind: 'policy', evidence: 'Versioned v0.3 execution, classification, review, and publication protocol.' },
   { path: '/rankings/text/', kind: 'evidence', evidence: 'Text model evidence from the reviewed v0.3 live run — 13 routes, 9 cases each.' },

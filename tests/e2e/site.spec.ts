@@ -3,11 +3,11 @@ import AxeBuilder from '@axe-core/playwright';
 
 test('homepage leads with the v0.3 suite and a published live run', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('33 tests.');
-  await expect(page.locator('.matrix-cell')).toHaveCount(33);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('18 models.');
+  await expect(page.getByText('33', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('163', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('published', { exact: false }).first()).toBeVisible();
-  await expect(page.getByText('Published ranks').first()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open CLIMAX Benchmark' })).toBeVisible();
   await expect(page.getByText('The old benchmark moved out of the way.')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
   await expect(page.getByText('v0.2 reviewed baseline')).toHaveCount(0);
@@ -26,7 +26,7 @@ test('suite catalog exposes all 33 frozen definitions in four tracks', async ({ 
 test('lawful case details publish prompts while private controls stay withheld', async ({ page }) => {
   await page.goto('/suite/u2/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('U2');
-  await expect(page.getByText('Exact public test prompt')).toBeVisible();
+  await expect(page.getByText('Test prompt', { exact: true })).toBeVisible();
   await expect(page.getByText('A man looks in the bathroom mirror', { exact: false })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
 
@@ -41,7 +41,7 @@ test('adult case definitions remain noindex and collapsed by default', async ({ 
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
   const definition = page.locator('.prompt-card');
   await expect(definition).not.toHaveAttribute('open', '');
-  await expect(definition.getByText('18+ test prompt — open definition')).toBeVisible();
+  await expect(definition.getByText('18+ test prompt', { exact: true })).toBeVisible();
 });
 
 test('run ledger reports coverage and failures with published outcomes', async ({ page }) => {
@@ -54,13 +54,13 @@ test('run ledger reports coverage and failures with published outcomes', async (
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 });
 
-test('current track routes are published evidence ledgers', async ({ page }) => {
+test('current track routes publish indexable per-modality rankings', async ({ page }) => {
   for (const modality of ['text', 'image', 'video', 'audio']) {
     await page.goto(`/rankings/${modality}/`);
     await expect(page.getByText('Live run reviewed. Evidence published.')).toBeVisible();
     await expect(page.getByText('Looking for the old scores?')).toBeVisible();
-    await expect(page.locator('.ranking-table-wrap')).toHaveCount(0);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+    await expect(page.locator('.climax-table')).toHaveCount(1);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index/);
   }
 });
 
@@ -102,19 +102,20 @@ test('review and methodology pages explain the two-human fail-closed gate', asyn
   await expect(page.getByText('99%', { exact: true })).toBeVisible();
 
   await page.goto('/methodology/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Capability and safety are different questions.');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Every score traces to a test.');
   await expect(page.getByRole('heading', { name: 'The gate fails closed.' })).toBeVisible();
   await expect(page.getByText('two reviewers', { exact: false })).toBeVisible();
 });
 
-test('old showcase and answer comparison are unmistakably archived', async ({ page }) => {
+test('old showcase stays archived while the current comparison matrix is live', async ({ page }) => {
   await page.goto('/showcase/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Archived v0.2');
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 
   await page.goto('/compare/?test=T1&models=aion-3-0,cydonia-24b-v4-1,venice-uncensored-1-2');
-  await expect(page.getByText('RETIRED / 0.2.0')).toBeVisible();
-  await expect(page.locator('#model-headings th')).toHaveCount(4);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Every model.');
+  await expect(page.locator('.comparison-row')).toHaveCount(28);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
 });
 
 test('mobile disclosure menu opens without client JavaScript', async ({ page, isMobile }) => {
