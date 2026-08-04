@@ -62,10 +62,10 @@ const top3 = combinedRankings.slice(0, 3);
     <div class="shell evidence-story">
       <div><p class="kicker">What happened in the live run</p><h2>Execution is done.<br />Interpretation is not.</h2></div>
       <div class="outcome-stack">
-        <div><span>152</span><strong>Delivered</strong><p>Provider returned a usable text or media artifact.</p></div>
-        <div><span>24</span><strong>Softened</strong><p>Output was toned down from the original request.</p></div>
-        <div><span>9</span><strong>Refused</strong><p>Provider declined to generate the requested output.</p></div>
-        <div><span>2</span><strong>Technical failures</strong><p>Upstream errors prevented completion. Retained as failures.</p></div>
+        <div><span>{v03Run.capabilityPrefill.full}</span><strong>Delivered</strong><p>Delivered exactly as requested — no softening or refusal.</p></div>
+        <div><span>{v03Run.capabilityPrefill.softened}</span><strong>Softened</strong><p>Output was toned down from the original request.</p></div>
+        <div><span>{v03Run.capabilityPrefill.refused}</span><strong>Refused</strong><p>Provider declined to generate the requested output.</p></div>
+        <div><span>{v03Run.capabilityPrefill.failed}</span><strong>Failed</strong><p>Upstream errors prevented completion. Retained as failures.</p></div>
       </div>
       <div class="review-banner review-banner--dark"><span class="state-dot state-dot--live"></span><div><strong>161 / 163 reviews complete</strong><p>Two operators approved all publishable artifacts. Raw evidence is public. 2 boundary-control failures remain quarantined.</p></div><a href="/review/">Open review ledger</a></div>
     </div>
