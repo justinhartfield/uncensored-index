@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { title, description, noindex = false, type = 'website' } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site || 'https://example.invalid');
+const canonical = new URL(Astro.url.pathname, Astro.site || 'https://aiuncensoredindex.com');
 const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
 const root = new URL('/', canonical).href;
 const organization = {
