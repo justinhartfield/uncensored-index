@@ -17,7 +17,7 @@ const dataset = {
 const combinedRankings = getCombinedRankings();
 const top3 = combinedRankings.slice(0, 3);
 ---
-<BaseLayout title={site.name} description={site.description}>
+<BaseLayout title="CLIMAX Benchmark — Uncensored AI Model Rankings" description={site.description}>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(dataset)} />
   <header class="lab-hero">
     <div class="shell lab-hero__grid">
