@@ -1,0 +1,52 @@
+---
+import type { ClimaxRankingEntry } from '../lib/climax-scores';
+interface Props { modality: string; rankings: ClimaxRankingEntry[]; }
+const { modality, rankings } = Astro.props;
+const modalityColors: Record<string, string> = { text: 'var(--text-track)', image: 'var(--image-track)', video: 'var(--video-track)', audio: 'var(--audio-track)' };
+const trackColor = modalityColors[modality] || 'var(--cobalt)';
+---
+
+<div class="table-wrap">
+  <table class="climax-table">
+    <caption class="sr-only">{modality} CLIMAX Benchmark rankings</caption>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Model</th>
+        <th>CLIMAX</th>
+        <th>Instruction</th>
+        <th>Quality</th>
+        <th>Latency</th>
+        <th>Cost/Exec</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rankings.map((entry) => (
+        <tr class={entry.rank <= 3 ? 'climax-top3' : ''}>
+          <td class="climax-rank">
+            <span class="climax-rank-badge" style={`--rank-color: ${entry.rank === 1 ? 'var(--amber)' : entry.rank === 2 ? 'var(--muted)' : entry.rank === 3 ? 'var(--warning)' : 'var(--line)'}`}>
+              {entry.rank}
+            </span>
+          </td>
+          <td><a href={`/models/${entry.modelSlug}/`}><strong>{entry.displayName}</strong></a></td>
+          <td class="climax-score" style={`color: ${trackColor}`}>{entry.score.toFixed(1)}</td>
+          <td class="mono">{entry.breakdown.instructionFollowing.toFixed(1)}%</td>
+          <td class="mono">{entry.breakdown.outputQuality.toFixed(1)}</td>
+          <td class="mono">{(entry.latency / 1000).toFixed(1)}s</td>
+          <td class="mono">${entry.costPerExec.toFixed(4)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .climax-table th { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.7rem 0.8rem; }
+  .climax-rank { width: 50px; text-align: center; }
+  .climax-rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--rank-color); font-family: var(--display); font-size: 0.85rem; font-weight: 850; }
+  .climax-top3 { background: var(--paper-2); }
+  .climax-score { font-family: var(--display); font-size: 1.3rem; font-weight: 850; }
+  .climax-table td { padding: 0.7rem 0.8rem; vertical-align: middle; }
+  .climax-table td a { text-decoration: none; }
+  .climax-table td a:hover { text-decoration: underline; }
+</style>
