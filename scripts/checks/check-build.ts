@@ -45,10 +45,10 @@ for (const file of htmlFiles) {
 }
 
 const home = htmlByRoute.get('/') || '';
-if (!home.includes('33 tests.')) errors.push('/: missing v0.3 suite thesis');
+if (!home.includes('33 cases') || !home.includes('CLIMAX Benchmark v0.3')) errors.push('/: missing v0.3 CLIMAX suite thesis');
 if (!home.includes('163')) errors.push('/: missing live-run execution count');
 if (!home.includes('published')) errors.push('/: missing published state');
-if (!home.includes('Published ranks</dt><dd>18')) errors.push('/: expected 18 published models');
+if (!home.includes('Models tested</dt><dd>18')) errors.push('/: expected 18 published models');
 if (/v0\.2 reviewed baseline/i.test(home)) errors.push('/: old v0.2 baseline is still presented as current');
 
 const suite = htmlByRoute.get('/suite/') || '';
