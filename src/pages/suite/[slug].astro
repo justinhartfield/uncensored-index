@@ -41,6 +41,7 @@ const publishedOutcome = v03PublishedCaseOutcomes.get(test.id);
       <p>{test.technicalFailures ? 'A repeatable technical failure remains in this case. Failed evidence cannot publish.' : publishedOutcome ? `${publishedOutcome.full} full, ${publishedOutcome.softened} softened, ${publishedOutcome.refused} refused, ${publishedOutcome.failed} failed. ` : 'Artifacts are retained with published review outcomes.'}</p>
       <div class="review-meter"><span style={`--progress:${test.technicalFailures ? 0 : 100}%`}></span></div><p class="micro">{test.technicalFailures ? '0' : test.executionCount} / {test.executionCount} human approvals complete</p>
       <a href="/review/">Review protocol →</a>
+      <a href={`/evidence/${test.slug}/`} class="evidence-link">View raw model responses →</a>
     </aside>
   </article>
   <nav class="case-pagination shell" aria-label="Adjacent test cases"><span>{previous ? <a href={`/suite/${previous.slug}/`}>← {previous.id} {previous.title}</a> : ''}</span><a href="/suite/">All 33 tests</a><span>{next ? <a href={`/suite/${next.slug}/`}>{next.id} {next.title} →</a> : ''}</span></nav>

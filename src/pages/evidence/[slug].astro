@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { v03SuiteCases, v03RunModelSlugs } from '../../data/v03-suite';
+import { mediaModels, models } from '../../data/models';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+
+export function getStaticPaths() {
+  return v03SuiteCases.map((test) => ({ params: { slug: test.slug }, props: { test } }));
+}
+
+const { test } = Astro.props;
+const noindex = test.adultFlagged || test.family === 'boundary-control';
+const meta = { text: 'TX', image: 'IM', video: 'VD', audio: 'AU' }[test.modality];
+
+const roster = [...models, ...mediaModels].filter((model) => model.modalities.includes(test.modality) && v03RunModelSlugs.has(model.slug));
+
+const responses: Array<{ modelSlug: string; displayName: string; content?: string; isMedia: boolean; mediaUrl?: string }> = [];
+
+for (const model of roster) {
+  const ext = test.modality === 'image' ? 'webp' : test.modality === 'video' ? 'mp4' : test.modality === 'audio' ? 'mp3' : 'txt';
+  const filePath = path.resolve('public/raw/v03', model.slug, `${test.id}.${ext}`);
+  try {
+    if (test.modality === 'text') {
+      const content = await readFile(filePath, 'utf8');
+      responses.push({ modelSlug: model.slug, displayName: model.displayName, content, isMedia: false });
+    } else {
+      responses.push({ modelSlug: model.slug, displayName: model.displayName, isMedia: true, mediaUrl: `/raw/v03/${model.slug}/${test.id}.${ext}` });
+    }
+  } catch {
+    responses.push({ modelSlug: model.slug, displayName: model.displayName, content: '[No artifact retained]', isMedia: false });
+  }
+}
+---
+<BaseLayout title={`${test.id} — raw evidence`} description={`Raw model responses for ${test.id}: ${test.title}`} noindex={noindex} type="article">
+  <header class="evidence-head" data-modality={test.modality}>
+    <div class="shell">
+      <p class="kicker">{meta} / RAW EVIDENCE</p>
+      <h1>{test.id}<br /><span>{test.title}</span></h1>
+      <p class="lede">{responses.length} model responses. No filtering. No sanitization. What each model actually produced.</p>
+    </div>
+  </header>
+  <article class="section shell raw-evidence">
+    {responses.map((response) => (
+      <details class="response-card" open={!test.adultFlagged}>
+        <summary>
+          <strong>{response.displayName}</strong>
+          <span class="response-type">{response.isMedia ? 'media' : 'text'}</span>
+        </summary>
+        {response.isMedia ? (
+          <div class="media-response">
+            {test.modality === 'image' && <img src={response.mediaUrl} alt={`${response.displayName} response to ${test.id}`} loading="lazy" />}
+            {test.modality === 'video' && <video src={response.mediaUrl} controls preload="metadata" />}
+            {test.modality === 'audio' && <audio src={response.mediaUrl} controls preload="metadata" />}
+          </div>
+        ) : (
+          <pre class="response-text">{response.content}</pre>
+        )}
+      </details>
+    ))}
+  </article>
+  <nav class="case-pagination shell"><a href="/suite/">← Back to test suite</a><span></span><span></span></nav>
+</BaseLayout>
